@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BandFlow - Workspace</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap');
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "tertiary-container": "#191c1d",
+                        "on-primary-fixed": "#131b2e",
+                        "on-error-container": "#93000a",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed-variant": "#005323",
+                        "on-tertiary-fixed": "#191c1d",
+                        "primary-fixed-dim": "#bec6e0",
+                        "on-error": "#ffffff",
+                        "surface-container": "#e8eef6",
+                        "tertiary-fixed": "#e1e3e4",
+                        "surface": "#f6f9ff",
+                        "on-secondary-container": "#007233",
+                        "secondary-fixed-dim": "#79db8d",
+                        "surface-variant": "#dde3eb",
+                        "outline-variant": "#c6c6cd",
+                        "on-secondary-fixed": "#00210a",
+                        "tertiary": "#000000",
+                        "primary-container": "#131b2e",
+                        "error": "#ba1a1a",
+                        "on-background": "#161c22",
+                        "inverse-on-surface": "#ebf1f9",
+                        "surface-container-low": "#eef4fc",
+                        "secondary-container": "#92f5a4",
+                        "secondary": "#006d30",
+                        "inverse-surface": "#2b3137",
+                        "surface-tint": "#565e74",
+                        "on-tertiary-container": "#828485",
+                        "tertiary-fixed-dim": "#c5c7c8",
+                        "inverse-primary": "#bec6e0",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed": "#95f8a7",
+                        "on-surface": "#161c22",
+                        "on-surface-variant": "#45464d",
+                        "surface-bright": "#f6f9ff",
+                        "on-primary-container": "#7c839b",
+                        "on-tertiary-fixed-variant": "#454748",
+                        "surface-container-highest": "#dde3eb",
+                        "background": "#f6f9ff",
+                        "outline": "#76777d",
+                        "surface-container-high": "#e3e9f1",
+                        "primary": "#000000",
+                        "surface-dim": "#d4dbe2",
+                        "primary-fixed": "#dae2fd",
+                        "surface-container-lowest": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "stack-md": "16px",
+                        "stack-lg": "32px",
+                        "margin-page": "40px",
+                        "stack-sm": "8px",
+                        "unit": "4px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Geist"],
+                        "display-score": ["Geist"],
+                        "body-lg": ["Geist"],
+                        "body-md": ["Geist"],
+                        "mono-data": ["Geist Mono"],
+                        "headline-lg": ["Geist"],
+                        "headline-md": ["Geist"],
+                        "headline-lg-mobile": ["Geist"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "display-score": ["72px", { "lineHeight": "1", "letterSpacing": "-0.04em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400" }],
+                        "mono-data": ["14px", { "lineHeight": "1", "letterSpacing": "0", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "headline-md": ["20px", { "lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface font-body-md text-on-surface h-full flex overflow-hidden">
+<!-- SideNavBar -->
+<nav class="hidden md:flex flex-col h-screen p-stack-md gap-stack-sm bg-surface-container-lowest border-r border-outline-variant docked left-0 h-full w-64 z-20">
+<div class="mb-stack-lg px-stack-sm">
+<h1 class="text-headline-md font-headline-md font-bold text-primary">BandFlow</h1>
+</div>
+<div class="flex items-center gap-stack-sm mb-stack-lg px-stack-sm">
+<img class="w-10 h-10 rounded-full object-cover border border-outline-variant" data-alt="A small, professional avatar of a focused student in a well-lit, minimalist room. The lighting is crisp and the background is a muted grey to maintain the clean, academic aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOUtu24d9bXllv-Zxszx4TK4R3bI5m8XuleKlj8sjtRI_sxhks6U_-di8ggsn8tcdxd_R2dRncSO_Sq3EbpmqymC7iD8NDg2zCKJrqyA06-5SCXCIM-R7F6ZDVFCe5kQPNPbvBch625tbIG6gS7uOnFCCqfdq8NCw0XSRBSHNHsmUErBMEVjETPYXAS3u0rr02tDhdOpuMidmIhYzpwqx4RhzoDiIuMljZ7dtKvF3me9chLXxMEuLR"/>
+<div>
+<div class="text-label-sm font-label-sm font-bold text-on-surface">Student Portal</div>
+<div class="text-label-sm font-label-sm text-on-surface-variant mt-unit">Target Band: 8.0</div>
+</div>
+</div>
+<button class="w-full bg-[#0F172A] text-on-primary py-2 px-4 rounded font-label-sm text-label-sm mb-stack-md flex items-center justify-center gap-2 hover:bg-black transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">add</span>
+            New Essay
+        </button>
+<div class="flex flex-col gap-unit">
+<a class="flex items-center gap-stack-sm px-stack-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-all duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-label-sm font-label-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-stack-sm px-stack-sm py-2 rounded-lg bg-secondary-container text-on-secondary-container font-bold translate-x-1 transition-transform" href="#">
+<span class="material-symbols-outlined">edit_note</span>
+<span class="text-label-sm font-label-sm">Workspace</span>
+</a>
+<a class="flex items-center gap-stack-sm px-stack-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-all duration-200" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="text-label-sm font-label-sm">History</span>
+</a>
+<a class="flex items-center gap-stack-sm px-stack-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-all duration-200 mt-auto" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-label-sm font-label-sm">Settings</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col md:flex-row h-full overflow-hidden">
+<!-- Left Column: Input (60%) -->
+<div class="flex-1 lg:w-[60%] flex flex-col h-full bg-surface p-margin-page overflow-y-auto border-r border-outline-variant">
+<header class="mb-stack-lg flex justify-between items-end border-b border-outline-variant pb-stack-sm">
+<div>
+<h2 class="text-headline-lg font-headline-lg text-primary mb-unit">Essay Workspace</h2>
+<p class="text-body-md font-body-md text-on-surface-variant">Draft and analyze your IELTS response.</p>
+</div>
+<div class="flex bg-surface-container-high rounded p-1">
+<button class="px-4 py-1 rounded bg-surface border border-outline-variant shadow-sm text-label-sm font-label-sm text-primary">Task 1</button>
+<button class="px-4 py-1 rounded text-label-sm font-label-sm text-on-surface-variant hover:bg-surface-variant transition-colors">Task 2</button>
+</div>
+</header>
+<div class="flex flex-col gap-stack-md flex-1">
+<div class="flex flex-col gap-unit">
+<label class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Prompt</label>
+<textarea class="w-full bg-surface-container-lowest border-outline-variant border rounded-lg p-stack-sm text-body-md font-body-md resize-none h-24 focus:ring-0 focus:border-[#0F172A] transition-colors" placeholder="Enter your essay prompt here..."></textarea>
+</div>
+<div class="flex flex-col gap-unit flex-1">
+<div class="flex justify-between items-center">
+<label class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Response</label>
+<div class="flex gap-stack-md text-mono-data font-mono-data text-on-surface-variant">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">timer</span> 40:00</span>
+<span>Word Count: 0</span>
+</div>
+</div>
+<textarea class="w-full flex-1 bg-surface-container-lowest border-outline-variant border rounded-lg p-stack-md text-body-lg font-body-lg resize-none focus:ring-0 focus:border-[#0F172A] transition-colors leading-relaxed" placeholder="Begin typing your essay..."></textarea>
+</div>
+<button class="w-full bg-[#15803D] text-white py-4 rounded-lg font-headline-md text-headline-md hover:bg-green-800 transition-colors mt-stack-sm">
+                    Analyze &amp; Grade Essay
+                </button>
+</div>
+</div>
+<!-- Right Column: Output Dashboard (40%) -->
+<div class="w-full lg:w-[40%] h-full bg-surface-container-lowest p-margin-page overflow-y-auto hidden md:flex flex-col">
+<!-- Placeholder state before grading -->
+<div class="flex flex-col items-center justify-center h-full text-center text-on-surface-variant opacity-60" id="empty-state">
+<span class="material-symbols-outlined text-[64px] mb-stack-md" style="font-variation-settings: 'FILL' 0;">query_stats</span>
+<h3 class="text-headline-md font-headline-md mb-unit">Awaiting Submission</h3>
+<p class="text-body-md font-body-md max-w-sm">Submit your essay to receive a detailed breakdown of your band score and line-by-line feedback.</p>
+</div>
+<!-- Dashboard Content (Simulated Active State) -->
+<div class="hidden flex-col gap-stack-lg" id="dashboard-content">
+<section class="flex flex-col items-center justify-center py-stack-lg bg-[#F0FDF4] border border-[#15803D] rounded-xl">
+<div class="text-label-sm font-label-sm text-[#15803D] uppercase tracking-widest mb-unit">Estimated Band Score</div>
+<div class="text-display-score font-display-score text-[#15803D]">7.5</div>
+</section>
+<section>
+<h3 class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-stack-sm border-b border-outline-variant pb-unit">Criteria Breakdown</h3>
+<div class="grid grid-cols-2 gap-stack-sm">
+<div class="bg-surface p-stack-sm border border-outline-variant rounded flex justify-between items-center">
+<span class="text-body-md font-body-md">Task Response</span>
+<span class="text-headline-md font-headline-md font-bold text-[#15803D]">7.0</span>
+</div>
+<div class="bg-surface p-stack-sm border border-outline-variant rounded flex justify-between items-center">
+<span class="text-body-md font-body-md">Cohesion</span>
+<span class="text-headline-md font-headline-md font-bold text-[#15803D]">8.0</span>
+</div>
+<div class="bg-surface p-stack-sm border border-outline-variant rounded flex justify-between items-center">
+<span class="text-body-md font-body-md">Lexical Resource</span>
+<span class="text-headline-md font-headline-md font-bold text-[#15803D]">7.5</span>
+</div>
+<div class="bg-surface p-stack-sm border border-outline-variant rounded flex justify-between items-center">
+<span class="text-body-md font-body-md">Grammar</span>
+<span class="text-headline-md font-headline-md font-bold text-[#15803D]">7.0</span>
+</div>
+</div>
+</section>
+<section>
+<h3 class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-stack-sm border-b border-outline-variant pb-unit">Line-by-Line Feedback</h3>
+<div class="flex flex-col gap-unit">
+<!-- Feedback Item -->
+<div class="border border-outline-variant rounded bg-surface overflow-hidden">
+<button class="w-full flex justify-between items-center p-stack-sm hover:bg-surface-container-low transition-colors" onclick="this.nextElementSibling.classList.toggle('hidden')">
+<span class="text-body-md font-body-md truncate max-w-[80%] text-left text-error">"The peoples are going to..."</span>
+<span class="material-symbols-outlined text-on-surface-variant">expand_more</span>
+</button>
+<div class="hidden p-stack-sm border-t border-outline-variant bg-surface-container-lowest">
+<div class="text-label-sm font-label-sm text-error uppercase mb-1">Grammar Error</div>
+<p class="text-body-md font-body-md mb-stack-sm">Incorrect pluralization of a collective noun.</p>
+<div class="bg-[#F0FDF4] border border-[#15803D] p-stack-sm rounded text-body-md font-body-md">
+<span class="font-bold text-[#15803D]">Suggestion:</span> "People are going to..."
+                                </div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+<!-- Bottom Nav for Mobile -->
+<nav class="md:hidden fixed bottom-0 w-full bg-surface-container-lowest border-t border-outline-variant flex justify-around py-stack-sm z-50">
+<a class="flex flex-col items-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px] font-label-sm mt-1">Dashboard</span>
+</a>
+<a class="flex flex-col items-center text-[#15803D]" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">edit_note</span>
+<span class="text-[10px] font-label-sm mt-1 font-bold">Workspace</span>
+</a>
+<a class="flex flex-col items-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">query_stats</span>
+<span class="text-[10px] font-label-sm mt-1">Scores</span>
+</a>
+</nav>
+<script>
+        // Simple mock interaction for the Analyze button to show the dashboard
+        document.querySelector('button.bg-\\[\\#15803D\\]').addEventListener('click', function() {
+            document.getElementById('empty-state').classList.add('hidden');
+            document.getElementById('dashboard-content').classList.remove('hidden');
+            document.getElementById('dashboard-content').classList.add('flex');
+            
+            // On mobile, scroll to or show the dashboard area (simplified for this demo)
+            if (window.innerWidth < 768) {
+                alert("Scores ready! Switch to the 'Scores' tab to view.");
+            }
+        });
+    </script>
+</body></html>

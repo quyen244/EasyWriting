@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BandFlow - Instant IELTS Writing Evaluation</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700&amp;family=Geist+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "tertiary-container": "#191c1d",
+                        "on-primary-fixed": "#131b2e",
+                        "on-error-container": "#93000a",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed-variant": "#005323",
+                        "on-tertiary-fixed": "#191c1d",
+                        "primary-fixed-dim": "#bec6e0",
+                        "on-error": "#ffffff",
+                        "surface-container": "#e8eef6",
+                        "tertiary-fixed": "#e1e3e4",
+                        "surface": "#f6f9ff",
+                        "on-secondary-container": "#007233",
+                        "secondary-fixed-dim": "#79db8d",
+                        "surface-variant": "#dde3eb",
+                        "outline-variant": "#c6c6cd",
+                        "on-secondary-fixed": "#00210a",
+                        "tertiary": "#000000",
+                        "primary-container": "#131b2e",
+                        "error": "#ba1a1a",
+                        "on-background": "#161c22",
+                        "inverse-on-surface": "#ebf1f9",
+                        "surface-container-low": "#eef4fc",
+                        "secondary-container": "#92f5a4",
+                        "secondary": "#006d30",
+                        "inverse-surface": "#2b3137",
+                        "surface-tint": "#565e74",
+                        "on-tertiary-container": "#828485",
+                        "tertiary-fixed-dim": "#c5c7c8",
+                        "inverse-primary": "#bec6e0",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed": "#95f8a7",
+                        "on-surface": "#161c22",
+                        "on-surface-variant": "#45464d",
+                        "surface-bright": "#f6f9ff",
+                        "on-primary-container": "#7c839b",
+                        "on-tertiary-fixed-variant": "#454748",
+                        "surface-container-highest": "#dde3eb",
+                        "background": "#f6f9ff",
+                        "outline": "#76777d",
+                        "surface-container-high": "#e3e9f1",
+                        "primary": "#000000",
+                        "surface-dim": "#d4dbe2",
+                        "primary-fixed": "#dae2fd",
+                        "surface-container-lowest": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "stack-md": "16px",
+                        "stack-lg": "32px",
+                        "margin-page": "40px",
+                        "stack-sm": "8px",
+                        "unit": "4px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Geist"],
+                        "display-score": ["Geist"],
+                        "body-lg": ["Geist"],
+                        "body-md": ["Geist"],
+                        "mono-data": ["Geist Mono"],
+                        "headline-lg": ["Geist"],
+                        "headline-md": ["Geist"],
+                        "headline-lg-mobile": ["Geist"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "display-score": ["72px", { "lineHeight": "1", "letterSpacing": "-0.04em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400" }],
+                        "mono-data": ["14px", { "lineHeight": "1", "letterSpacing": "0", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "headline-md": ["20px", { "lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    .animate-float {
+      animation: float 5s ease-in-out infinite;
+    }
+    .card-group:hover .hover-card:not(:hover) {
+      opacity: 0.4;
+      transform: scale(0.98);
+    }
+    .hover-card .the-fix {
+      grid-template-rows: 0fr;
+      opacity: 0;
+      transition: grid-template-rows 0.4s ease-out, opacity 0.4s ease-out, margin-top 0.4s ease-out, padding-top 0.4s ease-out;
+    }
+    .hover-card:hover .the-fix {
+      grid-template-rows: 1fr;
+      opacity: 1;
+      margin-top: 16px;
+      padding-top: 16px;
+    }
+    .hover-card .the-fix-inner {
+      overflow: hidden;
+    }
+    .fade-in-section {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .fade-in-section.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md antialiased selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- TopNavBar -->
+<header class="bg-surface border-b border-outline-variant docked full-width top-0 sticky z-50">
+<div class="flex justify-between items-center w-full px-margin-page py-4 max-w-7xl mx-auto">
+<div class="flex items-center gap-stack-lg">
+<a class="text-headline-md font-headline-md font-bold text-primary tracking-tight" href="#">BandFlow</a>
+<nav class="hidden md:flex gap-stack-md">
+<a class="text-on-surface-variant hover:text-primary hover:bg-surface-container-low transition-colors duration-200 px-unit py-unit rounded" href="#how-it-works">How it Works</a>
+<a class="text-on-surface-variant hover:text-primary hover:bg-surface-container-low transition-colors duration-200 px-unit py-unit rounded" href="#pricing">Pricing</a>
+</nav>
+</div>
+<a class="text-primary font-bold hover:bg-surface-container-low transition-colors duration-200 px-stack-md py-stack-sm rounded-lg border border-outline-variant" href="#score">Score My Essay</a>
+</div>
+</header>
+<main>
+<!-- Hero Section -->
+<section class="py-stack-lg md:py-24 px-margin-page max-w-7xl mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter items-center">
+<div class="col-span-1 md:col-span-6 space-y-stack-lg pr-0 md:pr-12 fade-in-section is-visible">
+<h1 class="text-headline-lg-mobile md:text-headline-lg font-headline-lg-mobile md:font-headline-lg text-primary">Stop guessing your band score. Instant, examiner-grade IELTS Writing evaluation in 30 seconds.</h1>
+<p class="text-body-lg font-body-lg text-on-surface-variant">Upload your Task 1 or Task 2 essay and receive detailed, criteria-by-criteria feedback aligned strictly with official IELTS descriptors.</p>
+<div class="flex flex-col sm:flex-row gap-stack-md pt-stack-sm">
+<button class="bg-[#15803D] text-[#FFFFFF] px-stack-lg py-stack-sm rounded hover:bg-secondary transition-colors duration-200 text-body-md font-body-md font-bold w-full sm:w-auto shadow-sm">Score My Essay for Free</button>
+<button class="bg-transparent text-primary border border-outline-variant px-stack-lg py-stack-sm rounded hover:bg-surface-container-low transition-colors duration-200 text-body-md font-body-md w-full sm:w-auto">See Sample Report</button>
+</div>
+<div class="pt-stack-md flex items-center gap-stack-sm text-on-surface-variant text-label-sm font-label-sm">
+<span class="material-symbols-outlined" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span>45,000+ essays scored · Aligned with official IELTS band descriptors</span>
+</div>
+</div>
+<div class="col-span-1 md:col-span-6 mt-stack-lg md:mt-0 relative fade-in-section is-visible" style="transition-delay: 200ms;">
+<div class="rounded-xl overflow-hidden shadow-lg border border-outline-variant transform hover:scale-[1.01] transition-transform duration-500 relative bg-surface-container-lowest">
+<img alt="BandFlow Dashboard Screenshot" class="w-full h-auto object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbuxy_t7NqhrMyfyOhOAA8uKGJi44lAtVlaokyOHPVU-LO93uI2G3FfcRVTp9sj64bSs9X3DJoi6IbYT1Gcy3YUxLQ1E7n-l160sz7LDInKawy-BsQ_TUW8WRGFLMYTzXVxmYbcB-zBKvKe881gVAPMBGsdbcJ60moPC4t_zoLbxbWnJBlqBDPIaKHajfKn73IjaLYqhMFpaOAbBK3OjKUk1C512qJBmXiH5j5INUOEppaObq7xWPd"/>
+<div class="absolute inset-0 ring-1 ring-inset ring-black/10 rounded-xl pointer-events-none"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Core Pain & Solution -->
+<section class="py-stack-lg md:py-24 px-margin-page bg-surface-container-lowest border-y border-outline-variant" id="how-it-works">
+<div class="max-w-7xl mx-auto">
+<div class="text-center mb-16 fade-in-section">
+<h2 class="text-headline-lg font-headline-lg text-primary mb-stack-sm">Why students stay stuck at Band 6.5</h2>
+<p class="text-body-lg font-body-lg text-on-surface-variant max-w-2xl mx-auto">Generic feedback won't improve your score. You need precise, actionable insights based on the official grading rubrics.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter card-group">
+<!-- Card 1 -->
+<div class="bg-surface border border-outline-variant p-stack-lg flex flex-col h-full rounded hover-card animate-float fade-in-section cursor-default hover:border-[#15803D] hover:shadow-md transition-all duration-300" style="animation-delay: 0s;">
+<div class="mb-stack-md relative z-10">
+<span class="inline-block bg-error-container text-on-error-container text-label-sm font-label-sm px-unit py-unit rounded mb-stack-sm">PAIN</span>
+<h3 class="text-headline-md font-headline-md text-primary">Vague Feedback</h3>
+<p class="text-body-md font-body-md text-on-surface-variant mt-stack-sm">"Good vocabulary, but work on grammar." Traditional tutors often lack the time to provide granular sentence-level analysis.</p>
+</div>
+<div class="mt-auto border-t border-outline-variant the-fix grid">
+<div class="the-fix-inner">
+<span class="inline-block bg-[#F0FDF4] text-[#15803D] text-label-sm font-label-sm px-unit py-unit rounded mb-stack-sm border border-[#79db8d]">THE FIX</span>
+<p class="text-body-md font-body-md text-on-surface">Line-by-line annotations mapping errors directly to the GRA (Grammatical Range and Accuracy) rubric.</p>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface border border-outline-variant p-stack-lg flex flex-col h-full rounded hover-card animate-float fade-in-section cursor-default hover:border-[#15803D] hover:shadow-md transition-all duration-300" style="animation-delay: 0.5s;">
+<div class="mb-stack-md relative z-10">
+<span class="inline-block bg-error-container text-on-error-container text-label-sm font-label-sm px-unit py-unit rounded mb-stack-sm">PAIN</span>
+<h3 class="text-headline-md font-headline-md text-primary">Slow Turnaround</h3>
+<p class="text-body-md font-body-md text-on-surface-variant mt-stack-sm">Waiting days for an essay to be marked disrupts the learning cycle and halts momentum in the weeks before the exam.</p>
+</div>
+<div class="mt-auto border-t border-outline-variant the-fix grid">
+<div class="the-fix-inner">
+<span class="inline-block bg-[#F0FDF4] text-[#15803D] text-label-sm font-label-sm px-unit py-unit rounded mb-stack-sm border border-[#79db8d]">THE FIX</span>
+<p class="text-body-md font-body-md text-on-surface">Instant evaluation in under 30 seconds, allowing for multiple drafting cycles in a single study session.</p>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface border border-outline-variant p-stack-lg flex flex-col h-full rounded hover-card animate-float fade-in-section cursor-default hover:border-[#15803D] hover:shadow-md transition-all duration-300" style="animation-delay: 1s;">
+<div class="mb-stack-md relative z-10">
+<span class="inline-block bg-error-container text-on-error-container text-label-sm font-label-sm px-unit py-unit rounded mb-stack-sm">PAIN</span>
+<h3 class="text-headline-md font-headline-md text-primary">Off-Rubric Scoring</h3>
+<p class="text-body-md font-body-md text-on-surface-variant mt-stack-sm">Many tools use generic AI that doesn't understand the specific nuances of IELTS Task Response or Coherence and Cohesion.</p>
+</div>
+<div class="mt-auto border-t border-outline-variant the-fix grid">
+<div class="the-fix-inner">
+<span class="inline-block bg-[#F0FDF4] text-[#15803D] text-label-sm font-label-sm px-unit py-unit rounded mb-stack-sm border border-[#79db8d]">THE FIX</span>
+<p class="text-body-md font-body-md text-on-surface">Scoring engine strictly calibrated against the public IELTS band descriptors for Task 1 and Task 2.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Social Media / Media Mentions -->
+<section class="py-stack-md px-margin-page bg-surface-container-lowest border-b border-outline-variant fade-in-section">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-center gap-gutter text-on-surface-variant">
+<span class="text-label-sm font-label-sm uppercase tracking-wider">As seen in:</span>
+<div class="flex gap-gutter items-center opacity-70 grayscale hover:grayscale-0 transition-all duration-300">
+<span class="font-bold text-lg">The PIE News</span>
+<span class="font-bold text-lg">IELTS Pod</span>
+<span class="font-bold text-lg">British Council Partners</span>
+</div>
+</div>
+</section>
+<!-- Testimonials -->
+<section class="py-stack-lg md:py-24 px-margin-page bg-[#F9FAFB]">
+<div class="max-w-7xl mx-auto">
+<div class="text-center mb-16 fade-in-section">
+<h2 class="text-headline-lg font-headline-lg text-[#0F172A] mb-stack-sm">Proven Results</h2>
+<p class="text-body-lg font-body-lg text-on-surface-variant max-w-2xl mx-auto">See how students broke through their plateau and achieved their target scores.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Testimonial 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant p-stack-lg rounded shadow-sm fade-in-section">
+<div class="flex justify-between items-start mb-stack-md border-b border-outline-variant pb-stack-sm">
+<div class="flex items-center gap-stack-sm">
+<img alt="Anna K." class="w-10 h-10 rounded-full object-cover border border-outline-variant shadow-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD886gGDU4R6zQtr3-uk1na-Ng_r_hP70rmZw0vyclph1jmFG6l4rtkxnvzQNVTqtq5bz42U8zQ7w4pXmUMKEF5EZTBlveBPal12pvT9pIWe_GB0SM1AOLlYake2qaKF2VfXUATet8A3nXTy-v5uoatKCSamrCHPrJWpf7A4_6wJXSxL9_6jqmnFt-a0bOp6rZOlCBjEqgThk_qkSKSTURYaDtrJXnYwfC1Sm19Hw9o_3BKuUeTBYz6"/>
+<div>
+<p class="text-body-md font-bold text-[#0F172A]">Anna K.</p>
+<p class="text-label-sm text-on-surface-variant">Initial Band: 6.5</p>
+</div>
+</div>
+<div class="bg-[#F0FDF4] text-[#15803D] border border-[#79db8d] rounded px-unit py-unit flex items-center justify-center">
+<span class="text-label-sm font-label-sm font-bold">Achieved Band: 8.0</span>
+</div>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant italic">"The line-by-line grammar corrections finally helped me understand why I was losing points on Task 2. I jumped from a 6.5 to an 8.0 in just three weeks of consistent practice with BandFlow."</p>
+</div>
+<!-- Testimonial 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant p-stack-lg rounded shadow-sm fade-in-section" style="transition-delay: 100ms;">
+<div class="flex justify-between items-start mb-stack-md border-b border-outline-variant pb-stack-sm">
+<div class="flex items-center gap-stack-sm">
+<img alt="Mohammed S." class="w-10 h-10 rounded-full object-cover border border-outline-variant shadow-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWpps7Y6fdE9iXsPLpbsuRmCzZdoFZF4CDC2Pj9L-lk5yPPf_JC4XSBTK-Rorz1zEkIgp82LSQEfpTgRVwtYim84WJ2OyPTci0valtjaNJ1bFqet_Rox6MyvMcdi6_O6wZMdOTSw4XSaLnvPlSYjyX4y9YPl82DxswDPWYym1vwYt0-2wOfB_eCXVdLbfFhaxPUy9ALWx_f8oZCavSLDpM7d7JjkHFzcdFCikXUT6NG23dVZjvtK4x"/>
+<div>
+<p class="text-body-md font-bold text-[#0F172A]">Mohammed S.</p>
+<p class="text-label-sm text-on-surface-variant">Initial Band: 6.0</p>
+</div>
+</div>
+<div class="bg-[#F0FDF4] text-[#15803D] border border-[#79db8d] rounded px-unit py-unit flex items-center justify-center">
+<span class="text-label-sm font-label-sm font-bold">Achieved Band: 7.5</span>
+</div>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant italic">"I was stuck at 6.0 for months. BandFlow's instant feedback let me write two essays a day and immediately see my mistakes. The Task Response analysis is incredibly accurate."</p>
+</div>
+<!-- Testimonial 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant p-stack-lg rounded shadow-sm fade-in-section" style="transition-delay: 200ms;">
+<div class="flex justify-between items-start mb-stack-md border-b border-outline-variant pb-stack-sm">
+<div class="flex items-center gap-stack-sm">
+<img alt="Elena V." class="w-10 h-10 rounded-full object-cover border border-outline-variant shadow-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAO5gSZLXlDzYdBIGw9kMoNpPRCfxYzH68kagIEKqCC3ba6dxFNsT_PPYLfyGMEBV79MO0MlDL0j-lief1nILf63ctdLKqH-phFjAJgL6UOnpaePM7clR6gnCJeFlMOwwg_Ior6K-kY5hUBvBnTRR07XFeyV477LZkTjLxcPT4Lc_xnB6IMcR9CNOXh3br1YVtdhpyPZrKl4rslXf4JGNjd3Uep1aEBNHoBh5yUdLSg-9E2fM1YtbXh"/>
+<div>
+<p class="text-body-md font-bold text-[#0F172A]">Elena V.</p>
+<p class="text-label-sm text-on-surface-variant">Initial Band: 6.5</p>
+</div>
+</div>
+<div class="bg-[#F0FDF4] text-[#15803D] border border-[#79db8d] rounded px-unit py-unit flex items-center justify-center">
+<span class="text-label-sm font-label-sm font-bold">Achieved Band: 7.5</span>
+</div>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant italic">"Traditional tutoring was too slow. With BandFlow, I got immediate, examiner-level feedback that pinpointed my weaknesses in Coherence and Cohesion. Highly recommended."</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Pricing -->
+<section class="py-stack-lg md:py-24 px-margin-page bg-surface-container-lowest border-y border-outline-variant" id="pricing">
+<div class="max-w-5xl mx-auto">
+<div class="text-center mb-16 fade-in-section">
+<h2 class="text-headline-lg font-headline-lg text-[#0F172A] mb-stack-sm">Simple, Transparent Pricing</h2>
+<p class="text-body-lg font-body-lg text-on-surface-variant">Choose the plan that fits your study schedule.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter max-w-3xl mx-auto">
+<!-- Free Tier -->
+<div class="bg-[#F9FAFB] border border-outline-variant p-stack-lg rounded flex flex-col fade-in-section">
+<h3 class="text-headline-md font-headline-md text-[#0F172A] mb-unit">Free</h3>
+<p class="text-headline-lg font-bold text-[#0F172A] mb-stack-md">$0<span class="text-body-md text-on-surface-variant font-normal">/mo</span></p>
+<ul class="space-y-stack-sm mb-stack-lg flex-grow">
+<li class="flex items-center gap-stack-sm text-on-surface-variant"><span class="material-symbols-outlined text-[#15803D]" data-icon="check" style="font-size: 20px;">check</span> 1 Essay/Day</li>
+<li class="flex items-center gap-stack-sm text-on-surface-variant"><span class="material-symbols-outlined text-[#15803D]" data-icon="check" style="font-size: 20px;">check</span> Basic Band Score</li>
+<li class="flex items-center gap-stack-sm text-on-surface-variant"><span class="material-symbols-outlined text-[#15803D]" data-icon="check" style="font-size: 20px;">check</span> Web Access</li>
+</ul>
+<button class="w-full bg-transparent text-[#0F172A] border border-outline-variant px-stack-md py-stack-sm rounded hover:bg-surface-container-low transition-colors duration-200 text-body-md font-bold">Get Started Free</button>
+</div>
+<!-- Pro Tier -->
+<div class="bg-surface-container-lowest border-2 border-[#15803D] p-stack-lg rounded flex flex-col relative shadow-md fade-in-section" style="transition-delay: 100ms;">
+<div class="absolute top-0 right-0 transform translate-x-1/4 -translate-y-1/2 bg-[#15803D] text-white text-label-sm font-bold px-stack-sm py-unit rounded-full">MOST POPULAR</div>
+<h3 class="text-headline-md font-headline-md text-[#0F172A] mb-unit">Pro Pass</h3>
+<p class="text-headline-lg font-bold text-[#0F172A] mb-stack-md">$29<span class="text-body-md text-on-surface-variant font-normal">/mo</span></p>
+<ul class="space-y-stack-sm mb-stack-lg flex-grow">
+<li class="flex items-center gap-stack-sm text-on-surface-variant"><span class="material-symbols-outlined text-[#15803D]" data-icon="check" style="font-size: 20px;">check</span> Unlimited Essays</li>
+<li class="flex items-center gap-stack-sm text-on-surface-variant"><span class="material-symbols-outlined text-[#15803D]" data-icon="check" style="font-size: 20px;">check</span> Detailed Diagnostic Breakdown</li>
+<li class="flex items-center gap-stack-sm text-on-surface-variant"><span class="material-symbols-outlined text-[#15803D]" data-icon="check" style="font-size: 20px;">check</span> Line-by-Line annotations</li>
+<li class="flex items-center gap-stack-sm text-on-surface-variant"><span class="material-symbols-outlined text-[#15803D]" data-icon="check" style="font-size: 20px;">check</span> PDF Export</li>
+</ul>
+<button class="w-full bg-[#15803D] text-[#FFFFFF] px-stack-md py-stack-sm rounded hover:bg-secondary transition-colors duration-200 text-body-md font-bold">Upgrade to Pro</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Final CTA -->
+<section class="py-stack-lg md:py-32 px-margin-page bg-[#F9FAFB] text-center border-b border-outline-variant fade-in-section">
+<div class="max-w-3xl mx-auto space-y-stack-md">
+<h2 class="text-headline-lg font-headline-lg text-[#0F172A]">Ready to break the Band 6.5 ceiling?</h2>
+<p class="text-body-lg font-body-lg text-on-surface-variant mb-stack-lg">Start getting examiner-grade feedback on your essays today.</p>
+<button class="bg-[#15803D] text-[#FFFFFF] px-stack-lg py-stack-md rounded-lg hover:bg-secondary transition-colors duration-200 text-headline-md font-headline-md font-bold w-full sm:w-auto shadow-md">Score My Essay for Free</button>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-high border-t border-outline-variant w-full py-stack-lg px-margin-page flex flex-col md:flex-row justify-between items-center gap-stack-md mt-auto">
+<div class="text-label-sm font-label-sm font-bold text-primary">BandFlow</div>
+<div class="text-body-md font-body-md text-on-surface-variant">© 2024 BandFlow. Swiss-Nordic Precision in IELTS Prep.</div>
+<div class="flex gap-stack-md text-label-sm font-label-sm">
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Contact Support</a>
+</div>
+</footer>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.15
+      };
+
+      const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+
+      document.querySelectorAll('.fade-in-section').forEach(section => {
+        observer.observe(section);
+      });
+    });
+  </script>
+</body></html>
