@@ -1,0 +1,186 @@
+openapi: 3.0.3
+info:
+  title: Account Authentication API
+  version: "1.0.0"
+  description: >
+    Covers this feature only (003-account-authentication). The refresh token is transported as
+    an httpOnly cookie (research.md decision 4) and is not represented in these JSON schemas.
+
+paths:
+  /api/v1/auth/signup:
+    post:
+      summary: Create an account (FR-001, FR-002, FR-003)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignupRequest'
+      responses:
+        '201':
+          description: Account created and signed in.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Weak password.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        '409':
+          description: Email already registered.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+
+  /api/v1/auth/signin:
+    post:
+      summary: Sign in with email + password (FR-003)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SigninRequest'
+      responses:
+        '200':
+          description: Signed in.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Invalid credentials (generic — does not reveal which field was wrong).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+        '429':
+          description: Too many failed attempts for this email or IP (research.md decision 6).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+
+  /api/v1/auth/refresh:
+    post:
+      summary: Silently renew the access token using the refresh-token cookie (FR-004, FR-010)
+      responses:
+        '200':
+          description: New access token issued; refresh cookie rotated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: >
+            Refresh token missing, expired, or already-used (reuse detected — all sessions for
+            the account have been revoked; the learner must sign in again).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthError'
+
+  /api/v1/auth/signout:
+    post:
+      summary: End the current session (FR-006)
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: Refresh session revoked and cookie cleared.
+        '401':
+          description: No valid session to sign out of.
+
+  /api/v1/auth/me:
+    get:
+      summary: Get the signed-in learner's own account details (consumed by 002's profile page)
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Current account.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+        '401':
+          description: No valid, unexpired session (FR-005).
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    SignupRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+        display_name:
+          type: string
+          nullable: true
+
+    SigninRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+
+    Account:
+      type: object
+      required: [id, email, display_name]
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        display_name:
+          type: string
+
+    AuthResponse:
+      type: object
+      required: [access_token, token_type, expires_in, user]
+      properties:
+        access_token:
+          type: string
+        token_type:
+          type: string
+          enum: [bearer]
+        expires_in:
+          type: integer
+          description: Access token lifetime in seconds (≤1800 per research.md decision 3).
+        user:
+          $ref: '#/components/schemas/Account'
+
+    AuthError:
+      type: object
+      required: [error, message]
+      properties:
+        error:
+          type: string
+          enum:
+            - EMAIL_ALREADY_REGISTERED
+            - WEAK_PASSWORD
+            - INVALID_CREDENTIALS
+            - TOO_MANY_ATTEMPTS
+            - SESSION_EXPIRED
+        message:
+          type: string

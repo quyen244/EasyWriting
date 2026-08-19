@@ -16,6 +16,22 @@ Sync Impact Report
   scope and a fixed tech stack (Next.js/Vercel, FastAPI/Postgres/cloudflared, OpenRouter), not just
   clarified — this is a backward-incompatible redefinition of the v1.0.0 principle set.
 - Deferred TODOs: none
+
+---
+
+- Version change: 2.0.0 → 2.0.1
+- Modified principles: none
+- Modified sections: Technology & Architecture Constraints — updated the frontend design-reference
+  pointer from the placeholder `stitch_ielts_writing_diagnostic` mockup to the real, approved
+  design set (`stitch_writewise_ielts_editorial_saas`, product name **WriteWise**), which
+  `002-core-app-ux` had already adopted in its own spec/plan without a corresponding constitution
+  update (flagged as a CRITICAL constitution-alignment gap by `/speckit-analyze`).
+- Added principles: none
+- Added sections: none
+- Removed sections: none
+- Rationale for PATCH bump: corrects a stale reference to match already-approved, already-built-
+  against reality; no principle was redefined or expanded.
+- Deferred TODOs: none
 -->
 
 # IE Writing Constitution
@@ -76,8 +92,10 @@ handling, and the ability to diagnose issues remotely are non-negotiable from da
 
 ## Technology & Architecture Constraints
 
-- **Frontend**: Next.js, deployed on Vercel; UI follows the `stitch_ielts_writing_diagnostic`
-  design reference (HTML/image mockups) as the source of truth for layout and visual design.
+- **Frontend**: Next.js, deployed on Vercel; product name **WriteWise**. UI follows the
+  `D:\Projects\Assignment\LLM-AI-Assistant-Projects\ie_writing\stitch_writewise_ielts_editorial_saas`
+  design reference (HTML mockups + `academic_editorial` design system) as the source of truth for
+  layout and visual design, superseding the earlier `stitch_ielts_writing_diagnostic` placeholder.
 - **Backend**: FastAPI + PostgreSQL, run on a local machine and exposed via Cloudflare Tunnel
   (`cloudflared`) on `rexsantech.com` during this phase, to control cost while the product is
   validated; migration to a managed host (e.g. Supabase, AWS) is a later, separate decision, not a
@@ -115,4 +133,4 @@ All specs, plans, and task lists MUST be checked against this constitution befor
 `/speckit-implement` proceeds; unjustified deviations from Principles I, II, III, IV, or VII are
 blocking, not advisory.
 
-**Version**: 2.0.0 | **Ratified**: 2026-08-19 | **Last Amended**: 2026-08-19
+**Version**: 2.0.1 | **Ratified**: 2026-08-19 | **Last Amended**: 2026-08-20
