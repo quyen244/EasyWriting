@@ -1,3 +1,144 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/*
+ * academic_editorial semantic color tokens (002 T004).
+ *
+ * Light values are the design system's own, copied verbatim from
+ * `stitch_writewise_ielts_editorial_saas/academic_editorial/DESIGN.md`.
+ *
+ * The dark values are NOT in that file — the design system only ever specified a light
+ * palette, but FR-018 requires a working dark theme. They are derived from the same
+ * Material-3 tonal palettes the light set comes from, following the standard role swap:
+ * `primary` moves from the darkest ink tone to the light tint so it stays readable on a
+ * dark ground, and each `on-*` pair inverts with it. Muted Gold keeps its "medal" role
+ * for scores in both themes, which is the one thing the design brief is emphatic about.
+ *
+ * Channels are space-separated RGB so Tailwind's `/10` opacity modifier works.
+ */
+@layer base {
+  :root {
+    --color-surface: 248 249 255;
+    --color-surface-dim: 203 219 245;
+    --color-surface-bright: 248 249 255;
+    --color-surface-container-lowest: 255 255 255;
+    --color-surface-container-low: 239 244 255;
+    --color-surface-container: 229 238 255;
+    --color-surface-container-high: 220 233 255;
+    --color-surface-container-highest: 211 228 254;
+    --color-surface-variant: 211 228 254;
+    --color-on-surface: 11 28 48;
+    --color-on-surface-variant: 67 71 79;
+    --color-inverse-surface: 33 49 69;
+    --color-inverse-on-surface: 234 241 255;
+    --color-outline: 116 119 129;
+    --color-outline-variant: 196 198 209;
+    --color-surface-tint: 63 94 149;
+
+    --color-primary: 13 51 104;
+    --color-on-primary: 255 255 255;
+    --color-primary-container: 42 74 128;
+    --color-on-primary-container: 157 187 248;
+    --color-inverse-primary: 172 199 255;
+    --color-primary-fixed: 215 226 255;
+    --color-primary-fixed-dim: 172 199 255;
+    --color-on-primary-fixed: 0 26 64;
+    --color-on-primary-fixed-variant: 38 70 124;
+
+    --color-secondary: 123 88 0;
+    --color-on-secondary: 255 255 255;
+    --color-secondary-container: 253 205 112;
+    --color-on-secondary-container: 119 86 0;
+    --color-secondary-fixed: 255 222 165;
+    --color-secondary-fixed-dim: 238 192 100;
+    --color-on-secondary-fixed: 38 25 0;
+    --color-on-secondary-fixed-variant: 93 66 0;
+
+    --color-tertiary: 45 52 65;
+    --color-on-tertiary: 255 255 255;
+    --color-tertiary-container: 68 75 88;
+    --color-on-tertiary-container: 180 187 203;
+    --color-tertiary-fixed: 220 226 243;
+    --color-tertiary-fixed-dim: 192 199 215;
+    --color-on-tertiary-fixed: 21 28 39;
+    --color-on-tertiary-fixed-variant: 64 71 84;
+
+    --color-error: 186 26 26;
+    --color-on-error: 255 255 255;
+    --color-error-container: 255 218 214;
+    --color-on-error-container: 147 0 10;
+
+    --color-background: 248 249 255;
+    --color-on-background: 11 28 48;
+  }
+
+  .dark {
+    --color-surface: 12 22 38;
+    --color-surface-dim: 12 22 38;
+    --color-surface-bright: 44 54 72;
+    --color-surface-container-lowest: 7 15 27;
+    --color-surface-container-low: 20 30 46;
+    --color-surface-container: 24 34 51;
+    --color-surface-container-high: 35 45 62;
+    --color-surface-container-highest: 46 56 73;
+    --color-surface-variant: 67 71 79;
+    --color-on-surface: 227 232 242;
+    --color-on-surface-variant: 195 198 207;
+    --color-inverse-surface: 227 232 242;
+    --color-inverse-on-surface: 44 54 72;
+    --color-outline: 141 145 153;
+    --color-outline-variant: 67 71 79;
+    --color-surface-tint: 172 199 255;
+
+    --color-primary: 172 199 255;
+    --color-on-primary: 11 42 92;
+    --color-primary-container: 38 70 124;
+    --color-on-primary-container: 215 226 255;
+    --color-inverse-primary: 13 51 104;
+    --color-primary-fixed: 215 226 255;
+    --color-primary-fixed-dim: 172 199 255;
+    --color-on-primary-fixed: 0 26 64;
+    --color-on-primary-fixed-variant: 38 70 124;
+
+    --color-secondary: 238 192 100;
+    --color-on-secondary: 63 46 0;
+    --color-secondary-container: 93 66 0;
+    --color-on-secondary-container: 255 222 165;
+    --color-secondary-fixed: 255 222 165;
+    --color-secondary-fixed-dim: 238 192 100;
+    --color-on-secondary-fixed: 38 25 0;
+    --color-on-secondary-fixed-variant: 93 66 0;
+
+    --color-tertiary: 192 199 215;
+    --color-on-tertiary: 42 49 64;
+    --color-tertiary-container: 64 71 84;
+    --color-on-tertiary-container: 220 226 243;
+    --color-tertiary-fixed: 220 226 243;
+    --color-tertiary-fixed-dim: 192 199 215;
+    --color-on-tertiary-fixed: 21 28 39;
+    --color-on-tertiary-fixed-variant: 64 71 84;
+
+    --color-error: 255 180 171;
+    --color-on-error: 105 0 5;
+    --color-error-container: 147 0 10;
+    --color-on-error-container: 255 218 214;
+
+    --color-background: 12 22 38;
+    --color-on-background: 227 232 242;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-background text-on-background font-body antialiased;
+  }
+
+  /* The design brief asks for hairline strokes rather than shadows; a visible focus
+     ring is still non-negotiable for SC-007's keyboard-focus check. */
+  :focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-surface;
+  }
+}
