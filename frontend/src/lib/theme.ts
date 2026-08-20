@@ -50,7 +50,45 @@ export function writeTheme(theme: Theme): void {
 export function toggleTheme(): Theme {
   const next: Theme = readStoredTheme() === "dark" ? "light" : "dark";
   writeTheme(next);
+  notify();
   return next;
+}
+
+/* ── External-store interface for `useSyncExternalStore` ────────────────────────────
+ *
+ * The live theme is a browser-global that React does not own: an inline script applies
+ * it before hydration, and `<html>`'s class list is the real value. Subscribing to it
+ * rather than mirroring it into `useState` inside an effect avoids two problems at once
+ * — the cascading render React's lint rule warns about, and the hydration mismatch a
+ * dark-theme visitor would otherwise see, because the server has no way to know their
+ * preference and must render the light label.
+ */
+
+const listeners = new Set<() => void>();
+
+function notify(): void {
+  for (const listener of listeners) listener();
+}
+
+export function subscribeToTheme(listener: () => void): () => void {
+  listeners.add(listener);
+  return () => {
+    listeners.delete(listener);
+  };
+}
+
+/** Reads the DOM, which the pre-paint inline script has already set correctly. */
+export function getThemeSnapshot(): Theme {
+  return typeof document !== "undefined" &&
+    document.documentElement.classList.contains("dark")
+    ? "dark"
+    : "light";
+}
+
+/** The server cannot know the visitor's preference; render the default and correct it
+ *  on the client, which is what `useSyncExternalStore` is built to do. */
+export function getServerThemeSnapshot(): Theme {
+  return DEFAULT_THEME;
 }
 
 /**
