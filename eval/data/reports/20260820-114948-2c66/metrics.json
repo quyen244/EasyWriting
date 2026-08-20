@@ -1,0 +1,42 @@
+{
+  "run_id": "20260820-114948-2c66",
+  "timestamp": "2026-08-20T04:50:20+00:00",
+  "pipeline_version": "pipeline-v1.0",
+  "prompt_version": "v1",
+  "model": "nvidia/nemotron-3-super-120b-a12b:free",
+  "temperature": 0.3,
+  "n_essays": 1,
+  "n_completed": 0,
+  "failures": [
+    {
+      "essay_id": "T1-001",
+      "error": "TASK_ACHIEVEMENT: output truncated at token limit: 1 validation error for CriterionEvaluation\n  Invalid JSON: expected value at line 1 column 1 [type=json_invalid, input_value='We need to output JSON w...iew(8)=128 )=129 space=', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid"
+    }
+  ],
+  "wall_clock_s": 32.1,
+  "quality": {
+    "overall": {
+      "n": 0
+    },
+    "task_1": {
+      "n": 0
+    },
+    "task_2": {
+      "n": 0
+    },
+    "per_criterion": {}
+  },
+  "system": {
+    "quote_fidelity": null,
+    "quotes_returned": 0,
+    "empty_evidence_rate": null,
+    "failure_rate": 1.0,
+    "llm_calls": 0,
+    "p50_latency_s": 0.0,
+    "p95_latency_s": 0.0,
+    "prompt_tokens_total": 0,
+    "completion_tokens_total": 0,
+    "tokens_per_essay": 0
+  },
+  "per_item": []
+}

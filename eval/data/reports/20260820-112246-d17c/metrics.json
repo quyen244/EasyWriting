@@ -1,0 +1,226 @@
+{
+  "run_id": "20260820-112246-d17c",
+  "timestamp": "2026-08-20T04:22:46+00:00",
+  "pipeline_version": "pipeline-v1.0",
+  "prompt_version": "v1",
+  "model": "nvidia/nemotron-3-super-120b-a12b:free",
+  "temperature": 0.3,
+  "n_essays": 10,
+  "n_completed": 10,
+  "failures": [],
+  "wall_clock_s": 0.0,
+  "quality": {
+    "overall": {
+      "n": 10,
+      "mae": 1.2,
+      "rmse": 1.342,
+      "bias": 0.1,
+      "within_0.5": 0.2,
+      "within_1.0": 0.5,
+      "spearman_rho": null,
+      "pred_std": 0.0,
+      "gold_std": 1.338,
+      "std_ratio": 0.0
+    },
+    "task_1": {
+      "n": 5,
+      "mae": 1.3,
+      "rmse": 1.396,
+      "bias": 0.1,
+      "within_0.5": 0.2,
+      "within_1.0": 0.4,
+      "spearman_rho": null,
+      "pred_std": 0.0,
+      "gold_std": 1.393,
+      "std_ratio": 0.0
+    },
+    "task_2": {
+      "n": 5,
+      "mae": 1.1,
+      "rmse": 1.285,
+      "bias": 0.1,
+      "within_0.5": 0.2,
+      "within_1.0": 0.6,
+      "spearman_rho": null,
+      "pred_std": 0.0,
+      "gold_std": 1.281,
+      "std_ratio": 0.0
+    },
+    "per_criterion": {
+      "TASK_ACHIEVEMENT": {
+        "n": 5,
+        "mae": 1.3,
+        "rmse": 1.323,
+        "bias": -0.3,
+        "within_0.5": 0.0,
+        "within_1.0": 0.4,
+        "spearman_rho": 0.725,
+        "pred_std": 0.2,
+        "gold_std": 1.435,
+        "std_ratio": 0.139
+      },
+      "TASK_RESPONSE": {
+        "n": 5,
+        "mae": 1.0,
+        "rmse": 1.14,
+        "bias": 0.0,
+        "within_0.5": 0.2,
+        "within_1.0": 0.6,
+        "spearman_rho": 0.707,
+        "pred_std": 0.2,
+        "gold_std": 1.281,
+        "std_ratio": 0.156
+      },
+      "COHERENCE_COHESION": {
+        "n": 10,
+        "mae": 1.15,
+        "rmse": 1.255,
+        "bias": -0.15,
+        "within_0.5": 0.3,
+        "within_1.0": 0.5,
+        "spearman_rho": null,
+        "pred_std": 0.0,
+        "gold_std": 1.246,
+        "std_ratio": 0.0
+      },
+      "LEXICAL_RESOURCE": {
+        "n": 10,
+        "mae": 1.4,
+        "rmse": 1.581,
+        "bias": 0.1,
+        "within_0.5": 0.2,
+        "within_1.0": 0.4,
+        "spearman_rho": null,
+        "pred_std": 0.0,
+        "gold_std": 1.578,
+        "std_ratio": 0.0
+      },
+      "GRAMMATICAL_RANGE_ACCURACY": {
+        "n": 10,
+        "mae": 1.4,
+        "rmse": 1.597,
+        "bias": 0.3,
+        "within_0.5": 0.2,
+        "within_1.0": 0.4,
+        "spearman_rho": null,
+        "pred_std": 0.0,
+        "gold_std": 1.568,
+        "std_ratio": 0.0
+      }
+    }
+  },
+  "system": {
+    "quote_fidelity": 0.0,
+    "quotes_returned": 40,
+    "empty_evidence_rate": 1.0,
+    "failure_rate": 0.0,
+    "llm_calls": 40,
+    "p50_latency_s": 0.0,
+    "p95_latency_s": 0.0,
+    "prompt_tokens_total": 4000,
+    "completion_tokens_total": 2000,
+    "tokens_per_essay": 600
+  },
+  "per_item": [
+    {
+      "essay_id": "T1-001",
+      "task_type": "TASK_1",
+      "gold": 5.0,
+      "pred": 6.5,
+      "error": 1.5,
+      "raw_overall": 6.5,
+      "latency_s": 0.007,
+      "quote_fidelity": 0.0
+    },
+    {
+      "essay_id": "T1-002",
+      "task_type": "TASK_1",
+      "gold": 7.0,
+      "pred": 6.5,
+      "error": -0.5,
+      "raw_overall": 6.5,
+      "latency_s": 0.002,
+      "quote_fidelity": 0.0
+    },
+    {
+      "essay_id": "T1-003",
+      "task_type": "TASK_1",
+      "gold": 7.5,
+      "pred": 6.5,
+      "error": -1.0,
+      "raw_overall": 6.5,
+      "latency_s": 0.002,
+      "quote_fidelity": 0.0
+    },
+    {
+      "essay_id": "T1-004",
+      "task_type": "TASK_1",
+      "gold": 8.0,
+      "pred": 6.5,
+      "error": -1.5,
+      "raw_overall": 6.5,
+      "latency_s": 0.002,
+      "quote_fidelity": 0.0
+    },
+    {
+      "essay_id": "T1-005",
+      "task_type": "TASK_1",
+      "gold": 4.5,
+      "pred": 6.5,
+      "error": 2.0,
+      "raw_overall": 6.375,
+      "latency_s": 0.001,
+      "quote_fidelity": 0.0
+    },
+    {
+      "essay_id": "T2-001",
+      "task_type": "TASK_2",
+      "gold": 5.5,
+      "pred": 6.5,
+      "error": 1.0,
+      "raw_overall": 6.5,
+      "latency_s": 0.002,
+      "quote_fidelity": 0.0
+    },
+    {
+      "essay_id": "T2-002",
+      "task_type": "TASK_2",
+      "gold": 6.5,
+      "pred": 6.5,
+      "error": 0.0,
+      "raw_overall": 6.5,
+      "latency_s": 0.002,
+      "quote_fidelity": 0.0
+    },
+    {
+      "essay_id": "T2-003",
+      "task_type": "TASK_2",
+      "gold": 7.5,
+      "pred": 6.5,
+      "error": -1.0,
+      "raw_overall": 6.5,
+      "latency_s": 0.003,
+      "quote_fidelity": 0.0
+    },
+    {
+      "essay_id": "T2-004",
+      "task_type": "TASK_2",
+      "gold": 8.0,
+      "pred": 6.5,
+      "error": -1.5,
+      "raw_overall": 6.5,
+      "latency_s": 0.002,
+      "quote_fidelity": 0.0
+    },
+    {
+      "essay_id": "T2-005",
+      "task_type": "TASK_2",
+      "gold": 4.5,
+      "pred": 6.5,
+      "error": 2.0,
+      "raw_overall": 6.375,
+      "latency_s": 0.001,
+      "quote_fidelity": 0.0
+    }
+  ]
+}

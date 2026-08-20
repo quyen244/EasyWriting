@@ -1,0 +1,652 @@
+[
+  {
+    "essay_id": "T1-001",
+    "task_type": "TASK_1",
+    "gold": {
+      "overall": 5.0,
+      "criteria": {
+        "TASK_ACHIEVEMENT": 5.5,
+        "COHERENCE_COHESION": 5.0,
+        "LEXICAL_RESOURCE": 4.5,
+        "GRAMMATICAL_RANGE_ACCURACY": 4.5
+      },
+      "source": "expert-estimate-from-official-descriptors",
+      "confidence": "medium"
+    },
+    "overall_band": 6.5,
+    "raw_overall": 6.5,
+    "criteria": [
+      {
+        "criterion": "TASK_ACHIEVEMENT",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for TASK_ACHIEVEMENT rather than the band above or below.",
+        "descriptor_reference": "TASK_ACHIEVEMENT band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      },
+      {
+        "criterion": "COHERENCE_COHESION",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for COHERENCE_COHESION rather than the band above or below.",
+        "descriptor_reference": "COHERENCE_COHESION band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      },
+      {
+        "criterion": "LEXICAL_RESOURCE",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for LEXICAL_RESOURCE rather than the band above or below.",
+        "descriptor_reference": "LEXICAL_RESOURCE band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      },
+      {
+        "criterion": "GRAMMATICAL_RANGE_ACCURACY",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for GRAMMATICAL_RANGE_ACCURACY rather than the band above or below.",
+        "descriptor_reference": "GRAMMATICAL_RANGE_ACCURACY band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      }
+    ],
+    "latency_s": 0.007,
+    "quote_fidelity": 0.0
+  },
+  {
+    "essay_id": "T1-002",
+    "task_type": "TASK_1",
+    "gold": {
+      "overall": 7.0,
+      "criteria": {
+        "TASK_ACHIEVEMENT": 7.5,
+        "COHERENCE_COHESION": 7.0,
+        "LEXICAL_RESOURCE": 7.0,
+        "GRAMMATICAL_RANGE_ACCURACY": 7.0
+      },
+      "source": "expert-estimate-from-official-descriptors",
+      "confidence": "medium"
+    },
+    "overall_band": 6.5,
+    "raw_overall": 6.5,
+    "criteria": [
+      {
+        "criterion": "TASK_ACHIEVEMENT",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for TASK_ACHIEVEMENT rather than the band above or below.",
+        "descriptor_reference": "TASK_ACHIEVEMENT band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      },
+      {
+        "criterion": "COHERENCE_COHESION",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for COHERENCE_COHESION rather than the band above or below.",
+        "descriptor_reference": "COHERENCE_COHESION band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      },
+      {
+        "criterion": "LEXICAL_RESOURCE",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for LEXICAL_RESOURCE rather than the band above or below.",
+        "descriptor_reference": "LEXICAL_RESOURCE band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      },
+      {
+        "criterion": "GRAMMATICAL_RANGE_ACCURACY",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for GRAMMATICAL_RANGE_ACCURACY rather than the band above or below.",
+        "descriptor_reference": "GRAMMATICAL_RANGE_ACCURACY band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      }
+    ],
+    "latency_s": 0.002,
+    "quote_fidelity": 0.0
+  },
+  {
+    "essay_id": "T1-003",
+    "task_type": "TASK_1",
+    "gold": {
+      "overall": 7.5,
+      "criteria": {
+        "TASK_ACHIEVEMENT": 8.0,
+        "COHERENCE_COHESION": 7.5,
+        "LEXICAL_RESOURCE": 7.5,
+        "GRAMMATICAL_RANGE_ACCURACY": 7.5
+      },
+      "source": "expert-estimate-from-official-descriptors",
+      "confidence": "medium"
+    },
+    "overall_band": 6.5,
+    "raw_overall": 6.5,
+    "criteria": [
+      {
+        "criterion": "TASK_ACHIEVEMENT",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for TASK_ACHIEVEMENT rather than the band above or below.",
+        "descriptor_reference": "TASK_ACHIEVEMENT band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      },
+      {
+        "criterion": "COHERENCE_COHESION",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for COHERENCE_COHESION rather than the band above or below.",
+        "descriptor_reference": "COHERENCE_COHESION band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      },
+      {
+        "criterion": "LEXICAL_RESOURCE",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for LEXICAL_RESOURCE rather than the band above or below.",
+        "descriptor_reference": "LEXICAL_RESOURCE band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      },
+      {
+        "criterion": "GRAMMATICAL_RANGE_ACCURACY",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for GRAMMATICAL_RANGE_ACCURACY rather than the band above or below.",
+        "descriptor_reference": "GRAMMATICAL_RANGE_ACCURACY band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      }
+    ],
+    "latency_s": 0.002,
+    "quote_fidelity": 0.0
+  },
+  {
+    "essay_id": "T1-004",
+    "task_type": "TASK_1",
+    "gold": {
+      "overall": 8.0,
+      "criteria": {
+        "TASK_ACHIEVEMENT": 8.0,
+        "COHERENCE_COHESION": 8.5,
+        "LEXICAL_RESOURCE": 8.0,
+        "GRAMMATICAL_RANGE_ACCURACY": 8.0
+      },
+      "source": "expert-estimate-from-official-descriptors",
+      "confidence": "medium"
+    },
+    "overall_band": 6.5,
+    "raw_overall": 6.5,
+    "criteria": [
+      {
+        "criterion": "TASK_ACHIEVEMENT",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for TASK_ACHIEVEMENT rather than the band above or below.",
+        "descriptor_reference": "TASK_ACHIEVEMENT band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      },
+      {
+        "criterion": "COHERENCE_COHESION",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for COHERENCE_COHESION rather than the band above or below.",
+        "descriptor_reference": "COHERENCE_COHESION band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      },
+      {
+        "criterion": "LEXICAL_RESOURCE",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for LEXICAL_RESOURCE rather than the band above or below.",
+        "descriptor_reference": "LEXICAL_RESOURCE band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      },
+      {
+        "criterion": "GRAMMATICAL_RANGE_ACCURACY",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for GRAMMATICAL_RANGE_ACCURACY rather than the band above or below.",
+        "descriptor_reference": "GRAMMATICAL_RANGE_ACCURACY band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      }
+    ],
+    "latency_s": 0.002,
+    "quote_fidelity": 0.0
+  },
+  {
+    "essay_id": "T1-005",
+    "task_type": "TASK_1",
+    "gold": {
+      "overall": 4.5,
+      "criteria": {
+        "TASK_ACHIEVEMENT": 4.5,
+        "COHERENCE_COHESION": 5.0,
+        "LEXICAL_RESOURCE": 4.0,
+        "GRAMMATICAL_RANGE_ACCURACY": 4.0
+      },
+      "source": "expert-estimate-from-official-descriptors",
+      "confidence": "medium"
+    },
+    "overall_band": 6.5,
+    "raw_overall": 6.375,
+    "criteria": [
+      {
+        "criterion": "TASK_ACHIEVEMENT",
+        "band": 6.0,
+        "raw_band": 6.5,
+        "length_penalty": 0.5,
+        "explanation": "The essay matches the band 6.5 descriptor for TASK_ACHIEVEMENT rather than the band above or below.",
+        "descriptor_reference": "TASK_ACHIEVEMENT band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      },
+      {
+        "criterion": "COHERENCE_COHESION",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for COHERENCE_COHESION rather than the band above or below.",
+        "descriptor_reference": "COHERENCE_COHESION band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      },
+      {
+        "criterion": "LEXICAL_RESOURCE",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for LEXICAL_RESOURCE rather than the band above or below.",
+        "descriptor_reference": "LEXICAL_RESOURCE band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      },
+      {
+        "criterion": "GRAMMATICAL_RANGE_ACCURACY",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for GRAMMATICAL_RANGE_ACCURACY rather than the band above or below.",
+        "descriptor_reference": "GRAMMATICAL_RANGE_ACCURACY band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      }
+    ],
+    "latency_s": 0.001,
+    "quote_fidelity": 0.0
+  },
+  {
+    "essay_id": "T2-001",
+    "task_type": "TASK_2",
+    "gold": {
+      "overall": 5.5,
+      "criteria": {
+        "TASK_RESPONSE": 5.5,
+        "COHERENCE_COHESION": 6.0,
+        "LEXICAL_RESOURCE": 5.5,
+        "GRAMMATICAL_RANGE_ACCURACY": 5.0
+      },
+      "source": "expert-estimate-from-official-descriptors",
+      "confidence": "medium"
+    },
+    "overall_band": 6.5,
+    "raw_overall": 6.5,
+    "criteria": [
+      {
+        "criterion": "TASK_RESPONSE",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for TASK_RESPONSE rather than the band above or below.",
+        "descriptor_reference": "TASK_RESPONSE band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      },
+      {
+        "criterion": "COHERENCE_COHESION",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for COHERENCE_COHESION rather than the band above or below.",
+        "descriptor_reference": "COHERENCE_COHESION band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      },
+      {
+        "criterion": "LEXICAL_RESOURCE",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for LEXICAL_RESOURCE rather than the band above or below.",
+        "descriptor_reference": "LEXICAL_RESOURCE band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      },
+      {
+        "criterion": "GRAMMATICAL_RANGE_ACCURACY",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for GRAMMATICAL_RANGE_ACCURACY rather than the band above or below.",
+        "descriptor_reference": "GRAMMATICAL_RANGE_ACCURACY band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      }
+    ],
+    "latency_s": 0.002,
+    "quote_fidelity": 0.0
+  },
+  {
+    "essay_id": "T2-002",
+    "task_type": "TASK_2",
+    "gold": {
+      "overall": 6.5,
+      "criteria": {
+        "TASK_RESPONSE": 6.5,
+        "COHERENCE_COHESION": 7.0,
+        "LEXICAL_RESOURCE": 6.5,
+        "GRAMMATICAL_RANGE_ACCURACY": 6.5
+      },
+      "source": "expert-estimate-from-official-descriptors",
+      "confidence": "medium"
+    },
+    "overall_band": 6.5,
+    "raw_overall": 6.5,
+    "criteria": [
+      {
+        "criterion": "TASK_RESPONSE",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for TASK_RESPONSE rather than the band above or below.",
+        "descriptor_reference": "TASK_RESPONSE band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      },
+      {
+        "criterion": "COHERENCE_COHESION",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for COHERENCE_COHESION rather than the band above or below.",
+        "descriptor_reference": "COHERENCE_COHESION band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      },
+      {
+        "criterion": "LEXICAL_RESOURCE",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for LEXICAL_RESOURCE rather than the band above or below.",
+        "descriptor_reference": "LEXICAL_RESOURCE band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      },
+      {
+        "criterion": "GRAMMATICAL_RANGE_ACCURACY",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for GRAMMATICAL_RANGE_ACCURACY rather than the band above or below.",
+        "descriptor_reference": "GRAMMATICAL_RANGE_ACCURACY band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      }
+    ],
+    "latency_s": 0.002,
+    "quote_fidelity": 0.0
+  },
+  {
+    "essay_id": "T2-003",
+    "task_type": "TASK_2",
+    "gold": {
+      "overall": 7.5,
+      "criteria": {
+        "TASK_RESPONSE": 7.5,
+        "COHERENCE_COHESION": 7.5,
+        "LEXICAL_RESOURCE": 8.0,
+        "GRAMMATICAL_RANGE_ACCURACY": 7.5
+      },
+      "source": "expert-estimate-from-official-descriptors",
+      "confidence": "medium"
+    },
+    "overall_band": 6.5,
+    "raw_overall": 6.5,
+    "criteria": [
+      {
+        "criterion": "TASK_RESPONSE",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for TASK_RESPONSE rather than the band above or below.",
+        "descriptor_reference": "TASK_RESPONSE band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      },
+      {
+        "criterion": "COHERENCE_COHESION",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for COHERENCE_COHESION rather than the band above or below.",
+        "descriptor_reference": "COHERENCE_COHESION band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      },
+      {
+        "criterion": "LEXICAL_RESOURCE",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for LEXICAL_RESOURCE rather than the band above or below.",
+        "descriptor_reference": "LEXICAL_RESOURCE band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      },
+      {
+        "criterion": "GRAMMATICAL_RANGE_ACCURACY",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for GRAMMATICAL_RANGE_ACCURACY rather than the band above or below.",
+        "descriptor_reference": "GRAMMATICAL_RANGE_ACCURACY band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      }
+    ],
+    "latency_s": 0.003,
+    "quote_fidelity": 0.0
+  },
+  {
+    "essay_id": "T2-004",
+    "task_type": "TASK_2",
+    "gold": {
+      "overall": 8.0,
+      "criteria": {
+        "TASK_RESPONSE": 8.0,
+        "COHERENCE_COHESION": 8.0,
+        "LEXICAL_RESOURCE": 8.5,
+        "GRAMMATICAL_RANGE_ACCURACY": 8.0
+      },
+      "source": "expert-estimate-from-official-descriptors",
+      "confidence": "medium"
+    },
+    "overall_band": 6.5,
+    "raw_overall": 6.5,
+    "criteria": [
+      {
+        "criterion": "TASK_RESPONSE",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for TASK_RESPONSE rather than the band above or below.",
+        "descriptor_reference": "TASK_RESPONSE band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      },
+      {
+        "criterion": "COHERENCE_COHESION",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for COHERENCE_COHESION rather than the band above or below.",
+        "descriptor_reference": "COHERENCE_COHESION band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      },
+      {
+        "criterion": "LEXICAL_RESOURCE",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for LEXICAL_RESOURCE rather than the band above or below.",
+        "descriptor_reference": "LEXICAL_RESOURCE band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      },
+      {
+        "criterion": "GRAMMATICAL_RANGE_ACCURACY",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for GRAMMATICAL_RANGE_ACCURACY rather than the band above or below.",
+        "descriptor_reference": "GRAMMATICAL_RANGE_ACCURACY band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      }
+    ],
+    "latency_s": 0.002,
+    "quote_fidelity": 0.0
+  },
+  {
+    "essay_id": "T2-005",
+    "task_type": "TASK_2",
+    "gold": {
+      "overall": 4.5,
+      "criteria": {
+        "TASK_RESPONSE": 4.5,
+        "COHERENCE_COHESION": 5.0,
+        "LEXICAL_RESOURCE": 4.5,
+        "GRAMMATICAL_RANGE_ACCURACY": 4.0
+      },
+      "source": "expert-estimate-from-official-descriptors",
+      "confidence": "medium"
+    },
+    "overall_band": 6.5,
+    "raw_overall": 6.375,
+    "criteria": [
+      {
+        "criterion": "TASK_RESPONSE",
+        "band": 6.0,
+        "raw_band": 6.5,
+        "length_penalty": 0.5,
+        "explanation": "The essay matches the band 6.5 descriptor for TASK_RESPONSE rather than the band above or below.",
+        "descriptor_reference": "TASK_RESPONSE band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      },
+      {
+        "criterion": "COHERENCE_COHESION",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for COHERENCE_COHESION rather than the band above or below.",
+        "descriptor_reference": "COHERENCE_COHESION band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      },
+      {
+        "criterion": "LEXICAL_RESOURCE",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for LEXICAL_RESOURCE rather than the band above or below.",
+        "descriptor_reference": "LEXICAL_RESOURCE band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      },
+      {
+        "criterion": "GRAMMATICAL_RANGE_ACCURACY",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for GRAMMATICAL_RANGE_ACCURACY rather than the band above or below.",
+        "descriptor_reference": "GRAMMATICAL_RANGE_ACCURACY band 6.5",
+        "evidence_quotes": [],
+        "quotes_returned": 1,
+        "quotes_dropped": 1
+      }
+    ],
+    "latency_s": 0.001,
+    "quote_fidelity": 0.0
+  }
+]

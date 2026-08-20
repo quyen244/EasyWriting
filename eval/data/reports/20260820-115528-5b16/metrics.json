@@ -1,0 +1,115 @@
+{
+  "run_id": "20260820-115528-5b16",
+  "timestamp": "2026-08-20T04:55:34+00:00",
+  "pipeline_version": "pipeline-v1.0",
+  "prompt_version": "v1",
+  "model": "nvidia/nemotron-3-super-120b-a12b:free",
+  "temperature": 0.3,
+  "n_essays": 1,
+  "n_completed": 1,
+  "failures": [],
+  "wall_clock_s": 6.0,
+  "quality": {
+    "overall": {
+      "n": 1,
+      "mae": 0.0,
+      "rmse": 0.0,
+      "bias": 0.0,
+      "within_0.5": 1.0,
+      "within_1.0": 1.0,
+      "spearman_rho": null,
+      "pred_std": 0.0,
+      "gold_std": 0.0,
+      "std_ratio": null
+    },
+    "task_1": {
+      "n": 1,
+      "mae": 0.0,
+      "rmse": 0.0,
+      "bias": 0.0,
+      "within_0.5": 1.0,
+      "within_1.0": 1.0,
+      "spearman_rho": null,
+      "pred_std": 0.0,
+      "gold_std": 0.0,
+      "std_ratio": null
+    },
+    "task_2": {
+      "n": 0
+    },
+    "per_criterion": {
+      "TASK_ACHIEVEMENT": {
+        "n": 1,
+        "mae": 0.5,
+        "rmse": 0.5,
+        "bias": -0.5,
+        "within_0.5": 1.0,
+        "within_1.0": 1.0,
+        "spearman_rho": null,
+        "pred_std": 0.0,
+        "gold_std": 0.0,
+        "std_ratio": null
+      },
+      "COHERENCE_COHESION": {
+        "n": 1,
+        "mae": 0.0,
+        "rmse": 0.0,
+        "bias": 0.0,
+        "within_0.5": 1.0,
+        "within_1.0": 1.0,
+        "spearman_rho": null,
+        "pred_std": 0.0,
+        "gold_std": 0.0,
+        "std_ratio": null
+      },
+      "LEXICAL_RESOURCE": {
+        "n": 1,
+        "mae": 0.5,
+        "rmse": 0.5,
+        "bias": 0.5,
+        "within_0.5": 1.0,
+        "within_1.0": 1.0,
+        "spearman_rho": null,
+        "pred_std": 0.0,
+        "gold_std": 0.0,
+        "std_ratio": null
+      },
+      "GRAMMATICAL_RANGE_ACCURACY": {
+        "n": 1,
+        "mae": 0.5,
+        "rmse": 0.5,
+        "bias": 0.5,
+        "within_0.5": 1.0,
+        "within_1.0": 1.0,
+        "spearman_rho": null,
+        "pred_std": 0.0,
+        "gold_std": 0.0,
+        "std_ratio": null
+      }
+    }
+  },
+  "system": {
+    "quote_fidelity": 1.0,
+    "quotes_returned": 15,
+    "empty_evidence_rate": 0.0,
+    "failure_rate": 0.0,
+    "llm_calls": 4,
+    "p50_latency_s": 6.0,
+    "p95_latency_s": 6.0,
+    "prompt_tokens_total": 4821,
+    "completion_tokens_total": 2146,
+    "tokens_per_essay": 6967
+  },
+  "per_item": [
+    {
+      "essay_id": "T1-001",
+      "task_type": "TASK_1",
+      "gold": 5.0,
+      "pred": 5.0,
+      "error": 0.0,
+      "raw_overall": 5.0,
+      "latency_s": 5.998,
+      "quote_fidelity": 1.0
+    }
+  ]
+}

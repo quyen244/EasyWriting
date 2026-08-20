@@ -1,0 +1,86 @@
+[
+  {
+    "essay_id": "T1-001",
+    "task_type": "TASK_1",
+    "gold": {
+      "overall": 5.0,
+      "criteria": {
+        "TASK_ACHIEVEMENT": 5.5,
+        "COHERENCE_COHESION": 5.0,
+        "LEXICAL_RESOURCE": 4.5,
+        "GRAMMATICAL_RANGE_ACCURACY": 4.5
+      },
+      "source": "expert-estimate-from-official-descriptors",
+      "confidence": "medium"
+    },
+    "overall_band": 5.0,
+    "raw_overall": 5.0,
+    "criteria": [
+      {
+        "criterion": "TASK_ACHIEVEMENT",
+        "band": 5.0,
+        "raw_band": 5.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay attempts to summarise the data but fails to present a clear overview of main trends. It recounts details mechanically (e.g., 'In 1990, coal is the biggest source...', 'After that it go down every year...') without synthesising the overall patterns. While it mentions some changes (e.g., coal decreasing, renewables increasing), these are presented as isolated observations rather than part of a coherent summary. This matches Band 5, which describes responses that 'recount detail mechanically with no clear overview'. It does not meet Band 6 because there is no overview with appropriately selected information — the summary lacks a general statement about the main trends (e.g., the decline of fossil fuels and rise of renewables).",
+        "descriptor_reference": "TASK_ACHIEVEMENT band 5",
+        "evidence_quotes": [
+          "In 1990, coal is the biggest source with 100 terawatt-hours. After that it go down every year and in 2020 it only have 15 terawatt-hours. This is a very big decrease.",
+          "Renewables is opposite. In 1990 it is only 5 but it increase slowly until 2005 and then it increase very fast. In 2020 renewables become the biggest source with 95 terawatt-hours.",
+          "In general, coal and renewables change place with each other, and gas increase then decrease."
+        ],
+        "quotes_returned": 3,
+        "quotes_dropped": 0
+      },
+      {
+        "criterion": "COHERENCE_COHESION",
+        "band": 5.0,
+        "raw_band": 5.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay presents information with some organisation but lacks overall progression. Ideas are listed in a disjointed manner without clear logical sequencing or effective use of cohesive devices. There is no use of referencing, substitution, or logical connectors to link ideas between or within sentences, resulting in a mechanical and repetitive structure. This aligns with Band 5 descriptors, which note inadequate or inaccurate use of cohesive devices and lack of overall progression. It does not meet Band 6 because there is no clear overall progression and cohesive devices are not used effectively — in fact, none are present.",
+        "descriptor_reference": "COHERENCE_COHESION band 5",
+        "evidence_quotes": [
+          "In 1990, coal is the biggest source with 100 terawatt-hours. After that it go down every year and in 2020 it only have 15 terawatt-hours. This is a very big decrease.",
+          "Renewables is opposite. In 1990 it is only 5 but it increase slowly until 2005 and then it increase very fast. In 2020 renewables become the biggest source with 95 terawatt-hours.",
+          "Natural gas increase from 20 in 1990 to 75 in 2010, it is the highest point. Then it decrease to 60 in 2020. Nuclear is more stable, it stay around 45 to 50 for many year and then go down to 30 in 2020.",
+          "In general, coal and renewables change place with each other, and gas increase then decrease."
+        ],
+        "quotes_returned": 4,
+        "quotes_dropped": 0
+      },
+      {
+        "criterion": "LEXICAL_RESOURCE",
+        "band": 5.0,
+        "raw_band": 5.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay uses a very limited range of vocabulary, with frequent repetition of basic words like 'increase', 'decrease', 'source', and years. There is minimal attempt to use less common lexical items, and when attempted (e.g., 'opposite', 'become the biggest source'), the phrasing is awkward or inaccurate. Errors in word choice and formation (e.g., 'show' instead of 'shows', 'produce' instead of 'produced', 'it go down', 'it only have') impede clarity at times. This aligns with Band 5, which describes a limited range minimally adequate for the task, with noticeable errors that may cause some difficulty for the reader. It does not meet Band 6 because there is no genuine attempt to use less common vocabulary with awareness — any such attempts are either absent or incorrect, and repetition is heavy.",
+        "descriptor_reference": "LEXICAL_RESOURCE band 5",
+        "evidence_quotes": [
+          "The line graph show the electricity produce from four source in one country of Europe from 1990 to 2020.",
+          "In 1990, coal is the biggest source with 100 terawatt-hours. After that it go down every year and in 2020 it only have 15 terawatt-hours.",
+          "Renewables is opposite. In 1990 it is only 5 but it increase slowly until 2005 and then it increase very fast.",
+          "In general, coal and renewables change place with each other, and gas increase then decrease."
+        ],
+        "quotes_returned": 4,
+        "quotes_dropped": 0
+      },
+      {
+        "criterion": "GRAMMATICAL_RANGE_ACCURACY",
+        "band": 5.0,
+        "raw_band": 5.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay demonstrates a very limited range of grammatical structures, relying almost exclusively on simple present and past simple forms with frequent attempts at complex sentences that are largely inaccurate. Errors in subject-verb agreement, verb tense, article use, and word form are pervasive and systematic, significantly impairing clarity in places. While some meaning can be deduced, the frequency and nature of errors align with Band 5 descriptors, which note frequent grammatical errors and attempts at complex structures that are less accurate than simple ones. It does not meet Band 6 because errors are not merely occasional or harmless — they occur in nearly every sentence and often disrupt communication.",
+        "descriptor_reference": "GRAMMATICAL_RANGE_ACCURACY band 5",
+        "evidence_quotes": [
+          "The line graph show the electricity produce from four source in one country of Europe from 1990 to 2020.",
+          "In 1990, coal is the biggest source with 100 terawatt-hours. After that it go down every year and in 2020 it only have 15 terawatt-hours.",
+          "Renewables is opposite. In 1990 it is only 5 but it increase slowly until 2005 and then it increase very fast.",
+          "Natural gas increase from 20 in 1990 to 75 in 2010, it is the highest point. Then it decrease to 60 in 2020."
+        ],
+        "quotes_returned": 4,
+        "quotes_dropped": 0
+      }
+    ],
+    "latency_s": 5.998,
+    "quote_fidelity": 1.0
+  }
+]

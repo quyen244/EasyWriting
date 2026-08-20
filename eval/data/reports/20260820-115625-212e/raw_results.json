@@ -1,0 +1,148 @@
+[
+  {
+    "essay_id": "T1-001",
+    "task_type": "TASK_1",
+    "gold": {
+      "overall": 5.0,
+      "criteria": {
+        "TASK_ACHIEVEMENT": 5.5,
+        "COHERENCE_COHESION": 5.0,
+        "LEXICAL_RESOURCE": 4.5,
+        "GRAMMATICAL_RANGE_ACCURACY": 4.5
+      },
+      "source": "expert-estimate-from-official-descriptors",
+      "confidence": "medium"
+    },
+    "overall_band": 6.5,
+    "raw_overall": 6.5,
+    "criteria": [
+      {
+        "criterion": "TASK_ACHIEVEMENT",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for TASK_ACHIEVEMENT rather than the band above or below.",
+        "descriptor_reference": "TASK_ACHIEVEMENT band 6.5",
+        "evidence_quotes": [
+          "The line graph show the electricity produce from"
+        ],
+        "quotes_returned": 1,
+        "quotes_dropped": 0
+      },
+      {
+        "criterion": "COHERENCE_COHESION",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for COHERENCE_COHESION rather than the band above or below.",
+        "descriptor_reference": "COHERENCE_COHESION band 6.5",
+        "evidence_quotes": [
+          "The line graph show the electricity produce from"
+        ],
+        "quotes_returned": 1,
+        "quotes_dropped": 0
+      },
+      {
+        "criterion": "LEXICAL_RESOURCE",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for LEXICAL_RESOURCE rather than the band above or below.",
+        "descriptor_reference": "LEXICAL_RESOURCE band 6.5",
+        "evidence_quotes": [
+          "The line graph show the electricity produce from"
+        ],
+        "quotes_returned": 1,
+        "quotes_dropped": 0
+      },
+      {
+        "criterion": "GRAMMATICAL_RANGE_ACCURACY",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for GRAMMATICAL_RANGE_ACCURACY rather than the band above or below.",
+        "descriptor_reference": "GRAMMATICAL_RANGE_ACCURACY band 6.5",
+        "evidence_quotes": [
+          "The line graph show the electricity produce from"
+        ],
+        "quotes_returned": 1,
+        "quotes_dropped": 0
+      }
+    ],
+    "latency_s": 0.006,
+    "quote_fidelity": 1.0
+  },
+  {
+    "essay_id": "T1-002",
+    "task_type": "TASK_1",
+    "gold": {
+      "overall": 7.0,
+      "criteria": {
+        "TASK_ACHIEVEMENT": 7.5,
+        "COHERENCE_COHESION": 7.0,
+        "LEXICAL_RESOURCE": 7.0,
+        "GRAMMATICAL_RANGE_ACCURACY": 7.0
+      },
+      "source": "expert-estimate-from-official-descriptors",
+      "confidence": "medium"
+    },
+    "overall_band": 6.5,
+    "raw_overall": 6.5,
+    "criteria": [
+      {
+        "criterion": "TASK_ACHIEVEMENT",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for TASK_ACHIEVEMENT rather than the band above or below.",
+        "descriptor_reference": "TASK_ACHIEVEMENT band 6.5",
+        "evidence_quotes": [
+          "The bar chart compares how households in Japan,"
+        ],
+        "quotes_returned": 1,
+        "quotes_dropped": 0
+      },
+      {
+        "criterion": "COHERENCE_COHESION",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for COHERENCE_COHESION rather than the band above or below.",
+        "descriptor_reference": "COHERENCE_COHESION band 6.5",
+        "evidence_quotes": [
+          "The bar chart compares how households in Japan,"
+        ],
+        "quotes_returned": 1,
+        "quotes_dropped": 0
+      },
+      {
+        "criterion": "LEXICAL_RESOURCE",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for LEXICAL_RESOURCE rather than the band above or below.",
+        "descriptor_reference": "LEXICAL_RESOURCE band 6.5",
+        "evidence_quotes": [
+          "The bar chart compares how households in Japan,"
+        ],
+        "quotes_returned": 1,
+        "quotes_dropped": 0
+      },
+      {
+        "criterion": "GRAMMATICAL_RANGE_ACCURACY",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay matches the band 6.5 descriptor for GRAMMATICAL_RANGE_ACCURACY rather than the band above or below.",
+        "descriptor_reference": "GRAMMATICAL_RANGE_ACCURACY band 6.5",
+        "evidence_quotes": [
+          "The bar chart compares how households in Japan,"
+        ],
+        "quotes_returned": 1,
+        "quotes_dropped": 0
+      }
+    ],
+    "latency_s": 0.001,
+    "quote_fidelity": 1.0
+  }
+]
