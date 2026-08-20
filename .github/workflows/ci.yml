@@ -95,7 +95,18 @@ jobs:
 
       - run: npm run lint
       - run: npm run typecheck
-      - run: npm run build
+
+      - name: Component tests
+        run: npm test
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: End-to-end tests
+        # The backend is stubbed at the network boundary (tests/e2e/support/backend.ts),
+        # so these need no database and no API key — see playwright.config.ts for why.
+        # `next build` runs as part of the Playwright webServer command.
+        run: npm run test:e2e
 
       - name: Audit for known vulnerabilities
         run: npm audit --audit-level=high

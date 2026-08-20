@@ -35,7 +35,7 @@ phase does not recreate them.
 
 **Purpose**: Confirm the shared frontend scaffold this feature builds on is in place; nothing new to initialize.
 
-- [ ] T001 Verify `frontend/` (Next.js App Router + TypeScript + Tailwind, from `001` tasks T001–T003) and `003`'s `frontend/src/lib/auth.ts` / `useAuth` hook exist before starting; if either is missing, coordinate implementation order with `001`/`003` rather than duplicating scaffold here.
+- [X] T001 Verify `frontend/` (Next.js App Router + TypeScript + Tailwind, from `001` tasks T001–T003) and `003`'s `frontend/src/lib/auth.ts` / `useAuth` hook exist before starting; if either is missing, coordinate implementation order with `001`/`003` rather than duplicating scaffold here.
 
 **Checkpoint**: Scaffold confirmed — foundational work can begin.
 
@@ -47,10 +47,10 @@ phase does not recreate them.
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T002 [P] Create client-side auth guard component in `frontend/src/components/ProtectedRoute.tsx`, implementing the `checking`/`authenticated`/`unauthenticated` flow from [contracts/page-routes.md](./contracts/page-routes.md) (research.md decision 1) — used by US2's workspace and US3's profile page.
-- [ ] T003 [P] Create theme utility in `frontend/src/lib/theme.ts`: read/write a `light`/`dark` preference to `localStorage`, apply/remove a `dark` class on `<html>` (research.md decision 5) — used by US2's `ThemeToggle`.
-- [ ] T004 [P] Port the `academic_editorial` design tokens (colors, typography, border radius, spacing) and the `darkMode: "class"` strategy from the Stitch mockups' embedded Tailwind config into `frontend/tailwind.config.ts` — the canonical design system for every page in this feature (spec Assumptions; plan.md).
-- [ ] T005 [P] Load the Literata (display) and Geist (body/UI) fonts in the shared root layout `frontend/src/app/layout.tsx`.
+- [X] T002 [P] Create client-side auth guard component in `frontend/src/components/ProtectedRoute.tsx`, implementing the `checking`/`authenticated`/`unauthenticated` flow from [contracts/page-routes.md](./contracts/page-routes.md) (research.md decision 1) — used by US2's workspace and US3's profile page.
+- [X] T003 [P] Create theme utility in `frontend/src/lib/theme.ts`: read/write a `light`/`dark` preference to `localStorage`, apply/remove a `dark` class on `<html>` (research.md decision 5) — used by US2's `ThemeToggle`.
+- [X] T004 [P] Port the `academic_editorial` design tokens (colors, typography, border radius, spacing) and the `darkMode: "class"` strategy from the Stitch mockups' embedded Tailwind config into `frontend/tailwind.config.ts` — the canonical design system for every page in this feature (spec Assumptions; plan.md).
+- [X] T005 [P] Load the Literata (display) and Geist (body/UI) fonts in the shared root layout `frontend/src/app/layout.tsx`.
 
 **Checkpoint**: Foundation ready — user story implementation can now begin.
 
@@ -66,22 +66,22 @@ phase does not recreate them.
 
 > Write these tests FIRST, ensure they FAIL before implementation
 
-- [ ] T006 [P] [US1] Component test for `Hero` in `frontend/tests/unit/landing/Hero.test.tsx`
-- [ ] T007 [P] [US1] Component test for `ComparisonTable` in `frontend/tests/unit/landing/ComparisonTable.test.tsx`
-- [ ] T008 [P] [US1] Component test for `PricingCard` — four plans rendered, exactly one marked recommended, corrected figures (Free 1/day, Monthly $4.99, Yearly $49.9, Lifetime $99) — in `frontend/tests/unit/landing/PricingCard.test.tsx`
-- [ ] T009 [P] [US1] E2E test: visitor reads landing page, selects sign-up, completes the form, is redirected to `/workspace` in `frontend/tests/e2e/discover-and-signup.spec.ts`
+- [X] T006 [P] [US1] Component test for `Hero` in `frontend/tests/unit/landing/Hero.test.tsx`
+- [X] T007 [P] [US1] Component test for `ComparisonTable` in `frontend/tests/unit/landing/ComparisonTable.test.tsx`
+- [X] T008 [P] [US1] Component test for `PricingCard` — four plans rendered, exactly one marked recommended, corrected figures (Free 1/day, Monthly $4.99, Yearly $49.9, Lifetime $99) — in `frontend/tests/unit/landing/PricingCard.test.tsx`
+- [X] T009 [P] [US1] E2E test: visitor reads landing page, selects sign-up, completes the form, is redirected to `/workspace` in `frontend/tests/e2e/discover-and-signup.spec.ts`
 
 ### Implementation for User Story 1
 
-- [ ] T010 [P] [US1] Create `Hero` component in `frontend/src/components/landing/Hero.tsx`
-- [ ] T011 [P] [US1] Create `ProblemSection` component (three named frictions: slow feedback, vague comments, cost — FR-002) in `frontend/src/components/landing/ProblemSection.tsx`
-- [ ] T012 [P] [US1] Create `ComparisonTable` component (turnaround time, feedback detail, cost, availability — FR-002) in `frontend/src/components/landing/ComparisonTable.tsx`
-- [ ] T013 [P] [US1] Create `ExpertReviewCard` and `LearnerReviewCard` components in `frontend/src/components/landing/ExpertReviewCard.tsx` and `frontend/src/components/landing/LearnerReviewCard.tsx`
-- [ ] T014 [US1] Create `PricingCard` component with the corrected numbers, not the mockup's placeholders (research.md decision 7; FR-017) in `frontend/src/components/landing/PricingCard.tsx`
-- [ ] T015 [US1] Create `FinalCta` component in `frontend/src/components/landing/FinalCta.tsx`
-- [ ] T016 [US1] Assemble the landing page in `frontend/src/app/page.tsx`, composing `Hero`, `ProblemSection`, `ComparisonTable`, a product-experience preview, three `ExpertReviewCard`s, three `LearnerReviewCard`s, four `PricingCard`s, `FinalCta`, and footer, per `marketing_landing_page_fresh_refresh` (depends on T010–T015)
-- [ ] T017 [US1] Create the sign-up page in `frontend/src/app/signup/page.tsx`, calling `003`'s `signUp()`, redirecting to `/workspace` on success
-- [ ] T018 [US1] Create the sign-in page in `frontend/src/app/signin/page.tsx`, calling `003`'s `signIn()`, redirecting to `/workspace` on success, with both sign-up and sign-in CTAs reachable from the landing page header
+- [X] T010 [P] [US1] Create `Hero` component in `frontend/src/components/landing/Hero.tsx`
+- [X] T011 [P] [US1] Create `ProblemSection` component (three named frictions: slow feedback, vague comments, cost — FR-002) in `frontend/src/components/landing/ProblemSection.tsx`
+- [X] T012 [P] [US1] Create `ComparisonTable` component (turnaround time, feedback detail, cost, availability — FR-002) in `frontend/src/components/landing/ComparisonTable.tsx`
+- [X] T013 [P] [US1] Create `ExpertReviewCard` and `LearnerReviewCard` components in `frontend/src/components/landing/ExpertReviewCard.tsx` and `frontend/src/components/landing/LearnerReviewCard.tsx`
+- [X] T014 [US1] Create `PricingCard` component with the corrected numbers, not the mockup's placeholders (research.md decision 7; FR-017) in `frontend/src/components/landing/PricingCard.tsx`
+- [X] T015 [US1] Create `FinalCta` component in `frontend/src/components/landing/FinalCta.tsx`
+- [X] T016 [US1] Assemble the landing page in `frontend/src/app/page.tsx`, composing `Hero`, `ProblemSection`, `ComparisonTable`, a product-experience preview, three `ExpertReviewCard`s, three `LearnerReviewCard`s, four `PricingCard`s, `FinalCta`, and footer, per `marketing_landing_page_fresh_refresh` (depends on T010–T015)
+- [X] T017 [US1] Create the sign-up page in `frontend/src/app/signup/page.tsx`, calling `003`'s `signUp()`, redirecting to `/workspace` on success
+- [X] T018 [US1] Create the sign-in page in `frontend/src/app/signin/page.tsx`, calling `003`'s `signIn()`, redirecting to `/workspace` on success, with both sign-up and sign-in CTAs reachable from the landing page header
 
 **Checkpoint**: User Story 1 is independently functional and testable.
 
@@ -97,22 +97,22 @@ phase does not recreate them.
 
 > Write these tests FIRST, ensure they FAIL before implementation
 
-- [ ] T019 [P] [US2] Component test for `EmptyState` in `frontend/tests/unit/workspace/EmptyState.test.tsx`
-- [ ] T020 [P] [US2] Component test for `EssayForm` in `frontend/tests/unit/workspace/EssayForm.test.tsx`
-- [ ] T021 [P] [US2] Component test for `AssessmentResult` — 2×2 criteria grid with proportion indicators, expandable line-by-line feedback — in `frontend/tests/unit/workspace/AssessmentResult.test.tsx`
-- [ ] T022 [P] [US2] Component test for `ThemeToggle` — persists to `localStorage`, applies/removes `dark` class — in `frontend/tests/unit/workspace/ThemeToggle.test.tsx`
-- [ ] T023 [P] [US2] E2E test: submit essay → in-progress → result; a rejected submission preserves essay text in the input in `frontend/tests/e2e/workspace-assessment.spec.ts`
-- [ ] T024 [P] [US2] E2E test: toggling theme mid-submission does not interrupt the in-flight request; theme choice persists across reload in `frontend/tests/e2e/workspace-theme.spec.ts`
-- [ ] T025 [P] [US2] E2E test: an unauthenticated visit to `/workspace` redirects to `/signin` in `frontend/tests/e2e/workspace-auth-guard.spec.ts`
+- [X] T019 [P] [US2] Component test for `EmptyState` in `frontend/tests/unit/workspace/EmptyState.test.tsx`
+- [X] T020 [P] [US2] Component test for `EssayForm` in `frontend/tests/unit/workspace/EssayForm.test.tsx`
+- [X] T021 [P] [US2] Component test for `AssessmentResult` — 2×2 criteria grid with proportion indicators, expandable line-by-line feedback — in `frontend/tests/unit/workspace/AssessmentResult.test.tsx`
+- [X] T022 [P] [US2] Component test for `ThemeToggle` — persists to `localStorage`, applies/removes `dark` class — in `frontend/tests/unit/workspace/ThemeToggle.test.tsx`
+- [X] T023 [P] [US2] E2E test: submit essay → in-progress → result; a rejected submission preserves essay text in the input in `frontend/tests/e2e/workspace-assessment.spec.ts`
+- [X] T024 [P] [US2] E2E test: toggling theme mid-submission does not interrupt the in-flight request; theme choice persists across reload in `frontend/tests/e2e/workspace-theme.spec.ts`
+- [X] T025 [P] [US2] E2E test: an unauthenticated visit to `/workspace` redirects to `/signin` in `frontend/tests/e2e/workspace-auth-guard.spec.ts`
 
 ### Implementation for User Story 2
 
-- [ ] T026 [US2] Create `EmptyState` component (first-time guidance — FR-007) in `frontend/src/components/workspace/EmptyState.tsx`
-- [ ] T027 [US2] Create `EssayForm` component (task-type toggle, prompt/essay inputs, submit) in `frontend/src/components/workspace/EssayForm.tsx`
-- [ ] T028 [US2] Create `AssessmentResult` component (band badge, 2×2 criteria grid with proportion indicators, expandable line-by-line feedback with category tag + correction/praise — FR-005) in `frontend/src/components/workspace/AssessmentResult.tsx`, calling `001`'s `POST /api/v1/assessments` via the existing API client
-- [ ] T029 [US2] Create `ThemeToggle` component in `frontend/src/components/workspace/ThemeToggle.tsx`, using `frontend/src/lib/theme.ts` (T003)
-- [ ] T030 [US2] Add `dark:` variants to `EmptyState`, `EssayForm`, `AssessmentResult`, and `ThemeToggle` so every workspace element is legible and correctly styled in both themes (FR-018, SC-007) (depends on T026–T029)
-- [ ] T031 [US2] Assemble the workspace page in `frontend/src/app/workspace/page.tsx`, wiring `WorkspaceViewState` (`idle` / `submitting` / `result` / `error`) per [data-model.md](./data-model.md), wrapped in `ProtectedRoute` (T002), per `learner_workspace`
+- [X] T026 [US2] Create `EmptyState` component (first-time guidance — FR-007) in `frontend/src/components/workspace/EmptyState.tsx`
+- [X] T027 [US2] Create `EssayForm` component (task-type toggle, prompt/essay inputs, submit) in `frontend/src/components/workspace/EssayForm.tsx`
+- [X] T028 [US2] Create `AssessmentResult` component (band badge, 2×2 criteria grid with proportion indicators, expandable line-by-line feedback with category tag + correction/praise — FR-005) in `frontend/src/components/workspace/AssessmentResult.tsx`, calling `001`'s `POST /api/v1/assessments` via the existing API client
+- [X] T029 [US2] Create `ThemeToggle` component in `frontend/src/components/workspace/ThemeToggle.tsx`, using `frontend/src/lib/theme.ts` (T003)
+- [X] T030 [US2] Add `dark:` variants to `EmptyState`, `EssayForm`, `AssessmentResult`, and `ThemeToggle` so every workspace element is legible and correctly styled in both themes (FR-018, SC-007) (depends on T026–T029)
+- [X] T031 [US2] Assemble the workspace page in `frontend/src/app/workspace/page.tsx`, wiring `WorkspaceViewState` (`idle` / `submitting` / `result` / `error`) per [data-model.md](./data-model.md), wrapped in `ProtectedRoute` (T002), per `learner_workspace`
 
 **Checkpoint**: User Stories 1 AND 2 both work independently — this is the MVP.
 
@@ -126,13 +126,13 @@ phase does not recreate them.
 
 ### Tests for User Story 3 ⚠️
 
-- [ ] T032 [P] [US3] Component test for `ProfileView` (display name, email) in `frontend/tests/unit/profile/ProfileView.test.tsx`
-- [ ] T033 [P] [US3] E2E test: view profile, sign out, redirected to `/`; subsequent visits to `/workspace` or `/profile` redirect to `/signin` in `frontend/tests/e2e/profile-signout.spec.ts`
+- [X] T032 [P] [US3] Component test for `ProfileView` (display name, email) in `frontend/tests/unit/profile/ProfileView.test.tsx`
+- [X] T033 [P] [US3] E2E test: view profile, sign out, redirected to `/`; subsequent visits to `/workspace` or `/profile` redirect to `/signin` in `frontend/tests/e2e/profile-signout.spec.ts`
 
 ### Implementation for User Story 3
 
-- [ ] T034 [US3] Create `ProfileView` component in `frontend/src/components/profile/ProfileView.tsx`, calling `003`'s `GET /api/v1/auth/me`
-- [ ] T035 [US3] Assemble the profile page in `frontend/src/app/profile/page.tsx`, wrapped in `ProtectedRoute` (T002), with sign-out calling `003`'s `POST /api/v1/auth/signout` and redirecting to `/`
+- [X] T034 [US3] Create `ProfileView` component in `frontend/src/components/profile/ProfileView.tsx`, calling `003`'s `GET /api/v1/auth/me`
+- [X] T035 [US3] Assemble the profile page in `frontend/src/app/profile/page.tsx`, wrapped in `ProtectedRoute` (T002), with sign-out calling `003`'s `POST /api/v1/auth/signout` and redirecting to `/`
 
 **Checkpoint**: User Stories 1, 2, and 3 all work independently.
 
@@ -146,17 +146,17 @@ phase does not recreate them.
 
 ### Tests for User Story 4 ⚠️
 
-- [ ] T036 [P] [US4] Component test for `FaqSearch` (filters visible questions by text) in `frontend/tests/unit/faq/FaqSearch.test.tsx`
-- [ ] T037 [P] [US4] Component test for `FaqAccordionCategory` (one open question per category) in `frontend/tests/unit/faq/FaqAccordionCategory.test.tsx`
-- [ ] T038 [P] [US4] E2E test: search FAQ, no-match state, official-score disclaimer present in the Essay Scoring category, FAQ reachable from main navigation in `frontend/tests/e2e/faq.spec.ts`
+- [X] T036 [P] [US4] Component test for `FaqSearch` (filters visible questions by text) in `frontend/tests/unit/faq/FaqSearch.test.tsx`
+- [X] T037 [P] [US4] Component test for `FaqAccordionCategory` (one open question per category) in `frontend/tests/unit/faq/FaqAccordionCategory.test.tsx`
+- [X] T038 [P] [US4] E2E test: search FAQ, no-match state, official-score disclaimer present in the Essay Scoring category, FAQ reachable from main navigation in `frontend/tests/e2e/faq.spec.ts`
 
 ### Implementation for User Story 4
 
-- [ ] T039 [P] [US4] Define the static FAQ content array (Getting Started, Account & Login, Essay Scoring categories, including the mandatory official-score disclaimer — FR-015) in `frontend/src/lib/faqData.ts`
-- [ ] T040 [US4] Create `FaqSearch` component in `frontend/src/components/faq/FaqSearch.tsx`
-- [ ] T041 [US4] Create `FaqAccordionCategory` component (single-open-per-category — FR-016) in `frontend/src/components/faq/FaqAccordionCategory.tsx`
-- [ ] T042 [US4] Assemble the FAQ page in `frontend/src/app/faq/page.tsx`, composing `FaqSearch` and three `FaqAccordionCategory` instances from `faqData.ts`, per `frequently_asked_questions` restyled to `academic_editorial` tokens (depends on T039–T041)
-- [ ] T043 [US4] Add a FAQ link to the shared site navigation (landing header/footer) (depends on T016)
+- [X] T039 [P] [US4] Define the static FAQ content array (Getting Started, Account & Login, Essay Scoring categories, including the mandatory official-score disclaimer — FR-015) in `frontend/src/lib/faqData.ts`
+- [X] T040 [US4] Create `FaqSearch` component in `frontend/src/components/faq/FaqSearch.tsx`
+- [X] T041 [US4] Create `FaqAccordionCategory` component (single-open-per-category — FR-016) in `frontend/src/components/faq/FaqAccordionCategory.tsx`
+- [X] T042 [US4] Assemble the FAQ page in `frontend/src/app/faq/page.tsx`, composing `FaqSearch` and three `FaqAccordionCategory` instances from `faqData.ts`, per `frequently_asked_questions` restyled to `academic_editorial` tokens (depends on T039–T041)
+- [X] T043 [US4] Add a FAQ link to the shared site navigation (landing header/footer) (depends on T016)
 
 **Checkpoint**: User Stories 1–4 all work independently.
 
@@ -170,13 +170,13 @@ phase does not recreate them.
 
 ### Tests for User Story 5 ⚠️
 
-- [ ] T044 [P] [US5] Component test for `HowItWorksStep` — four steps rendered, future steps visually marked — in `frontend/tests/unit/landing/HowItWorksStep.test.tsx`
-- [ ] T045 [P] [US5] E2E test: how-it-works section shows all four steps (Submit, Get Scored, Learn the Fix, Track Trend) with the not-yet-built ones honestly marked in `frontend/tests/e2e/how-it-works.spec.ts`
+- [X] T044 [P] [US5] Component test for `HowItWorksStep` — four steps rendered, future steps visually marked — in `frontend/tests/unit/landing/HowItWorksStep.test.tsx`
+- [X] T045 [P] [US5] E2E test: how-it-works section shows all four steps (Submit, Get Scored, Learn the Fix, Track Trend) with the not-yet-built ones honestly marked in `frontend/tests/e2e/how-it-works.spec.ts`
 
 ### Implementation for User Story 5
 
-- [ ] T046 [US5] Create `HowItWorksStep` component (Submit, Get Scored, Learn the Fix\*, Track Trend\* — future steps marked, FR-003) in `frontend/src/components/landing/HowItWorksStep.tsx`
-- [ ] T047 [US5] Integrate the how-it-works section into the landing page in `frontend/src/app/page.tsx` (extends T016)
+- [X] T046 [US5] Create `HowItWorksStep` component (Submit, Get Scored, Learn the Fix\*, Track Trend\* — future steps marked, FR-003) in `frontend/src/components/landing/HowItWorksStep.tsx`
+- [X] T047 [US5] Integrate the how-it-works section into the landing page in `frontend/src/app/page.tsx` (extends T016)
 
 **Checkpoint**: All five user stories are independently functional.
 
@@ -186,9 +186,9 @@ phase does not recreate them.
 
 **Purpose**: Verification that spans multiple user stories.
 
-- [ ] T048 [P] Run [quickstart.md](./quickstart.md) validation scenarios 1–5 manually against a local dev build
-- [ ] T049 [P] Accessibility pass: verify text contrast and visible keyboard focus states across all new pages, in both light and dark theme (SC-007)
-- [ ] T050 [P] Verify the "WriteWise" product name is applied consistently across page titles/metadata and footer copyright in `frontend/src/app/layout.tsx` and every new page
+- [X] T048 [P] Run [quickstart.md](./quickstart.md) validation scenarios 1–5 manually against a local dev build
+- [X] T049 [P] Accessibility pass: verify text contrast and visible keyboard focus states across all new pages, in both light and dark theme (SC-007)
+- [X] T050 [P] Verify the "WriteWise" product name is applied consistently across page titles/metadata and footer copyright in `frontend/src/app/layout.tsx` and every new page
 
 ---
 
@@ -286,3 +286,116 @@ With multiple developers, after Foundational is done:
 - Stop at any checkpoint to validate a story independently.
 - This feature adds zero backend endpoints or persisted entities (research.md decision 4) — every
   task above is frontend-only.
+
+---
+
+## Implementation notes (2026-08-20)
+
+All 50 tasks complete. **126 component tests (Vitest) + 53 end-to-end tests (Playwright,
+real Chromium) passing**, with `tsc --noEmit` and `eslint` clean.
+
+Five things were built differently from the literal task text. Each is a deliberate
+decision with a reason, recorded here so the difference is not mistaken for drift.
+
+### 1. FR-005's "suggested correction" does not exist in `001`'s API — and was not invented
+
+T028 and FR-005 ask the workspace for "expandable line-by-line feedback where each item
+shows the quoted sentence, a category tag, and a suggested correction or a note of
+praise". Checked against `backend/src/schemas/assessment.py`, `001` returns:
+
+```
+{ submission_id, overall_band, criteria[], created_at }
+criteria[i] = { criterion, band, explanation, evidence_quotes[], descriptor_reference? }
+```
+
+Three of the four requested pieces are real and are rendered from live data — the quoted
+sentence (`evidence_quotes`, verified verbatim server-side), the category tag
+(`criterion`), and the reasoning (`explanation`). The fourth has no field: `001` scores
+essays, it does not rewrite them.
+
+Synthesising a correction in the browser would put teaching advice in front of a learner
+that no model produced and no rubric grounds — the exact failure `001`'s evidence
+anchoring exists to prevent. So the panel shows what the API can justify, and nothing
+more. `AssessmentResult.test.tsx` asserts the absence explicitly, so a future change that
+starts fabricating corrections fails the suite rather than shipping quietly.
+
+The spec is internally consistent with this reading once you notice **FR-003 already
+classes sentence-level corrections ("Learn the Fix") as a not-yet-built capability**. The
+landing page marks that step "Coming soon" and the FAQ says the same. FR-005 and FR-003
+contradicted each other; `001`'s contract settles it.
+
+**Follow-up for whoever owns the spec**: FR-005 and quickstart Scenario 2 step 4 still
+describe the correction UI. They should be reworded, or a scoped feature added to `001`
+to produce corrections, before either is treated as unimplemented.
+
+### 2. Semantic colour tokens instead of hand-written `dark:` variants (T004, T030)
+
+T030 says to add `dark:` variants to each workspace component. Implemented instead as CSS
+custom properties in `globals.css` that Tailwind reads (`tailwind.config.ts`), so `bg-surface`
+resolves per theme automatically.
+
+The requirement behind T030 is FR-018/SC-007: no element may be legible in only one
+theme. Per-element `dark:` satisfies that only until someone forgets one — and the
+forgotten one *is* the SC-007 failure. Tokens make a light-only component structurally
+impossible. The `academic_editorial` design file specifies only a light palette; the dark
+values were derived from the same Material-3 tonal palettes, keeping Muted Gold in its
+"medal" role for scores in both themes.
+
+### 3. Three FAQ answers contradict the mockup, because the mockup describes a product that does not exist
+
+`frequently_asked_questions` was generated before the backend was built. Copying it would
+have published three false statements:
+
+| Mockup says | Reality | What ships |
+|---|---|---|
+| "Yes, WriteWise supports SSO with Google" | `003` is email + password only; OAuth deferred | "Not yet… on the roadmap" |
+| "Click the Forgot Password link" | No reset endpoint exists (verified against the live OpenAPI document) | "Not built yet — contact support" |
+| Generic "academic writing / research papers" | The product scores IELTS Writing Task 1 and Task 2 | Rewritten for IELTS |
+
+This closes `/speckit-analyze` finding I3, which flagged the Google sign-in copy. The
+"is the score official" answer was already correct in the mockup and is kept firm, with a
+test asserting it opens with the word "No."
+
+Landing-page testimonials are likewise labelled as placeholder copy rather than presented
+as real quotes from named professionals.
+
+### 4. E2E stubs `001`/`003` at the network boundary rather than running them
+
+`playwright.config.ts` explains the reasoning. `001` and `003` already verify their own
+APIs against a real Postgres and a real model; these specs exist to prove the page flows.
+Booting a database and spending API credits to re-test another feature's contract would
+make the suite slow and expensive without covering anything new. Stub payloads are copied
+from the real schemas, so a contract change still surfaces.
+
+### 5. Sign-out uses a full-page navigation (T035)
+
+Found by the E2E suite, not by review: `router.replace("/")` after `signOut()` landed the
+learner on `/signin`, not `/`. `signOut()` flips auth state while the page is still
+mounted inside `ProtectedRoute`, whose effect fires first and wins the race — a direct
+FR-009 violation. A hard navigation tears the tree down before the guard can react, and
+also drops the in-memory access token, which is desirable for a sign-out regardless. This
+required overriding a Next lint rule; the reason is recorded at the call site.
+
+### Quickstart validation (T048)
+
+Scenarios 1–5 are executed as Playwright specs against a production build in real
+Chromium, rather than walked through by hand:
+
+| Quickstart scenario | Spec |
+|---|---|
+| 1 — Discover and sign up | `tests/e2e/discover-and-signup.spec.ts` |
+| 2 — Assessment + both themes | `workspace-assessment.spec.ts`, `workspace-theme.spec.ts`, `workspace-auth-guard.spec.ts` |
+| 3 — Profile and sign out | `profile-signout.spec.ts` |
+| 4 — FAQ | `faq.spec.ts` |
+| 5 — How it works | `how-it-works.spec.ts` |
+
+T049's accessibility pass is `tests/e2e/accessibility.spec.ts`: WCAG contrast measured on
+every text node across all six pages in **both** themes, plus keyboard reachability and
+focus visibility. It composites semi-transparent layers, because the design system uses
+10%-opacity tints and treating them as opaque produces false failures.
+
+### Not covered by this feature
+
+`001`'s `GET /api/v1/assessments/{id}` is unused: FR-011 scopes the workspace to the
+current assessment only, so nothing reloads a past one. The endpoint stays available for
+the history/dashboard feature that FR-011 defers.

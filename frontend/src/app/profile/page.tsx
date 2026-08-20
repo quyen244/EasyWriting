@@ -3,15 +3,18 @@
 /**
  * Profile page (002 T035, US3).
  *
- * Sign-out redirects to `/` (FR-009). It uses `router.replace`, not `push`: after
- * signing out the workspace must not be reachable with the back button, which FR-010
- * requires. The `ProtectedRoute` guard would bounce a back-navigation anyway, but
- * leaving the entry in history means the learner sees a flash of the guard's loading
- * state instead of simply staying on the landing page.
+ * Sign-out returns to the landing page (FR-009) via a full-page navigation. That is not
+ * a stylistic choice — a client-side `router.replace("/")` does not work here, and the
+ * E2E test proves it: `signOut()` flips auth state to "unauthenticated" while this page
+ * is still mounted inside `ProtectedRoute`, whose effect fires immediately and sends the
+ * learner to `/signin`. The guard wins the race, and FR-009 is violated.
+ *
+ * A hard navigation tears the React tree down before the guard can react, and it also
+ * drops the in-memory access token — which, for a sign-out, is the behaviour you want
+ * regardless.
  */
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import ProtectedRoute from "@/components/ProtectedRoute";
@@ -20,7 +23,6 @@ import { useAuth } from "@/hooks/useAuth";
 
 function Profile() {
   const { account, signOut } = useAuth();
-  const router = useRouter();
   const [signingOut, setSigningOut] = useState(false);
 
   async function handleSignOut() {
@@ -28,9 +30,16 @@ function Profile() {
     try {
       await signOut();
     } finally {
-      // `useAuth.signOut` already ends the local session even when the network call
-      // fails, so the learner is signed out either way and the redirect is correct.
-      router.replace("/");
+      // `useAuth.signOut` ends the local session even when the network call fails, so
+      // the learner is signed out either way and this navigation is always correct.
+      //
+      // The Next lint rule below prefers `router.push()` for internal navigation. That
+      // is exactly what this code used to do, and it produced the FR-009 failure the
+      // E2E test caught: a client-side navigation keeps the React tree alive long enough
+      // for the still-mounted ProtectedRoute to see "unauthenticated" and redirect to
+      // /signin instead. The rule optimises for navigation speed; correctness wins.
+      // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+      window.location.assign("/");
     }
   }
 
