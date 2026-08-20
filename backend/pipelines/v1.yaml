@@ -1,0 +1,41 @@
+# Versioned scoring-pipeline configuration (Constitution Principle IV).
+#
+# THIS FILE IS THE SINGLE SOURCE OF TRUTH for how an essay gets scored. Changing the
+# model, its parameters, or which prompt/rubric set is used requires editing only this
+# file — never Python. Prompt text itself lives in ../prompts/<version>/*.txt.
+#
+# Every AssessmentResult row stores `version` and `prompts.version` below, so any
+# stored score can be traced back to the exact methodology that produced it.
+#
+# To change methodology:
+#   1. cp -r ../prompts/v1 ../prompts/v2   (if changing prompt text)
+#   2. cp v1.yaml v2.yaml && edit it
+#   3. python -m src.evaluation.harness --pipeline-config pipelines/v2.yaml
+#   4. Compare metrics.json against the v1 run; only then set PIPELINE_CONFIG=pipelines/v2.yaml
+
+version: pipeline-v1.0
+
+model:
+  # Constitution V: model is config, never hardcoded. Any OpenRouter model id works.
+  id: nvidia/nemotron-3-super-120b-a12b:free
+  temperature: 0.3
+  max_tokens: 1536
+  # Fixed seed so re-running the same essay is as reproducible as the provider allows,
+  # which is what makes before/after benchmark comparison meaningful.
+  seed: 42
+  timeout_s: 180
+  max_retries: 2
+
+prompts:
+  # Selects ../prompts/<version>/ — its criterion_*.txt templates AND its rubrics/.
+  # Point this at v2 to swap the entire prompt+rubric set with no code change.
+  version: v1
+
+scoring:
+  # Under-length penalty applied to TASK_ACHIEVEMENT / TASK_RESPONSE only, so the
+  # student is not penalised twice (see src/pipeline/aggregate.py).
+  length_penalty:
+    moderate_deficit_ratio: 0.15 # >15% under the minimum -> -0.5 band
+    moderate_penalty: 0.5
+    severe_deficit_ratio: 0.40 # >40% under the minimum -> -1.0 band
+    severe_penalty: 1.0

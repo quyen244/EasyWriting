@@ -1,0 +1,1 @@
+- Ignore essay length entirely; it is not part of this criterion.

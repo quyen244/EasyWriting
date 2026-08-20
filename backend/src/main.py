@@ -6,6 +6,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from src.auth.errors import AuthDomainError
+from src.pipeline.errors import AssessmentDomainError, BelowMinWordsError
+from src.routes.assessments import router as assessments_router
 from src.routes.auth import router as auth_router
 from src.utils.config import get_settings
 from src.utils.logging import configure_logging, get_logger
@@ -53,9 +55,22 @@ async def auth_domain_error_handler(request: Request, exc: AuthDomainError) -> J
     )
 
 
+@app.exception_handler(AssessmentDomainError)
+async def assessment_domain_error_handler(
+    request: Request, exc: AssessmentDomainError
+) -> JSONResponse:
+    """Render assessment errors as the flat bodies contracts/assessments-openapi.yaml
+    defines. `minimum_words` is present only on BELOW_MIN_WORDS, exactly as specified."""
+    content: dict[str, object] = {"error": exc.error_code, "message": str(exc)}
+    if isinstance(exc, BelowMinWordsError):
+        content["minimum_words"] = exc.minimum_words
+    return JSONResponse(status_code=exc.status_code, content=content)
+
+
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
 app.include_router(auth_router)
+app.include_router(assessments_router)

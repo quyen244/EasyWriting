@@ -1,0 +1,11 @@
+Band 9: Uses a wide range of structures with full flexibility and accuracy; rare minor errors occur only as slips.
+Band 8: Uses a WIDE RANGE of structures. The MAJORITY OF SENTENCES ARE ERROR-FREE. Makes only very occasional errors or inappropriacies.
+Band 7: Uses a VARIETY OF COMPLEX STRUCTURES. Produces FREQUENT ERROR-FREE SENTENCES. Has good control of grammar and punctuation but may make a few errors.
+Band 6: Uses a MIX of simple and complex sentence forms. Makes SOME ERRORS IN GRAMMAR AND PUNCTUATION but they RARELY REDUCE COMMUNICATION.
+Band 5: Uses only a LIMITED RANGE of structures. ATTEMPTS complex sentences but these tend to be less accurate than simple sentences. May make frequent grammatical errors and punctuation may be faulty; errors CAN CAUSE SOME DIFFICULTY for the reader.
+Band 4: Uses only a very limited range of structures with only rare use of subordinate clauses. Some structures are accurate but errors PREDOMINATE, and punctuation is often faulty.
+
+DISCRIMINATOR: count error-free sentences. Band 6 = errors are frequent but harmless.
+Band 7 = frequent error-free sentences with a few slips. Band 8 = the MAJORITY of
+sentences are completely error-free. Systematic subject-verb agreement or tense
+failures across the whole text indicate Band 5 or below.
