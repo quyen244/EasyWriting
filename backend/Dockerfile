@@ -39,20 +39,11 @@ RUN apt-get update \
 
 COPY --from=builder /opt/venv /opt/venv
 
-# Application code, prompt/rubric assets and pipeline configs. `.dockerignore` keeps
-# tests, .venv, .env and VCS metadata out of the image.
-COPY --chown=appuser:appuser src/ ./src/
-COPY --chown=appuser:appuser prompts/ ./prompts/
-COPY --chown=appuser:appuser pipelines/ ./pipelines/
-COPY --chown=appuser:appuser alembic.ini ./
-
-USER appuser
-
 EXPOSE 8000
 
 # Lets docker-compose and any orchestrator gate traffic on real readiness rather than
 # on the process merely having started.
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+HEALTHCHECK --interval=240s --timeout=5s --start-period=10s --retries=3 \
     CMD curl -fsS http://localhost:8000/health || exit 1
 
 CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]

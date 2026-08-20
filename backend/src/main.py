@@ -11,6 +11,9 @@ from src.routes.assessments import router as assessments_router
 from src.routes.auth import router as auth_router
 from src.utils.config import get_settings
 from src.utils.logging import configure_logging, get_logger
+from src.database.connections import Base , engine
+
+Base.metadata.create_all(bind=engine)
 
 settings = get_settings()
 configure_logging()
