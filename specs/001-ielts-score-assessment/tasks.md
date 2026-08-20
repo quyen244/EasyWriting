@@ -23,6 +23,46 @@ built exactly once, in `002`. Validate this feature end-to-end via [quickstart.m
 **Organization**: Tasks are grouped by user story (from spec.md) to enable independent
 implementation and testing of each story.
 
+---
+
+## Implementation notes (2026-08-20)
+
+All 48 tasks are complete. Three things were built differently from the literal task text;
+each is a deliberate, user-approved change rather than drift.
+
+**1. Backend package layout.** These tasks were written against the original
+`core/domain/llm/pipeline/evaluation/infrastructure/api` tree. The backend was reorganised
+mid-implementation at the user's request into a flatter, convention-style layout. The mapping:
+
+| Task text | Actual path |
+|---|---|
+| `src/core/schemas.py` | `src/schemas/assessment.py` |
+| `src/core/config.py` | `src/utils/config.py` |
+| `src/infrastructure/database/models.py` | `src/models/essay_submission.py`, `src/models/assessment_result.py` |
+| `src/infrastructure/database/repository.py` | `src/database/repository.py` |
+| `src/api/assessments.py` | `src/routes/assessments.py` |
+| `src/api/deps.py` | `src/auth/deps.py` (built by 003) |
+| `src/llm/`, `src/pipeline/`, `src/evaluation/` | unchanged |
+
+**2. Prompts and rubrics are data, not Python (T014, T015, T037, T043).** Rather than the
+`src/llm/rubrics/*.py` constants the tasks describe, prompt templates and band descriptors live as
+`.txt` files under `backend/prompts/<version>/`, selected by `prompts.version` in
+`backend/pipelines/*.yaml`. Changing the model, its parameters, or the entire prompt+rubric set is
+now a YAML edit plus a directory copy — no code change. This serves Constitution Principle IV
+better than the original plan did, and the swap workflow is covered by
+`tests/unit/test_prompt_loader.py`. See `backend/prompts/README.md`.
+
+Consequently there is one `prompt_version` column rather than separate prompt and rubric versions:
+rubrics live inside the prompt version directory, so the two cannot drift apart.
+
+**3. T044 (golden-dataset baseline) is run but NOT yet a real baseline.** The harness is complete
+and verified end-to-end offline (`python -m src.evaluation.harness --fake`), and the 10-essay
+golden set is migrated and validated. Recording a *meaningful* baseline requires a live
+`OPENROUTER_API_KEY`, which is not configured in this environment — the harness has never called a
+real model. Until it does, there is no baseline to compare a methodology change against, so the
+Principle IV gate is **armed but unexercised**. This is the one piece of 001 that still needs a
+human-supplied secret before it can be called done in substance rather than in mechanism.
+
 ## Format: `[ID] [P?] [Story] Description`
 
 - **[P]**: Can run in parallel (different files, no dependencies)
@@ -35,24 +75,24 @@ implementation and testing of each story.
 
 **Purpose**: Project initialization and basic structure per plan.md.
 
-- [ ] T001 Create the `backend/` and `frontend/` directory trees exactly as laid out in
+- [X] T001 Create the `backend/` and `frontend/` directory trees exactly as laid out in
       [plan.md](./plan.md) Project Structure (`backend/src/{core,domain,llm/{prompts,rubrics},pipeline,evaluation,infrastructure/database,api}`,
       `backend/{pipelines,data/{golden,reports},tests/{contract,integration,unit}}`,
       `frontend/src/lib`)
-- [ ] T002 Initialize the backend Python 3.12 project in `backend/pyproject.toml` /
+- [X] T002 Initialize the backend Python 3.12 project in `backend/pyproject.toml` /
       `backend/requirements.txt` with FastAPI, SQLAlchemy 2.x, Alembic, `psycopg[binary]`,
       pydantic v2 + pydantic-settings, httpx, PyYAML, pytest (research.md decision 1)
-- [ ] T003 [P] Initialize the frontend in `frontend/` with Next.js (App Router), TypeScript, and
+- [X] T003 [P] Initialize the frontend in `frontend/` with Next.js (App Router), TypeScript, and
       Tailwind CSS — scaffold only, no pages or components. Design tokens are **not** ported here;
       `002-core-app-ux`'s Foundational phase (its T004) applies the real `academic_editorial`
       tokens once that design exists (research.md decision 8)
-- [ ] T004 [P] Configure backend linting/formatting (ruff + black) in `backend/pyproject.toml`
-- [ ] T005 [P] Configure frontend linting/formatting (ESLint + Prettier) in `frontend/.eslintrc.json`
+- [X] T004 [P] Configure backend linting/formatting (ruff + black) in `backend/pyproject.toml`
+- [X] T005 [P] Configure frontend linting/formatting (ESLint + Prettier) in `frontend/.eslintrc.json`
       and `frontend/.prettierrc`
-- [ ] T006 [P] Write `backend/Dockerfile` and `backend/docker-compose.yml` (postgres + backend
+- [X] T006 [P] Write `backend/Dockerfile` and `backend/docker-compose.yml` (postgres + backend
       services) per plan.md Constraints (dockerized services)
-- [ ] T007 [P] Write `frontend/Dockerfile` for the Next.js production build
-- [ ] T008 [P] Configure environment management: `backend/src/core/config.py`
+- [X] T007 [P] Write `frontend/Dockerfile` for the Next.js production build
+- [X] T008 [P] Configure environment management: `backend/src/core/config.py`
       (pydantic-settings reading `OPENROUTER_API_KEY`, `DATABASE_URL`, etc.),
       `backend/.env.example`, `frontend/.env.example`
 
@@ -66,32 +106,32 @@ implementation and testing of each story.
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T009 Set up the Alembic migrations framework in `backend/alembic.ini` and
+- [X] T009 Set up the Alembic migrations framework in `backend/alembic.ini` and
       `backend/src/infrastructure/database/migrations/`, pointed at PostgreSQL
-- [ ] T010 [P] Create the `Account` (users) SQLAlchemy model in
+- [X] T010 [P] Create the `Account` (users) SQLAlchemy model in
       `backend/src/infrastructure/database/models.py` per [data-model.md](./data-model.md)
       (id, email, created_at) with its migration — named `Account`, not `Learner`, to match the
       canonical name `003-account-authentication` and `002-core-app-ux` both use
       (`/speckit-analyze` finding I2)
-- [ ] T011 [P] Implement the `LLMClient` Protocol and `LLMResponse` in `backend/src/llm/base.py`
+- [X] T011 [P] Implement the `LLMClient` Protocol and `LLMResponse` in `backend/src/llm/base.py`
       (research.md decision 2)
-- [ ] T012 [P] Implement the OpenRouter adapter (async httpx, OpenAI-compatible) in
+- [X] T012 [P] Implement the OpenRouter adapter (async httpx, OpenAI-compatible) in
       `backend/src/llm/openrouter_client.py` (research.md decision 2)
-- [ ] T013 [P] Implement a `FakeClient` test double implementing `LLMClient` in
+- [X] T013 [P] Implement a `FakeClient` test double implementing `LLMClient` in
       `backend/tests/fakes/fake_llm_client.py` for offline, deterministic tests
-- [ ] T014 Implement the pipeline YAML config loader and schema (prompt id/version, model,
+- [X] T014 Implement the pipeline YAML config loader and schema (prompt id/version, model,
       params) in `backend/src/pipeline/config.py`, reading `backend/pipelines/*.yaml`
       (research.md decision 5, Constitution Principle IV)
-- [ ] T015 [P] Author versioned IELTS band-descriptor reference text for both tasks and all four
+- [X] T015 [P] Author versioned IELTS band-descriptor reference text for both tasks and all four
       criteria in `backend/src/llm/rubrics/` (Constitution Principle I)
-- [ ] T016 Implement the bearer-token → learner auth dependency in `backend/src/api/deps.py`
+- [X] T016 Implement the bearer-token → learner auth dependency in `backend/src/api/deps.py`
       (FR-008, plan.md "auth dependency" note — assumes tokens are issued by the external auth
       prerequisite; validates and resolves them here)
-- [ ] T017 Configure structured logging and a shared error-handling exception mapper in
+- [X] T017 Configure structured logging and a shared error-handling exception mapper in
       `backend/src/api/` (Constitution Principle VII)
-- [ ] T018 Migrate the golden dataset essays (`data/exams/task1/*.json`, `data/exams/task2/*.json`)
+- [X] T018 Migrate the golden dataset essays (`data/exams/task1/*.json`, `data/exams/task2/*.json`)
       from the IE AI Evaluator project into `backend/data/golden/` (research.md decision 6)
-- [ ] T019 [P] Set up the frontend API client scaffold (bearer token header, base URL) in
+- [X] T019 [P] Set up the frontend API client scaffold (bearer token header, base URL) in
       `frontend/src/lib/apiClient.ts` — this is the only frontend artifact this feature produces;
       `002-core-app-ux` imports it, no page consumes it here
 
@@ -112,45 +152,45 @@ each (quickstart.md Scenario 1) — validated directly against the API, no UI in
 
 > Write these tests FIRST; confirm they FAIL before implementation (Constitution Principle III).
 
-- [ ] T020 [P] [US1] Contract test for `POST /api/v1/assessments` success path (201) in
+- [X] T020 [P] [US1] Contract test for `POST /api/v1/assessments` success path (201) in
       `backend/tests/contract/test_assessments_post.py`, per
       [contracts/assessments-openapi.yaml](./contracts/assessments-openapi.yaml)
-- [ ] T021 [P] [US1] Contract test for `GET /api/v1/assessments/{submissionId}` in
+- [X] T021 [P] [US1] Contract test for `GET /api/v1/assessments/{submissionId}` in
       `backend/tests/contract/test_assessments_get.py`
-- [ ] T022 [P] [US1] Integration test: submit a valid Task 2 essay through the full pipeline
+- [X] T022 [P] [US1] Integration test: submit a valid Task 2 essay through the full pipeline
       (using `FakeClient`) and assert a complete result (overall + 4 criteria + explanations) in
       `backend/tests/integration/test_score_assessment_flow.py`
-- [ ] T023 [P] [US1] Unit tests for deterministic aggregation (band rounding, length penalty) in
+- [X] T023 [P] [US1] Unit tests for deterministic aggregation (band rounding, length penalty) in
       `backend/tests/unit/test_aggregate.py`
 
 ### Implementation for User Story 1
 
-- [ ] T024 [P] [US1] Create the `EssaySubmission` SQLAlchemy model + migration in
+- [X] T024 [P] [US1] Create the `EssaySubmission` SQLAlchemy model + migration in
       `backend/src/infrastructure/database/models.py` per data-model.md
-- [ ] T025 [P] [US1] Create the `AssessmentResult` SQLAlchemy model (JSONB `criteria` column) +
+- [X] T025 [P] [US1] Create the `AssessmentResult` SQLAlchemy model (JSONB `criteria` column) +
       migration in `backend/src/infrastructure/database/models.py` per data-model.md decision 4
-- [ ] T026 [P] [US1] Define Pydantic schemas `AssessmentRequest`, `AssessmentResult`,
+- [X] T026 [P] [US1] Define Pydantic schemas `AssessmentRequest`, `AssessmentResult`,
       `CriterionScore` in `backend/src/core/schemas.py` matching
       contracts/assessments-openapi.yaml
-- [ ] T027 [US1] Implement the preprocess step (word count, basic English/essay-shape check) in
+- [X] T027 [US1] Implement the preprocess step (word count, basic English/essay-shape check) in
       `backend/src/pipeline/preprocess.py` (depends on: T024)
-- [ ] T028 [US1] Implement the 4 concurrent criterion-evaluator prompts and calls
+- [X] T028 [US1] Implement the 4 concurrent criterion-evaluator prompts and calls
       (`asyncio.gather`) in `backend/src/pipeline/pipeline.py` (research.md decisions 3, 9;
       depends on: T011, T012, T015)
-- [ ] T029 [US1] Implement deterministic overall-band aggregation from the 4 criterion bands in
+- [X] T029 [US1] Implement deterministic overall-band aggregation from the 4 criterion bands in
       `backend/src/pipeline/aggregate.py` (depends on: T028)
-- [ ] T030 [US1] Implement quote-fidelity verification (each `evidence_quotes` entry must appear
+- [X] T030 [US1] Implement quote-fidelity verification (each `evidence_quotes` entry must appear
       verbatim in `essay_text`) in `backend/src/pipeline/verify.py` (depends on: T028)
-- [ ] T031 [US1] Implement the repository layer for `EssaySubmission`/`AssessmentResult` in
+- [X] T031 [US1] Implement the repository layer for `EssaySubmission`/`AssessmentResult` in
       `backend/src/infrastructure/database/repository.py` (depends on: T024, T025)
-- [ ] T032 [US1] Implement `POST /api/v1/assessments` in `backend/src/api/assessments.py`,
+- [X] T032 [US1] Implement `POST /api/v1/assessments` in `backend/src/api/assessments.py`,
       wiring preprocess → pipeline → aggregate → verify → persist (depends on: T014, T016,
       T027, T029, T030, T031)
-- [ ] T033 [US1] Implement `GET /api/v1/assessments/{submissionId}` in
+- [X] T033 [US1] Implement `GET /api/v1/assessments/{submissionId}` in
       `backend/src/api/assessments.py` (depends on: T016, T031)
-- [ ] T034 [US1] Add error handling mapping pipeline/LLM failures to `503 SCORING_FAILED` in
+- [X] T034 [US1] Add error handling mapping pipeline/LLM failures to `503 SCORING_FAILED` in
       `backend/src/api/assessments.py` (depends on: T017, T032)
-- [ ] T035 [US1] Add structured logging across the submission/scoring lifecycle in
+- [X] T035 [US1] Add structured logging across the submission/scoring lifecycle in
       `backend/src/pipeline/pipeline.py` and `backend/src/api/assessments.py` (depends on: T017, T032)
 
 **Checkpoint**: User Story 1 is fully functional and independently testable at the API level —
@@ -170,15 +210,15 @@ verify the relevant criterion explanations quote those specific spans, via the A
 
 ### Tests for User Story 2 ⚠️
 
-- [ ] T036 [P] [US2] Integration test: off-topic paragraph reduces Task Response score with a
+- [X] T036 [P] [US2] Integration test: off-topic paragraph reduces Task Response score with a
       matching quote, and a grammar error is quoted under Grammatical Range & Accuracy, in
       `backend/tests/integration/test_evidence_anchoring.py`
 
 ### Implementation for User Story 2
 
-- [ ] T037 [US2] Extend criterion-evaluator prompts to require verbatim evidence quotes per
+- [X] T037 [US2] Extend criterion-evaluator prompts to require verbatim evidence quotes per
       criterion in `backend/src/llm/prompts/builders.py` (depends on: T028)
-- [ ] T038 [US2] Strengthen `verify.py` to reject/flag any criterion result whose quotes cannot
+- [X] T038 [US2] Strengthen `verify.py` to reject/flag any criterion result whose quotes cannot
       be verified against `essay_text` before persistence in `backend/src/pipeline/verify.py`
       (depends on: T030, T037)
 
@@ -198,14 +238,14 @@ response; simulate a scoring failure and confirm a same-text resubmission succee
 
 ### Tests for User Story 3 ⚠️
 
-- [ ] T039 [P] [US3] Contract test for `400 BELOW_MIN_WORDS` and `400 UNSCOREABLE` responses in
+- [X] T039 [P] [US3] Contract test for `400 BELOW_MIN_WORDS` and `400 UNSCOREABLE` responses in
       `backend/tests/contract/test_assessments_rejection.py`
-- [ ] T040 [P] [US3] Integration test: a failed scoring attempt followed by a same-text
+- [X] T040 [P] [US3] Integration test: a failed scoring attempt followed by a same-text
       resubmission succeeds, in `backend/tests/integration/test_retry_after_failure.py`
 
 ### Implementation for User Story 3
 
-- [ ] T041 [US3] Implement minimum-word-count and unscoreable-content validation, setting
+- [X] T041 [US3] Implement minimum-word-count and unscoreable-content validation, setting
       `status = REJECTED` and returning 400, in `backend/src/api/assessments.py` (depends on:
       T027, T032)
 
@@ -222,20 +262,20 @@ error code/message.
 **Purpose**: Constitution-mandated evaluation methodology, deployment hardening, and final
 validation, spanning all user stories.
 
-- [ ] T042 [P] Implement the golden-dataset benchmark harness and metrics (MAE, RMSE, Spearman
+- [X] T042 [P] Implement the golden-dataset benchmark harness and metrics (MAE, RMSE, Spearman
       vs. gold labels) in `backend/src/evaluation/harness.py` and `backend/src/evaluation/metrics.py`
       (Constitution Principle IV)
-- [ ] T043 [P] Author the initial pipeline config `backend/pipelines/v1.yaml` (prompt
+- [X] T043 [P] Author the initial pipeline config `backend/pipelines/v1.yaml` (prompt
       version, model id, params) per research.md decision 5
-- [ ] T044 Run the golden-dataset regression harness against `backend/data/golden/` using
+- [X] T044 Run the golden-dataset regression harness against `backend/data/golden/` using
       `backend/pipelines/v1.yaml` and record the baseline run under `backend/data/reports/`
       (depends on: T018, T042, T043)
-- [ ] T045 [P] Harden `backend/Dockerfile`/`frontend/Dockerfile` for production and add
+- [X] T045 [P] Harden `backend/Dockerfile`/`frontend/Dockerfile` for production and add
       `docker-compose.prod.yml` (Constitution Principle VII)
-- [ ] T046 [P] Wire contract, unit, and integration test suites into CI
-- [ ] T047 Execute quickstart.md validation Scenarios 1–4 end-to-end (via `curl`/API calls) and
+- [X] T046 [P] Wire contract, unit, and integration test suites into CI
+- [X] T047 Execute quickstart.md validation Scenarios 1–4 end-to-end (via `curl`/API calls) and
       record results
-- [ ] T048 [P] Security review: confirm no secrets are committed, essay text is never logged in
+- [X] T048 [P] Security review: confirm no secrets are committed, essay text is never logged in
       plaintext, and both endpoints reject unauthenticated requests (Constitution Principle VII)
 
 ---
