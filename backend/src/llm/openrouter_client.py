@@ -70,10 +70,15 @@ class OpenRouterClient:
         self._timeout = self.settings.llm_timeout_s
         self._max_retries = self.settings.llm_max_retries
 
-        if not self._api_key:
-            raise OpenRouterClientError(
-                "OPENROUTER_API_KEY is not set. Add it to backend/.env."
-            )
+        # A missing key is deliberately NOT raised here. This class is built by a
+        # FastAPI dependency, and FastAPI resolves every dependency before the handler
+        # runs — so raising in __init__ turned a submission that should have been
+        # rejected for word count (400) into an unhandled 500, because the client was
+        # constructed before the validation gate ever executed.
+        #
+        # Instead `chat` reports the misconfiguration as a failed call, which the
+        # pipeline turns into 503 SCORING_FAILED: the honest status for "this service
+        # is not correctly configured", and one the contract already documents.
 
     def _headers(self) -> dict[str, str]:
         return {
@@ -160,6 +165,19 @@ class OpenRouterClient:
         last_error: str | None = None
         content = ""
         prompt_tokens = completion_tokens = 0
+
+        if not self._api_key:
+            # Operator-facing detail; the learner sees only the generic 503 body.
+            return LLMResponse(
+                node=node,
+                model=self.model_name,
+                ok=False,
+                error=(
+                    "OPENROUTER_API_KEY is not set — scoring cannot run. "
+                    "Set it in backend/.env (local) or the deployment environment."
+                ),
+                latency_s=time.perf_counter() - started,
+            )
 
         async with httpx.AsyncClient(timeout=self._timeout) as client:
             for attempt in range(1, self._max_retries + 2):

@@ -1,0 +1,118 @@
+# CI (T046). Runs the contract, unit and integration suites against a real Postgres —
+# the same engine production uses, because the schema relies on Postgres-specific types
+# (JSONB, UUID, native ENUM) that SQLite would not exercise.
+#
+# No API key is configured and none is needed: every test injects FakeLLMClient, so the
+# suite makes zero upstream calls and costs nothing to run (Constitution III + V).
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: writewise
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DATABASE_URL: postgresql+psycopg://postgres:postgres@localhost:5433/writewise
+      JWT_SECRET_KEY: ci-only-not-a-real-secret-value-000000
+      PIPELINE_CONFIG: pipelines/v1.yaml
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Lint
+        run: |
+          pip install ruff
+          ruff check src tests
+
+      - name: Verify migrations apply cleanly and reverse
+        # Catches the class of bug where autogenerate leaves ENUM types behind, making
+        # a downgrade/upgrade cycle fail.
+        run: |
+          alembic upgrade head
+          alembic downgrade base
+          alembic upgrade head
+
+      - name: Run tests
+        run: pytest -q
+
+      - name: Benchmark harness smoke test
+        # Proves the Principle IV evaluation path still runs, without API spend.
+        run: python -m src.evaluation.harness --fake --limit 2
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run build
+
+      - name: Audit for known vulnerabilities
+        run: npm audit --audit-level=high
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build backend image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          push: false
+
+      - name: Build frontend image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./frontend
+          push: false
