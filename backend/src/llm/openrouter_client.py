@@ -55,6 +55,7 @@ class OpenRouterClient:
         model: str | None = None,
         temperature: float | None = None,
         max_tokens: int | None = None,
+        reasoning: dict[str, Any] | None = None,
     ) -> None:
         self.settings = settings or get_settings()
         # Model/params come from the active pipelines/*.yaml (Constitution IV), falling
@@ -64,6 +65,10 @@ class OpenRouterClient:
             temperature if temperature is not None else self.settings.openrouter_temperature
         )
         self.max_tokens = max_tokens or self.settings.llm_max_tokens
+        # Reasoning tokens are output tokens: they are billed as output and they eat the
+        # max_tokens budget. Callers that pass nothing get reasoning off, because a
+        # truncated JSON verdict is a failed assessment, not a degraded one.
+        self.reasoning = reasoning if reasoning is not None else {"enabled": False}
 
         self._api_key = self.settings.openrouter_api_key
         self._base_url = self.settings.openrouter_base_url.rstrip("/")
@@ -102,6 +107,8 @@ class OpenRouterClient:
         }
         if self.settings.llm_seed is not None:
             payload["seed"] = self.settings.llm_seed
+        if self.reasoning:
+            payload["reasoning"] = self.reasoning
 
         if response_model is not None:
             payload["response_format"] = {

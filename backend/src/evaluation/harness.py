@@ -305,6 +305,7 @@ def _build_client(config: PipelineConfig, use_fake: bool) -> LLMClient:
         model=config.model.id,
         temperature=config.model.temperature,
         max_tokens=config.model.max_tokens,
+        reasoning=config.model.reasoning.to_payload(),
     )
 
 

@@ -19,12 +19,26 @@ model:
   # Constitution V: model is config, never hardcoded. Any OpenRouter model id works.
   id: nvidia/nemotron-3-super-120b-a12b:free
   temperature: 0.3
-  max_tokens: 1536
+  # Sized against a measured worst case: a full criterion verdict for this prompt set
+  # costs ~580 completion tokens with reasoning off, so 2048 leaves ample headroom for
+  # a verbose essay without paying for budget that is never used.
+  max_tokens: 2048
   # Fixed seed so re-running the same essay is as reproducible as the provider allows,
   # which is what makes before/after benchmark comparison meaningful.
   seed: 42
   timeout_s: 180
   max_retries: 2
+  reasoning:
+    # OFF for a measured reason, not a stylistic one. This is a reasoning model, and
+    # reasoning tokens are output tokens charged against max_tokens. With reasoning on
+    # it spent 1255/1536 tokens thinking and was cut off mid-JSON, failing every
+    # criterion. Off, the same call finishes in 580 tokens with valid JSON.
+    #
+    # `exclude: true` would NOT have fixed this — it only hides the trace, and the
+    # tokens are still generated and billed. `enabled: false` is what actually frees
+    # the budget. To experiment, set enabled: true plus effort or max_tokens (not both)
+    # and re-benchmark against v1 before adopting.
+    enabled: false
 
 prompts:
   # Selects ../prompts/<version>/ — its criterion_*.txt templates AND its rubrics/.

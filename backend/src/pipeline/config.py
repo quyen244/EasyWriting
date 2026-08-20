@@ -14,14 +14,66 @@ from __future__ import annotations
 
 from functools import lru_cache
 from pathlib import Path
+from typing import Any, Literal
 
 import yaml
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 from src.utils.config import get_settings
 
 # backend/ — this file is backend/src/pipeline/config.py
 BACKEND_ROOT = Path(__file__).resolve().parents[2]
+
+EffortLevel = Literal["none", "minimal", "low", "medium", "high", "xhigh", "max"]
+
+
+class ReasoningConfig(BaseModel):
+    """OpenRouter's `reasoning` request block.
+
+    This exists because reasoning tokens are *output* tokens: they are billed as such
+    and they count against `max_tokens`. On a reasoning model that is not merely a cost
+    question, it is a correctness one — measured on this pipeline, the criterion prompt
+    burned 1255 of 1536 tokens thinking and was cut off mid-JSON, so every criterion
+    failed schema validation and the whole assessment returned 503.
+
+    Note the two "off" switches are NOT interchangeable:
+      * `exclude: true`  — the model still reasons and is still billed; the trace is
+                           merely withheld from the response. It does not free budget.
+      * `enabled: false` — reasoning generation is genuinely off (measured: 0 tokens).
+
+    Only the second one solves the truncation, which is why it is the default here.
+    """
+
+    enabled: bool = False
+    effort: EffortLevel | None = None
+    max_tokens: int | None = Field(default=None, gt=0)
+    exclude: bool = False
+
+    @model_validator(mode="after")
+    def _reject_conflicting_budgets(self) -> ReasoningConfig:
+        # OpenRouter accepts an effort level or an explicit budget, never both.
+        if self.effort is not None and self.max_tokens is not None:
+            raise ValueError(
+                "reasoning.effort and reasoning.max_tokens are mutually exclusive — "
+                "set an effort level or an explicit token budget, not both."
+            )
+        if not self.enabled and (self.effort or self.max_tokens):
+            raise ValueError(
+                "reasoning.effort/max_tokens have no effect while reasoning.enabled is "
+                "false. Set enabled: true to use them, or remove them."
+            )
+        return self
+
+    def to_payload(self) -> dict[str, Any]:
+        """Render the request block OpenRouter expects."""
+        if not self.enabled:
+            return {"enabled": False}
+        block: dict[str, Any] = {"enabled": True, "exclude": self.exclude}
+        if self.effort is not None:
+            block["effort"] = self.effort
+        if self.max_tokens is not None:
+            block["max_tokens"] = self.max_tokens
+        return block
 
 
 class ModelConfig(BaseModel):
@@ -31,6 +83,20 @@ class ModelConfig(BaseModel):
     seed: int | None = None
     timeout_s: int = Field(gt=0, default=180)
     max_retries: int = Field(ge=0, default=2)
+    # Defaults to off: this pipeline wants a compact JSON verdict, and every reasoning
+    # token spent is a token not available for that JSON.
+    reasoning: ReasoningConfig = Field(default_factory=ReasoningConfig)
+
+    @model_validator(mode="after")
+    def _budget_must_leave_room_for_output(self) -> ModelConfig:
+        """A reasoning budget at or above max_tokens guarantees a truncated answer."""
+        budget = self.reasoning.max_tokens
+        if budget is not None and budget >= self.max_tokens:
+            raise ValueError(
+                f"reasoning.max_tokens ({budget}) must be below model.max_tokens "
+                f"({self.max_tokens}), otherwise no budget remains for the response."
+            )
+        return self
 
 
 class LengthPenaltyConfig(BaseModel):

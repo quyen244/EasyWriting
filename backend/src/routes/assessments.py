@@ -57,6 +57,7 @@ def get_llm_client(
         model=config.model.id,
         temperature=config.model.temperature,
         max_tokens=config.model.max_tokens,
+        reasoning=config.model.reasoning.to_payload(),
     )
 
 
