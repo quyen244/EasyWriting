@@ -45,10 +45,12 @@ class FakeLLMClient:
         fail_nodes: set[str] | None = None,
         bands_by_criterion: dict[str, float] | None = None,
         quotes_by_criterion: dict[str, list[str]] | None = None,
+        echo_real_quote: bool = False,
         delay_s: float = 0.0,
     ) -> None:
         self.band = band
         self.quote = quote
+        self.echo_real_quote = echo_real_quote
         self.fail_nodes = fail_nodes or set()
         self.bands_by_criterion = bands_by_criterion or {}
         self.quotes_by_criterion = quotes_by_criterion or {}
@@ -57,6 +59,21 @@ class FakeLLMClient:
         # Records the rendered prompt per criterion so tests can assert the right
         # rubric and essay actually reached the model.
         self.messages_by_node: dict[str, list[dict[str, str]]] = {}
+
+    @staticmethod
+    def _extract_real_quote(messages: list[dict[str, str]]) -> str:
+        """Pull a genuine span out of the essay embedded in the prompt.
+
+        Lets a fake run produce quotes that actually verify, so a harness smoke test
+        reports meaningful quote-fidelity instead of a uniform zero. Mirrors what a
+        well-behaved model does: copy from between the ESSAY markers.
+        """
+        user = messages[-1]["content"]
+        if "<<<ESSAY" not in user:
+            return "the essay"
+        body = user.split("<<<ESSAY", 1)[1].split("\nESSAY", 1)[0].strip()
+        words = body.split()
+        return " ".join(words[:8]) if len(words) >= 8 else body[:60]
 
     async def chat(
         self,
@@ -86,7 +103,10 @@ class FakeLLMClient:
 
         criterion = node.split(":", 1)[-1]
         band = self.bands_by_criterion.get(criterion, self.band)
-        quotes = self.quotes_by_criterion.get(criterion, [self.quote])
+        quotes = self.quotes_by_criterion.get(
+            criterion,
+            [self._extract_real_quote(messages) if self.echo_real_quote else self.quote],
+        )
         payload = CriterionEvaluation(
             justification=(
                 f"The essay matches the band {band} descriptor for {criterion} "
