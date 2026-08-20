@@ -5,7 +5,25 @@
 **Created**: 2026-08-19
 **Revised**: 2026-08-20 — rewritten against real Stitch-generated designs (`stitch_writewise_ielts_editorial_saas/`), superseding the earlier version based on the original `stitch_ielts_writing_diagnostic` mockup.
 
-**Status**: Draft
+**Status**: **SUPERSEDED** — 2026-08-21
+
+> This spec was written against the retired FastAPI backend and the
+> `stitch_writewise_ielts_editorial_saas` design set. Constitution v3.0.0 replaced the backend
+> with Supabase, and the UI is being redesigned from scratch against new visual references, so
+> both of this spec's foundations are gone. A replacement mock-test experience spec is planned —
+> see [../README.md](../README.md).
+>
+> **Still worth reading**: the route inventory and access rules in
+> [contracts/page-routes.md](./contracts/page-routes.md), the FAQ content requirements, and the
+> pricing/landing content structure. These describe *what the product shows a learner*, which the
+> platform change does not affect.
+>
+> **Obsolete**: every `003 POST /api/v1/auth/*` dependency (Supabase Auth now), the
+> `useAuth`/access-token design (`supabase-js` manages sessions), the `cloudflared` cross-origin
+> reasoning in [research.md](./research.md), and the Stitch design references throughout.
+>
+> **Missing**: this spec predates the move to a full mock test — it specifies a single-essay
+> workspace with no Task 1 / Task 2 split and no timer.
 
 **Input**: User description: "UI/UX for the landing page, FAQ, learner workspace (with dark mode), and profile — rewritten against the `marketing_landing_page_fresh_refresh`, `frequently_asked_questions`, and `learner_workspace` Stitch designs, styled per the `academic_editorial` design system."
 

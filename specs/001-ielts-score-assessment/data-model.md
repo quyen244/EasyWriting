@@ -6,9 +6,14 @@ table.
 
 ## Account (`users`)
 
-Prerequisite entity, owned by the (out-of-scope) auth feature — `003-account-authentication` is
-its authoritative owner and extends this table with authentication-relevant columns. Referenced
-here only by foreign key. Named `Account` (not `Learner`) to match the canonical name used
+Prerequisite entity, owned by the (out-of-scope) auth feature. Referenced here only by foreign
+key.
+
+> **Stale as of constitution v3.0.0.** `003-account-authentication` was retired and this table no
+> longer exists as specified: accounts live in Supabase's `auth.users`, with a `profiles` table
+> alongside it. See [../003-account-authentication/README.md](../003-account-authentication/README.md)
+> for the requirements that carried forward. The rest of this data model is pending revision with
+> the spec — see [../README.md](../README.md). Named `Account` (not `Learner`) to match the canonical name used
 everywhere else in the project (`/speckit-analyze` finding I2); the SQLAlchemy model class built
 by task T010 below MUST be named `Account`.
 
