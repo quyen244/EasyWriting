@@ -100,8 +100,13 @@ export default function ScoringDemo() {
 
   const [phase, setPhase] = useState<Phase>("revealed");
   const [typed, setTyped] = useState(DEMO_ESSAY.length);
-  const [step, setStep] = useState<number>(DEMO_STEPS.length);
+  const [activeAnalysisStep, setActiveAnalysisStep] = useState<number | null>(null);
+  const [completedSteps, setCompletedSteps] = useState<number>(DEMO_STEPS.length);
   const [displayedScore, setDisplayedScore] = useState(DEMO_OVERALL);
+  const [criteriaProgress, setCriteriaProgress] = useState(() =>
+    DEMO_CRITERIA.map((criterion) => criterion.band / 9),
+  );
+  const [isComplete, setIsComplete] = useState(true);
   const [pageVisible, setPageVisible] = useState(true);
   const typedRef = useRef(DEMO_ESSAY.length);
 
@@ -120,87 +125,137 @@ export default function ScoringDemo() {
     if (reduced) {
       typedRef.current = DEMO_ESSAY.length;
       setTyped(DEMO_ESSAY.length);
-      setStep(DEMO_STEPS.length);
+      setActiveAnalysisStep(null);
+      setCompletedSteps(DEMO_STEPS.length);
       setDisplayedScore(DEMO_OVERALL);
+      setCriteriaProgress(DEMO_CRITERIA.map((criterion) => criterion.band / 9));
+      setIsComplete(true);
       setPhase("revealed");
       return;
     }
     typedRef.current = 0;
     setTyped(0);
-    setStep(0);
+    setActiveAnalysisStep(null);
+    setCompletedSteps(0);
     setDisplayedScore(0);
+    setCriteriaProgress(DEMO_CRITERIA.map(() => 0));
+    setIsComplete(false);
     setPhase("typing");
   }, [reduced]);
 
-  // Phase 1 — type, resuming from wherever a pause left off.
+  // One cancellable sequence owns every transition, so no stage can finish out of order.
   useEffect(() => {
-    if (!active || phase !== "typing") return;
+    if (!active) return;
 
-    let raf = 0;
-    let handoff: ReturnType<typeof setTimeout> | undefined;
-    let startedAt = 0;
-    const from = typedRef.current;
+    let cancelled = false;
+    let frame = 0;
+    const timers = new Set<ReturnType<typeof setTimeout>>();
+    const animations = new Set<{ stop: () => void }>();
 
-    const tick = (now: number) => {
-      if (!startedAt) startedAt = now;
-      const n = Math.min(DEMO_ESSAY.length, from + Math.floor((now - startedAt) / CHAR_MS));
-      typedRef.current = n;
-      setTyped(n);
-      if (n < DEMO_ESSAY.length) {
-        raf = requestAnimationFrame(tick);
-      } else {
-        handoff = setTimeout(() => setPhase("scoring"), AFTER_TYPING_MS);
+    const wait = (duration: number) =>
+      new Promise<boolean>((resolve) => {
+        const timer = setTimeout(() => {
+          timers.delete(timer);
+          resolve(!cancelled);
+        }, duration);
+        timers.add(timer);
+      });
+
+    const typeEssay = async () => {
+      typedRef.current = 0;
+      setTyped(0);
+      const startedAt = performance.now();
+
+      await new Promise<void>((resolve) => {
+        const tick = (now: number) => {
+          const next = Math.min(DEMO_ESSAY.length, Math.floor((now - startedAt) / CHAR_MS));
+          typedRef.current = next;
+          setTyped(next);
+          if (next < DEMO_ESSAY.length && !cancelled) {
+            frame = requestAnimationFrame(tick);
+          } else {
+            resolve();
+          }
+        };
+        frame = requestAnimationFrame(tick);
+      });
+    };
+
+    const animateCriteria = async () => {
+      for (let i = 0; i < DEMO_CRITERIA.length; i += 1) {
+        if (cancelled) return false;
+        const target = DEMO_CRITERIA[i].band / 9;
+        const controls = animate(0, target, {
+          duration: 0.7,
+          ease: EASE_EDITORIAL,
+          onUpdate: (value) => {
+            if (!cancelled) {
+              setCriteriaProgress((progress) =>
+                progress.map((current, index) => (index === i ? value : current)),
+              );
+            }
+          },
+        });
+        animations.add(controls);
+        if (!(await wait(700))) return false;
+        setCriteriaProgress((progress) =>
+          progress.map((current, index) => (index === i ? target : current)),
+        );
+        controls.stop();
+        animations.delete(controls);
+      }
+      return !cancelled;
+    };
+
+    const runDemo = async () => {
+      while (!cancelled) {
+        setPhase("typing");
+        setActiveAnalysisStep(null);
+        setCompletedSteps(0);
+        setDisplayedScore(0);
+        setCriteriaProgress(DEMO_CRITERIA.map(() => 0));
+        setIsComplete(false);
+        await typeEssay();
+        if (!(await wait(AFTER_TYPING_MS))) break;
+
+        setPhase("scoring");
+        for (let i = 0; i < DEMO_STEPS.length; i += 1) {
+          setActiveAnalysisStep(i);
+          if (!(await wait(STEP_MS))) break;
+          setCompletedSteps(i + 1);
+          setActiveAnalysisStep(null);
+        }
+        if (cancelled) break;
+        if (!(await wait(AFTER_STEPS_MS))) break;
+
+        setPhase("revealed");
+        const scoreControls = animate(0, DEMO_OVERALL, {
+          duration: 1.4,
+          ease: EASE_EDITORIAL,
+          onUpdate: (value) => {
+            if (!cancelled) setDisplayedScore(value);
+          },
+        });
+        animations.add(scoreControls);
+        if (!(await wait(1400))) break;
+        setDisplayedScore(DEMO_OVERALL);
+        scoreControls.stop();
+        animations.delete(scoreControls);
+        if (!(await animateCriteria())) break;
+        setIsComplete(true);
+        if (!(await wait(HOLD_REVEALED_MS))) break;
       }
     };
 
-    raf = requestAnimationFrame(tick);
+    void runDemo();
+
     return () => {
-      cancelAnimationFrame(raf);
-      if (handoff) clearTimeout(handoff);
+      cancelled = true;
+      cancelAnimationFrame(frame);
+      timers.forEach((timer) => clearTimeout(timer));
+      animations.forEach((animation) => animation.stop());
     };
-  }, [active, phase]);
-
-  // Count the band up again every time the revealed phase starts.
-  useEffect(() => {
-    if (phase !== "revealed") return;
-
-    if (!active || reduced) return;
-
-    const controls = animate(0, DEMO_OVERALL, {
-      duration: 1.2,
-      ease: EASE_EDITORIAL,
-      onUpdate: (value) => setDisplayedScore(value),
-    });
-
-    return () => controls.stop();
-  }, [active, phase, reduced]);
-
-  // Phase 2 — run the three steps in order.
-  useEffect(() => {
-    if (!active || phase !== "scoring") return;
-
-    const timers = DEMO_STEPS.map((_, i) =>
-      // Math.max, so resuming after a pause cannot walk a finished step backwards.
-      setTimeout(() => setStep((done) => Math.max(done, i + 1)), (i + 1) * STEP_MS),
-    );
-    timers.push(
-      setTimeout(() => setPhase("revealed"), DEMO_STEPS.length * STEP_MS + AFTER_STEPS_MS),
-    );
-
-    return () => timers.forEach(clearTimeout);
-  }, [active, phase]);
-
-  // Phase 3 — hold the result, then start over.
-  useEffect(() => {
-    if (!active || phase !== "revealed") return;
-    const restart = setTimeout(() => {
-      typedRef.current = 0;
-      setTyped(0);
-      setStep(0);
-      setPhase("typing");
-    }, HOLD_REVEALED_MS);
-    return () => clearTimeout(restart);
-  }, [active, phase]);
+  }, [active]);
 
   const words = DEMO_ESSAY.slice(0, typed).trim().split(/\s+/).filter(Boolean).length;
 
@@ -223,6 +278,10 @@ export default function ScoringDemo() {
       <motion.div
         aria-hidden="true"
         data-tilt
+        data-demo-phase={phase}
+        data-active-analysis-step={activeAnalysisStep ?? ""}
+        data-completed-steps={completedSteps}
+        data-demo-complete={isComplete}
         initial={{ opacity: 0, x: 60, rotate: 6, scale: 0.94 }}
         animate={{ opacity: 1, x: 0, rotate: -1.5, scale: 1 }}
         transition={{ ...EDITORIAL_SPRING, delay: 0.25 }}
@@ -280,7 +339,7 @@ export default function ScoringDemo() {
                 />
                 Analyzing
               </motion.span>
-            ) : phase === "revealed" ? (
+            ) : phase === "revealed" && isComplete ? (
               <motion.span
                 key="done"
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -289,6 +348,15 @@ export default function ScoringDemo() {
                 className="rounded-full bg-tertiary-container px-2.5 py-1 font-body text-[11px] font-bold text-on-tertiary-container"
               >
                 Complete
+              </motion.span>
+            ) : phase === "revealed" ? (
+              <motion.span
+                key="result"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="font-body text-[11px] font-semibold tabular-nums text-on-surface-variant"
+              >
+                Final result
               </motion.span>
             ) : (
               <motion.span
@@ -318,8 +386,15 @@ export default function ScoringDemo() {
                 </p>
                 <p className="font-body text-body-sm leading-relaxed text-on-surface">
                   {DEMO_ESSAY.slice(0, typed)}
-                  <span className="ml-px inline-block h-[1.05em] w-[2px] translate-y-[0.18em] animate-caret bg-primary" />
+                  {typed < DEMO_ESSAY.length && (
+                    <span className="ml-px inline-block h-[1.05em] w-[2px] translate-y-[0.18em] animate-caret bg-primary" />
+                  )}
                 </p>
+                {typed < DEMO_ESSAY.length && (
+                  <p className="mt-3 animate-pulse font-body text-[11px] text-on-surface-variant">
+                    Bạn đang gõ bài...
+                  </p>
+                )}
               </motion.div>
             )}
 
@@ -332,7 +407,11 @@ export default function ScoringDemo() {
                 className="flex flex-col justify-center gap-1 py-6"
               >
                 {DEMO_STEPS.map((label, i) => {
-                  const state = step > i ? "done" : step === i ? "active" : "pending";
+                  const state = completedSteps > i
+                    ? "done"
+                    : activeAnalysisStep === i
+                      ? "active"
+                      : "pending";
                   return (
                     <motion.div
                       key={label}
@@ -362,7 +441,7 @@ export default function ScoringDemo() {
                 <div className="mt-4 h-1 overflow-hidden rounded-full bg-surface-container">
                   <motion.div
                     className="h-full rounded-full bg-primary-container"
-                    animate={{ width: `${(step / DEMO_STEPS.length) * 100}%` }}
+                    animate={{ width: `${(completedSteps / DEMO_STEPS.length) * 100}%` }}
                     transition={{ duration: 0.5, ease: EASE_EDITORIAL }}
                   />
                 </div>
@@ -410,12 +489,8 @@ export default function ScoringDemo() {
                         <motion.span
                           className="block h-full rounded-full bg-primary-container"
                           initial={{ width: 0 }}
-                          animate={{ width: `${(criterion.band / 9) * 100}%` }}
-                          transition={{
-                            delay: 0.25 + i * 0.08,
-                            duration: 0.7,
-                            ease: EASE_EDITORIAL,
-                          }}
+                          animate={{ width: `${criteriaProgress[i] * 100}%` }}
+                          transition={{ duration: 0.1 }}
                         />
                       </span>
                       <span className="w-7 shrink-0 text-right font-body text-body-sm font-bold tabular-nums text-on-surface">
