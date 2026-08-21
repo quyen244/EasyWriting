@@ -1,5 +1,13 @@
 # Implementation Plan: Core App UX — Landing, FAQ, Workspace & Profile
 
+> **STALE — 2026-08-21.** Written against the retired FastAPI backend, the retired
+> `003-account-authentication` HTTP contract, and the old four-surface scope (landing + FAQ +
+> workspace + profile) built against the `stitch_writewise_ielts_editorial_saas` mockups.
+> `spec.md` was rewritten and narrowed to the landing page alone, grounded in the real
+> `writewise` Figma design. This file has not been regenerated yet — run `/speckit-plan` and
+> `/speckit-tasks` to replace it. See [../README.md](../README.md).
+
+
 **Branch**: `002-core-app-ux` | **Date**: 2026-08-20 (regenerated against the WriteWise/Stitch-design spec revision) | **Spec**: [spec.md](./spec.md)
 
 **Input**: Feature specification from `/specs/002-core-app-ux/spec.md`

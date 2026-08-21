@@ -1,3 +1,6 @@
+<!-- STALE 2026-08-21 -- describes the retired 003 auth HTTP contract and the four-surface
+     scope. spec.md now covers the landing page ('/') only; its Functional Requirements are
+     the current source of truth for that route. -->
 # Page Routes Contract: Core App UX (WriteWise revision)
 
 This feature adds no HTTP API — its "contract" is which pages exist, who can reach them, and

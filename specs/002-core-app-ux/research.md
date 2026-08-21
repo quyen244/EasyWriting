@@ -1,5 +1,13 @@
 # Phase 0 Research: Core App UX (WriteWise revision)
 
+> **STALE — 2026-08-21.** Written against the retired FastAPI backend, the retired
+> `003-account-authentication` HTTP contract, and the old four-surface scope (landing + FAQ +
+> workspace + profile) built against the `stitch_writewise_ielts_editorial_saas` mockups.
+> `spec.md` was rewritten and narrowed to the landing page alone, grounded in the real
+> `writewise` Figma design. This file has not been regenerated yet — run `/speckit-plan` and
+> `/speckit-tasks` to replace it. See [../README.md](../README.md).
+
+
 ## 1. Route protection cannot use Next.js middleware
 
 **Decision**: Protect `/workspace` and `/profile` with a client-side guard component

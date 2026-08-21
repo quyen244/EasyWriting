@@ -103,6 +103,25 @@ Sync Impact Report
 - Deferred TODOs: TP-1 remains open pending (a) a decision on whether machine-verified evidence
   anchoring is required at all or whether reviewed-but-unverified comments are an accepted
   permanent posture, and (b) the mock-test feature's own specification addressing Principle I.
+
+---
+
+- Version change: 3.1.0 -> 3.1.1
+- Trigger: `002-core-app-ux` was rewritten 2026-08-21, narrowed from its original four-surface
+  bundle (landing, FAQ, workspace, profile) to the landing page alone, and re-grounded in a real
+  Figma design (`writewise`, fileKey `JGr2ZuKKC8JEiAIHzNAFLH`) read via the Figma MCP connection.
+- Modified principles: none.
+- Modified sections: Technology & Architecture Constraints -- the Frontend paragraph's forward
+  reference ("pending the forthcoming UI/UX specification that supersedes `002-core-app-ux`") was
+  stale: `002-core-app-ux` did not get superseded by a new spec number, it became that
+  specification itself. Corrected to say so, and to note the workspace portion of its old scope
+  is what the still-forthcoming mock-test-experience spec will own instead.
+- Added principles: none. Added sections: none. Removed sections: none.
+- Rationale for PATCH bump: corrects a stale forward-reference to match already-decided reality
+  (the product owner chose to rewrite `002` in place rather than mint a new spec number, the same
+  approach already taken for `001`); no principle or Transitional Provision was redefined or
+  expanded.
+- Deferred TODOs: none.
 -->
 
 # IE Writing Constitution
@@ -229,9 +248,11 @@ the frontend addresses. The previous self-hosted FastAPI + PostgreSQL + `cloudfl
 retired.
 
 **Frontend.** Next.js, deployed on Vercel. Product name **WriteWise**. The
-`stitch_writewise_ielts_editorial_saas` design set is retained as historical reference only; it is
-no longer the source of truth for layout and visual design, pending the forthcoming UI/UX
-specification that supersedes `002-core-app-ux`.
+`stitch_writewise_ielts_editorial_saas` design set is retired as of `002-core-app-ux`'s 2026-08-21
+rewrite, which re-grounded that spec's landing page in a real Figma design (`writewise`,
+fileKey `JGr2ZuKKC8JEiAIHzNAFLH`) instead. `002-core-app-ux` itself is no longer superseded — it
+now covers the landing page specifically; the workspace UI it used to also cover is what the
+still-forthcoming mock-test-experience specification will own (see `specs/README.md`).
 
 **Compute — two tiers, added in order.** A workload belongs to the lowest tier that fits it:
 
@@ -348,4 +369,4 @@ All specs, plans, and task lists MUST be checked against this constitution befor
 blocking, not advisory. A deviation covered by an active Transitional Provision is justified, and
 MUST cite the provision by identifier in the plan's Constitution Check.
 
-**Version**: 3.1.0 | **Ratified**: 2026-08-19 | **Last Amended**: 2026-08-21
+**Version**: 3.1.1 | **Ratified**: 2026-08-19 | **Last Amended**: 2026-08-21
