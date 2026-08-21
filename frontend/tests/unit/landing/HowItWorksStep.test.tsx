@@ -1,47 +1,52 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import HowItWorksStep, { HOW_IT_WORKS_STEPS } from "@/components/landing/HowItWorksStep";
+import { HOW_IT_WORKS_STEPS, HowItWorksSection } from "@/components/landing/HowItWorksStep";
 
-describe("HOW_IT_WORKS_STEPS", () => {
-  it("has the four steps FR-003 names, in order", () => {
+/** US3 — FR-007, FR-008, FR-011. */
+describe("How it works", () => {
+  it("shows exactly the three steps the design names (FR-007)", () => {
     expect(HOW_IT_WORKS_STEPS.map((s) => s.title)).toEqual([
-      "Submit",
-      "Get scored",
-      "Learn the fix",
-      "Track trend",
+      "Analyze",
+      "Evaluate Criteria",
+      "Score & Improve",
     ]);
   });
 
-  it("marks exactly the two not-yet-built steps as future", () => {
-    // FR-003 is a truthfulness requirement, not a layout one: implying a capability
-    // exists when it does not is the specific failure it guards against.
-    const future = HOW_IT_WORKS_STEPS.filter((s) => s.future).map((s) => s.title);
-    expect(future).toEqual(["Learn the fix", "Track trend"]);
-  });
-});
-
-describe("HowItWorksStep", () => {
-  it("renders the step number, title and description", () => {
-    render(<HowItWorksStep step={HOW_IT_WORKS_STEPS[0]} index={0} />);
-    expect(screen.getByText("01")).toBeInTheDocument();
-    expect(screen.getByText("Submit")).toBeInTheDocument();
-  });
-
-  it("marks a future step with visible text, not styling alone", () => {
-    render(<HowItWorksStep step={HOW_IT_WORKS_STEPS[2]} index={2} />);
-    expect(screen.getByText(/coming soon|not yet available|planned/i)).toBeInTheDocument();
+  it("names all four official criteria in the Evaluate step (FR-008)", () => {
+    // These must match 001-ielts-score-assessment's criterion set exactly rather than a
+    // marketing shorthand of it — the design's own copy says only "TR, CC, LR, and GRA",
+    // which is not a name a visitor can check against anything.
+    const body = HOW_IT_WORKS_STEPS[1].body;
+    for (const criterion of [
+      /task response/i,
+      /task achievement/i,
+      /coherence & cohesion/i,
+      /lexical resource/i,
+      /grammatical range & accuracy/i,
+    ]) {
+      expect(body).toMatch(criterion);
+    }
   });
 
-  it("does not mark an available step as future", () => {
-    render(<HowItWorksStep step={HOW_IT_WORKS_STEPS[1]} index={1} />);
-    expect(screen.queryByText(/coming soon|not yet available|planned/i)).not.toBeInTheDocument();
+  it("does not promise line-by-line corrections the grader cannot produce (FR-011)", () => {
+    // The Figma copy reads "line-by-line actionable corrections". 001 returns a band and
+    // a per-criterion comment, with no per-sentence rewrites at all, so shipping the
+    // design's wording verbatim would have been false on the day it launched.
+    const all = HOW_IT_WORKS_STEPS.map((s) => s.body).join(" ");
+    expect(all).not.toMatch(/line-by-line/i);
+    expect(all).not.toMatch(/corrections/i);
   });
 
-  it("describes the available steps in terms of what today's product actually does", () => {
-    // "Get scored" must not promise the per-sentence corrections that belong to the
-    // still-unbuilt "Learn the fix" step — that is the same over-claim FR-003 forbids.
-    render(<HowItWorksStep step={HOW_IT_WORKS_STEPS[1]} index={1} />);
-    expect(screen.getByText(/four/i)).toBeInTheDocument();
+  it("renders every step as a heading", () => {
+    render(<HowItWorksSection />);
+    for (const step of HOW_IT_WORKS_STEPS) {
+      expect(screen.getByRole("heading", { name: step.title })).toBeInTheDocument();
+    }
+  });
+
+  it("anchors the section so the hero's secondary CTA can reach it", () => {
+    const { container } = render(<HowItWorksSection />);
+    expect(container.querySelector("#how-it-works")).not.toBeNull();
   });
 });

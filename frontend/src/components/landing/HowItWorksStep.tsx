@@ -1,66 +1,98 @@
+import { Marker } from "@/components/ui/Sticker";
+
 /**
- * The four-step product flow (002 T046, FR-003).
+ * "How WriteWise works" (Figma node 1001:73).
  *
- * FR-003 is a truthfulness requirement: "Learn the fix" and "Track trend" are not built,
- * and the section must say so rather than implying they work today.
- *
- * Worth noting where those two lines fall, because it resolves an apparent contradiction
- * inside the spec itself: FR-003 classes per-sentence corrections ("Learn the fix") as a
- * future capability, while FR-005 asks the workspace to render "line-by-line feedback…
- * with a suggested correction". `001`'s API settles it — it returns per-criterion
- * explanations and verbatim evidence quotes, and no per-sentence corrections at all. So
- * the workspace shows what exists (quotes + criterion reasoning) and this section is
- * honest that the correction step is still ahead.
+ * Step 3's description is the one place this section departs from the design copy. The
+ * Figma frame reads "line-by-line actionable corrections", but
+ * 001-ielts-score-assessment returns a band plus a written comment per criterion and no
+ * per-sentence rewrites at all. Shipping the design's wording would have made FR-011
+ * false on the day it launched, so the claim is narrowed to what the grader does.
+ * Restore the original line if and when the grader actually produces corrections.
  */
 
 export interface HowItWorksStepData {
+  index: string;
   title: string;
   body: string;
-  future?: boolean;
+  tone: "yellow" | "blue" | "green";
+  icon: string;
 }
 
 export const HOW_IT_WORKS_STEPS: HowItWorksStepData[] = [
   {
-    title: "Submit",
-    body: "Paste your Task 1 or Task 2 essay into a plain, distraction-free editor.",
+    index: "01",
+    title: "Analyze",
+    body: "Paste your essay or take a guided practice test. Our AI reads your text in milliseconds.",
+    tone: "yellow",
+    icon: "📄",
   },
   {
-    title: "Get scored",
-    body: "Receive a band for each of the four official criteria, every one explained and quoted from your own writing.",
+    index: "02",
+    title: "Evaluate Criteria",
+    body: "We assess against the four official marking criteria: Task Achievement on Task 1 or Task Response on Task 2, plus Coherence & Cohesion, Lexical Resource, and Grammatical Range & Accuracy.",
+    tone: "blue",
+    icon: "🎯",
   },
   {
-    title: "Learn the fix",
-    body: "Sentence-level corrections and rewrite suggestions, tied to the criterion they affect.",
-    future: true,
-  },
-  {
-    title: "Track trend",
-    body: "Watch your band move across submissions and see which criterion is holding you back.",
-    future: true,
+    index: "03",
+    title: "Score & Improve",
+    body: "Get your estimated band score alongside a written comment explaining each criterion.",
+    tone: "green",
+    icon: "📈",
   },
 ];
 
-export default function HowItWorksStep({
-  step,
-  index,
-}: {
-  step: HowItWorksStepData;
-  index: number;
-}) {
+const TONE: Record<HowItWorksStepData["tone"], string> = {
+  yellow: "bg-accent-yellow-soft",
+  blue: "bg-secondary-container",
+  green: "bg-tertiary-container",
+};
+
+export default function HowItWorksStep({ step }: { step: HowItWorksStepData }) {
   return (
-    <article className="border-t border-outline-variant pt-stack-md">
-      <p className="font-display text-headline-sm text-secondary tabular-nums">
-        {String(index + 1).padStart(2, "0")}
+    <article className="relative flex flex-col items-center px-4 text-center">
+      <span
+        aria-hidden="true"
+        data-decoration
+        className="absolute -top-8 left-1/2 -translate-x-1/2 font-body text-[60px] font-black tracking-[-3px] text-on-surface/10"
+      >
+        {step.index}
+      </span>
+      <span
+        aria-hidden="true"
+        className={`flex size-24 items-center justify-center rounded-full border-4 border-surface-container-lowest text-[36px] shadow-hairline ${TONE[step.tone]}`}
+      >
+        {step.icon}
+      </span>
+      <h3 className="mt-6 font-display text-headline-sm text-on-surface">{step.title}</h3>
+      <p className="mt-3 max-w-xs font-body text-body-md leading-[26px] text-on-surface-variant">
+        {step.body}
       </p>
-      <h3 className="mt-stack-sm flex flex-wrap items-center gap-2 font-display text-headline-sm text-on-surface">
-        {step.title}
-        {step.future && (
-          <span className="rounded-sm border border-outline px-2 py-0.5 text-label-caps uppercase text-on-surface-variant">
-            Coming soon
-          </span>
-        )}
-      </h3>
-      <p className="mt-stack-sm font-body text-body-md text-on-surface-variant">{step.body}</p>
     </article>
+  );
+}
+
+export function HowItWorksSection() {
+  return (
+    <section
+      id="how-it-works"
+      className="border-y border-outline-variant bg-surface-container-lowest py-section-y"
+    >
+      <div className="mx-auto max-w-container px-margin-mobile">
+        <div className="flex flex-col items-center text-center">
+          <Marker className="text-primary">Simple process</Marker>
+          <h2 className="mt-1 font-display text-display-lg-mobile text-on-surface md:text-display-lg">
+            How <em className="italic text-primary">WriteWise</em> works
+          </h2>
+        </div>
+
+        <div className="mx-auto mt-20 grid max-w-5xl gap-16 md:grid-cols-3">
+          {HOW_IT_WORKS_STEPS.map((step) => (
+            <HowItWorksStep key={step.title} step={step} />
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }

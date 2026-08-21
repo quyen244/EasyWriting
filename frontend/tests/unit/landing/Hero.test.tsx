@@ -3,26 +3,46 @@ import { describe, expect, it } from "vitest";
 
 import Hero from "@/components/landing/Hero";
 
+/** US1 — FR-001, FR-002. */
 describe("Hero", () => {
-  it("states the product purpose so a visitor needs no other page (US1 scenario 1)", () => {
+  it("states the product purpose without any interaction (FR-001)", () => {
     render(<Hero />);
     const heading = screen.getByRole("heading", { level: 1 });
-    expect(heading).toHaveTextContent(/IELTS/i);
+    expect(heading).toHaveTextContent(/master your ielts writing/i);
+    expect(heading).toHaveTextContent(/ai-powered feedback/i);
   });
 
-  it("names the sub-60-second turnaround the spec's acceptance scenario quotes", () => {
+  it("carries the supporting value line the design specifies", () => {
     render(<Hero />);
-    expect(screen.getByText(/60 seconds/i)).toBeInTheDocument();
+    expect(screen.getByText(/examiner-grade evaluations/i)).toBeInTheDocument();
   });
 
-  it("offers a sign-up call to action pointing at account creation (FR-001)", () => {
+  it("offers a primary sign-up action (FR-002)", () => {
     render(<Hero />);
-    const cta = screen.getAllByRole("link", { name: /score my essay/i })[0];
-    expect(cta).toHaveAttribute("href", "/signup");
+    expect(screen.getByRole("link", { name: /get started for free/i })).toHaveAttribute(
+      "href",
+      "/signup",
+    );
   });
 
-  it("does not promise the free tier is a crippled trial (US1 scenario 3)", () => {
+  it("offers a secondary action that scrolls rather than navigates (FR-002)", () => {
     render(<Hero />);
-    expect(screen.queryByText(/trial/i)).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /how it works/i })).toHaveAttribute(
+      "href",
+      "/#how-it-works",
+    );
+  });
+
+  it("sets the italic emphasis as real emphasis, not a styled span", () => {
+    // The design's whole typographic idea is that italic run. Marking it up as <em>
+    // conveys the emphasis to a screen reader too, instead of leaving it purely visual.
+    //
+    // It is split across two elements so "AI-powered" can be kept unbreakable while
+    // "feedback" still wraps — hence asserting the joined text rather than one node.
+    const { container } = render(<Hero />);
+    const italics = Array.from(container.querySelectorAll("h1 em"))
+      .map((el) => el.textContent)
+      .join(" ");
+    expect(italics).toMatch(/ai-powered\s+feedback/i);
   });
 });

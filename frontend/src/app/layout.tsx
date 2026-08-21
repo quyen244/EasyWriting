@@ -1,23 +1,31 @@
 import type { Metadata } from "next";
-import { Geist, Literata } from "next/font/google";
+import { Caveat, Inter, Playfair_Display } from "next/font/google";
 
 import { AuthProvider } from "@/hooks/useAuth";
 import { THEME_INIT_SCRIPT } from "@/lib/theme";
 
 import "./globals.css";
 
-// academic_editorial's typographic pairing (002 T005): Literata carries the editorial
-// "academic voice" for headlines, Geist handles everything functional.
-const literata = Literata({
+// Typefaces read from the `writewise` Figma file: Playfair Display carries every
+// heading (including its italic emphasis runs), Inter handles all body and UI text,
+// and Caveat is the handwritten marker voice on decorative labels.
+const playfair = Playfair_Display({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-literata",
+  variable: "--font-playfair",
 });
 
-const geist = Geist({
+const inter = Inter({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-geist",
+  variable: "--font-inter",
+});
+
+const caveat = Caveat({
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["700"],
+  variable: "--font-caveat",
 });
 
 export const metadata: Metadata = {
@@ -31,7 +39,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${literata.variable} ${geist.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${playfair.variable} ${inter.variable} ${caveat.variable}`} suppressHydrationWarning>
       <head>
         {/*
           Applies the stored theme before first paint. A React effect would run after

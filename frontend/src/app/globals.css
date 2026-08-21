@@ -3,129 +3,160 @@
 @tailwind utilities;
 
 /*
- * academic_editorial semantic color tokens (002 T004).
+ * WriteWise semantic color tokens.
  *
- * Light values are the design system's own, copied verbatim from
- * `stitch_writewise_ielts_editorial_saas/academic_editorial/DESIGN.md`.
+ * Light values are read directly from the `writewise` Figma file
+ * (fileKey JGr2ZuKKC8JEiAIHzNAFLH, node 1001:2): warm cream paper, near-black ink,
+ * orange as the single accent, with yellow/blue/green as supporting swatches on the
+ * stat and step cards.
  *
- * The dark values are NOT in that file — the design system only ever specified a light
- * palette, but FR-018 requires a working dark theme. They are derived from the same
- * Material-3 tonal palettes the light set comes from, following the standard role swap:
- * `primary` moves from the darkest ink tone to the light tint so it stays readable on a
- * dark ground, and each `on-*` pair inverts with it. Muted Gold keeps its "medal" role
- * for scores in both themes, which is the one thing the design brief is emphatic about.
+ * The dark values are NOT in the design — the file only specifies a light theme, but
+ * the accessibility suite checks contrast in both. They are derived from the same hues
+ * by inverting the paper/ink relationship and lifting the accent to a tint that stays
+ * readable on a dark ground. If the design ever gains a real dark theme, replace these
+ * rather than tuning them.
  *
  * Channels are space-separated RGB so Tailwind's `/10` opacity modifier works.
  */
 @layer base {
   :root {
-    --color-surface: 248 249 255;
-    --color-surface-dim: 203 219 245;
-    --color-surface-bright: 248 249 255;
+    /* Paper */
+    --color-surface: 253 250 243;             /* #fdfaf3 */
+    --color-surface-dim: 255 237 213;         /* #ffedd5 */
+    --color-surface-bright: 255 255 255;
     --color-surface-container-lowest: 255 255 255;
-    --color-surface-container-low: 239 244 255;
-    --color-surface-container: 229 238 255;
-    --color-surface-container-high: 220 233 255;
-    --color-surface-container-highest: 211 228 254;
-    --color-surface-variant: 211 228 254;
-    --color-on-surface: 11 28 48;
-    --color-on-surface-variant: 67 71 79;
-    --color-inverse-surface: 33 49 69;
-    --color-inverse-on-surface: 234 241 255;
-    --color-outline: 116 119 129;
-    --color-outline-variant: 196 198 209;
-    --color-surface-tint: 63 94 149;
+    --color-surface-container-low: 255 247 237; /* #fff7ed */
+    --color-surface-container: 255 237 213;
+    --color-surface-container-high: 254 215 170;
+    --color-surface-container-highest: 253 186 116;
+    --color-surface-variant: 249 250 251;     /* #f9fafb */
 
-    --color-primary: 13 51 104;
+    /* Ink */
+    --color-on-surface: 17 24 39;             /* #111827 */
+    --color-on-surface-variant: 75 85 99;     /* #4b5563 */
+    --color-inverse-surface: 17 24 39;
+    --color-inverse-on-surface: 253 250 243;
+    --color-outline: 156 163 175;             /* #9ca3af */
+    --color-outline-variant: 229 231 235;     /* #e5e7eb */
+    --color-surface-tint: 249 115 22;
+    --color-ink: 0 0 0;
+
+    /* Orange — the one accent */
+    --color-primary: 234 88 12;               /* #ea580c — darkened from the design's
+                                                 #f97316 for text use only; the flat
+                                                 orange fails 4.5:1 as body text on
+                                                 cream, and an unreadable accent is a
+                                                 worse fidelity loss than a shade. */
     --color-on-primary: 255 255 255;
-    --color-primary-container: 42 74 128;
-    --color-on-primary-container: 157 187 248;
-    --color-inverse-primary: 172 199 255;
-    --color-primary-fixed: 215 226 255;
-    --color-primary-fixed-dim: 172 199 255;
-    --color-on-primary-fixed: 0 26 64;
-    --color-on-primary-fixed-variant: 38 70 124;
+    --color-primary-container: 255 122 56;    /* #ff7a38 — buttons/fills, white text */
+    --color-on-primary-container: 255 255 255;
+    --color-inverse-primary: 254 215 170;
+    --color-primary-fixed: 255 237 213;
+    --color-primary-fixed-dim: 254 215 170;
+    --color-on-primary-fixed: 124 45 18;
+    --color-on-primary-fixed-variant: 154 52 18;
 
-    --color-secondary: 123 88 0;
+    /* Blue */
+    --color-secondary: 37 99 235;             /* #2563eb */
     --color-on-secondary: 255 255 255;
-    --color-secondary-container: 253 205 112;
-    --color-on-secondary-container: 119 86 0;
-    --color-secondary-fixed: 255 222 165;
-    --color-secondary-fixed-dim: 238 192 100;
-    --color-on-secondary-fixed: 38 25 0;
-    --color-on-secondary-fixed-variant: 93 66 0;
+    --color-secondary-container: 219 234 254; /* #dbeafe */
+    --color-on-secondary-container: 30 64 175; /* #1e40af */
+    --color-secondary-fixed: 239 246 255;
+    --color-secondary-fixed-dim: 191 219 254;
+    --color-on-secondary-fixed: 30 58 138;
+    --color-on-secondary-fixed-variant: 30 64 175;
 
-    --color-tertiary: 45 52 65;
+    /* Green */
+    --color-tertiary: 22 163 74;              /* #16a34a */
     --color-on-tertiary: 255 255 255;
-    --color-tertiary-container: 68 75 88;
-    --color-on-tertiary-container: 180 187 203;
-    --color-tertiary-fixed: 220 226 243;
-    --color-tertiary-fixed-dim: 192 199 215;
-    --color-on-tertiary-fixed: 21 28 39;
-    --color-on-tertiary-fixed-variant: 64 71 84;
+    --color-tertiary-container: 220 252 231;  /* #dcfce7 */
+    --color-on-tertiary-container: 20 83 45;
+    --color-tertiary-fixed: 240 253 244;
+    --color-tertiary-fixed-dim: 187 247 208;
+    --color-on-tertiary-fixed: 20 83 45;
+    --color-on-tertiary-fixed-variant: 21 128 61;
 
-    --color-error: 186 26 26;
+    --color-error: 220 38 38;                 /* #dc2626 */
     --color-on-error: 255 255 255;
-    --color-error-container: 255 218 214;
-    --color-on-error-container: 147 0 10;
+    --color-error-container: 254 226 226;
+    --color-on-error-container: 127 29 29;
 
-    --color-background: 248 249 255;
-    --color-on-background: 11 28 48;
+    --color-background: 253 250 243;
+    --color-on-background: 17 24 39;
+
+    /* Figma accent swatches, used verbatim by the stat/step cards */
+    --color-accent-yellow: 161 98 7;          /* #a16207 — text-safe form of #ca8a04 */
+    --color-accent-yellow-soft: 254 252 232;  /* #fefce8 */
+    --color-accent-blue: 37 99 235;
+    --color-accent-blue-soft: 239 246 255;    /* #eff6ff */
+    --color-accent-green: 21 128 61;          /* #15803d — text-safe form of #16a34a */
+    --color-accent-green-soft: 240 253 244;   /* #f0fdf4 */
+    --color-accent-peach: 254 215 170;        /* #fed7aa */
   }
 
   .dark {
-    --color-surface: 12 22 38;
-    --color-surface-dim: 12 22 38;
-    --color-surface-bright: 44 54 72;
-    --color-surface-container-lowest: 7 15 27;
-    --color-surface-container-low: 20 30 46;
-    --color-surface-container: 24 34 51;
-    --color-surface-container-high: 35 45 62;
-    --color-surface-container-highest: 46 56 73;
-    --color-surface-variant: 67 71 79;
-    --color-on-surface: 227 232 242;
-    --color-on-surface-variant: 195 198 207;
-    --color-inverse-surface: 227 232 242;
-    --color-inverse-on-surface: 44 54 72;
-    --color-outline: 141 145 153;
-    --color-outline-variant: 67 71 79;
-    --color-surface-tint: 172 199 255;
+    --color-surface: 24 20 16;
+    --color-surface-dim: 32 26 20;
+    --color-surface-bright: 46 38 30;
+    --color-surface-container-lowest: 18 15 12;
+    --color-surface-container-low: 32 26 20;
+    --color-surface-container: 41 33 26;
+    --color-surface-container-high: 52 42 33;
+    --color-surface-container-highest: 64 52 41;
+    --color-surface-variant: 41 33 26;
 
-    --color-primary: 172 199 255;
-    --color-on-primary: 11 42 92;
-    --color-primary-container: 38 70 124;
-    --color-on-primary-container: 215 226 255;
-    --color-inverse-primary: 13 51 104;
-    --color-primary-fixed: 215 226 255;
-    --color-primary-fixed-dim: 172 199 255;
-    --color-on-primary-fixed: 0 26 64;
-    --color-on-primary-fixed-variant: 38 70 124;
+    --color-on-surface: 245 240 232;
+    --color-on-surface-variant: 197 189 178;
+    --color-inverse-surface: 245 240 232;
+    --color-inverse-on-surface: 24 20 16;
+    --color-outline: 138 130 120;
+    --color-outline-variant: 71 62 52;
+    --color-surface-tint: 251 146 60;
+    --color-ink: 245 240 232;
 
-    --color-secondary: 238 192 100;
-    --color-on-secondary: 63 46 0;
-    --color-secondary-container: 93 66 0;
-    --color-on-secondary-container: 255 222 165;
-    --color-secondary-fixed: 255 222 165;
-    --color-secondary-fixed-dim: 238 192 100;
-    --color-on-secondary-fixed: 38 25 0;
-    --color-on-secondary-fixed-variant: 93 66 0;
+    --color-primary: 251 146 60;
+    --color-on-primary: 51 20 0;
+    --color-primary-container: 194 65 12;
+    --color-on-primary-container: 255 255 255;
+    --color-inverse-primary: 154 52 18;
+    --color-primary-fixed: 124 45 18;
+    --color-primary-fixed-dim: 154 52 18;
+    --color-on-primary-fixed: 255 237 213;
+    --color-on-primary-fixed-variant: 254 215 170;
 
-    --color-tertiary: 192 199 215;
-    --color-on-tertiary: 42 49 64;
-    --color-tertiary-container: 64 71 84;
-    --color-on-tertiary-container: 220 226 243;
-    --color-tertiary-fixed: 220 226 243;
-    --color-tertiary-fixed-dim: 192 199 215;
-    --color-on-tertiary-fixed: 21 28 39;
-    --color-on-tertiary-fixed-variant: 64 71 84;
+    --color-secondary: 147 197 253;
+    --color-on-secondary: 12 34 76;
+    --color-secondary-container: 30 58 138;
+    --color-on-secondary-container: 219 234 254;
+    --color-secondary-fixed: 30 58 138;
+    --color-secondary-fixed-dim: 30 64 175;
+    --color-on-secondary-fixed: 219 234 254;
+    --color-on-secondary-fixed-variant: 191 219 254;
 
-    --color-error: 255 180 171;
-    --color-on-error: 105 0 5;
-    --color-error-container: 147 0 10;
-    --color-on-error-container: 255 218 214;
+    --color-tertiary: 134 239 172;
+    --color-on-tertiary: 5 46 22;
+    --color-tertiary-container: 22 101 52;
+    --color-on-tertiary-container: 220 252 231;
+    --color-tertiary-fixed: 22 101 52;
+    --color-tertiary-fixed-dim: 21 128 61;
+    --color-on-tertiary-fixed: 220 252 231;
+    --color-on-tertiary-fixed-variant: 187 247 208;
 
-    --color-background: 12 22 38;
-    --color-on-background: 227 232 242;
+    --color-error: 252 165 165;
+    --color-on-error: 69 10 10;
+    --color-error-container: 127 29 29;
+    --color-on-error-container: 254 226 226;
+
+    --color-background: 24 20 16;
+    --color-on-background: 245 240 232;
+
+    --color-accent-yellow: 253 224 71;
+    --color-accent-yellow-soft: 45 37 15;
+    --color-accent-blue: 147 197 253;
+    --color-accent-blue-soft: 23 32 51;
+    --color-accent-green: 134 239 172;
+    --color-accent-green-soft: 18 38 25;
+    --color-accent-peach: 124 45 18;
   }
 
   html {
@@ -136,9 +167,32 @@
     @apply bg-background text-on-background font-body antialiased;
   }
 
-  /* The design brief asks for hairline strokes rather than shadows; a visible focus
-     ring is still non-negotiable for SC-007's keyboard-focus check. */
   :focus-visible {
     @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-surface;
+  }
+
+  /*
+   * The design leans on rotated stickers, blurred colour blobs and offset shadows.
+   * None of it carries meaning, so all of it comes off when the reader has asked for
+   * less motion — and, more importantly, the page's text must never depend on a
+   * transform to be readable (spec.md Edge Cases).
+   */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+
+    [data-decoration] {
+      display: none !important;
+    }
+
+    [data-tilt] {
+      transform: none !important;
+    }
   }
 }

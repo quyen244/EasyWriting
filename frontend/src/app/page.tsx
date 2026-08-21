@@ -1,106 +1,54 @@
 import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
 import ComparisonTable from "@/components/landing/ComparisonTable";
-import ExpertReviewCard, { type ExpertReview } from "@/components/landing/ExpertReviewCard";
+import FaqTeaser from "@/components/landing/FaqTeaser";
 import FinalCta from "@/components/landing/FinalCta";
-import HowItWorksStep, { HOW_IT_WORKS_STEPS } from "@/components/landing/HowItWorksStep";
+import FocusAreaSelector from "@/components/landing/FocusAreaSelector";
 import Hero from "@/components/landing/Hero";
-import LearnerReviewCard, { type LearnerReview } from "@/components/landing/LearnerReviewCard";
+import { HowItWorksSection } from "@/components/landing/HowItWorksStep";
 import PricingCard from "@/components/landing/PricingCard";
-import ProblemSection from "@/components/landing/ProblemSection";
+import { TestimonialsSection } from "@/components/landing/TestimonialCard";
+import WhyWriteWiseStats from "@/components/landing/WhyWriteWiseStats";
 import { PRICING_PLANS } from "@/lib/pricing";
 
 /**
- * Landing page (002 T016 + T047, US1 + US5).
+ * WriteWise landing page.
  *
- * Testimonials below are illustrative placeholder copy carried over from the approved
- * mockup, not real quotes from real people. They are marked as such here so nobody
- * later mistakes them for collected feedback — attributing invented praise to a named
- * professional is the kind of thing that has to be a deliberate decision, not an
- * accident of copying a design file.
+ * Section order follows the `writewise` Figma frame (node 1001:2) read top-to-bottom by
+ * y-position, which is worth stating because it differs from the order tasks.md
+ * assumed: the design puts the bold CTA band *before* the FAQ, not after it.
+ *
+ * The design's "SocialProof" strip (five partner logos) is deliberately not built. Its
+ * contents are placeholder marks for companies that have no relationship with this
+ * product; rendering invented partner logos is a claim about other organisations, not a
+ * layout detail. Bring it back when there are real logos and real permission.
  */
-
-const EXPERT_REVIEWS: ExpertReview[] = [
-  {
-    quote:
-      "The band descriptors are applied consistently, and every judgement points back at a specific line in the candidate's own essay.",
-    name: "Illustrative expert quote",
-    title: "Placeholder — awaiting real endorsements",
-  },
-  {
-    quote:
-      "The value is in the turnaround. Students can iterate several times in an evening instead of once a week.",
-    name: "Illustrative expert quote",
-    title: "Placeholder — awaiting real endorsements",
-  },
-  {
-    quote:
-      "It handles the mechanical diagnostics, which frees teaching time for argumentation and structure.",
-    name: "Illustrative expert quote",
-    title: "Placeholder — awaiting real endorsements",
-  },
-];
-
-const LEARNER_REVIEWS: LearnerReview[] = [
-  {
-    quote:
-      "Seeing which sentences the score was actually based on told me more than any general comment had.",
-    name: "Illustrative learner quote — placeholder",
-    progress: "6.0 → 7.5",
-  },
-  {
-    quote:
-      "Being able to write an essay in the morning and know where it stood before work changed how I practised.",
-    name: "Illustrative learner quote — placeholder",
-    progress: "6.5 → 8.0",
-  },
-  {
-    quote:
-      "The per-criterion breakdown showed my grammar was fine and my lexical range was the problem.",
-    name: "Illustrative learner quote — placeholder",
-    progress: "7.0 → 8.0",
-  },
-];
-
 export default function LandingPage() {
   return (
     <>
       <SiteHeader />
       <main>
         <Hero />
-        <ProblemSection />
+        <FocusAreaSelector />
+        <HowItWorksSection />
+        <WhyWriteWiseStats />
         <ComparisonTable />
 
         <section
-          id="how-it-works"
-          className="mx-auto max-w-container px-margin-mobile py-stack-lg md:px-margin-desktop"
-        >
-          <h2 className="font-display text-headline-md text-on-surface">
-            Four steps to a higher score
-          </h2>
-          <p className="mt-stack-sm max-w-2xl font-body text-body-md text-on-surface-variant">
-            Two of these work today. The other two are where the product is going — marked
-            so, rather than implied.
-          </p>
-          <div className="mt-stack-md grid gap-gutter md:grid-cols-2 lg:grid-cols-4">
-            {HOW_IT_WORKS_STEPS.map((step, index) => (
-              <HowItWorksStep key={step.title} step={step} index={index} />
-            ))}
-          </div>
-        </section>
-
-        <section
           id="pricing"
-          className="border-y border-outline-variant bg-surface-container-low"
+          className="bg-gradient-to-br from-surface-container-low to-surface-container py-section-y"
         >
-          <div className="mx-auto max-w-container px-margin-mobile py-stack-lg md:px-margin-desktop">
-            <h2 className="font-display text-headline-md text-on-surface">
-              Transparent pricing
-            </h2>
-            <p className="mt-stack-sm font-body text-body-md text-on-surface-variant">
-              The free plan is a real plan — a full score on all four criteria, once a day.
-            </p>
-            <div className="mt-stack-md grid gap-gutter md:grid-cols-2 lg:grid-cols-4">
+          <div className="mx-auto max-w-container px-margin-mobile">
+            <div className="flex flex-col items-center gap-6 text-center">
+              <h2 className="font-display text-display-xl-mobile text-on-surface md:text-display-xl">
+                Choose your <em className="italic">plan</em>
+              </h2>
+              <p className="max-w-prose font-body text-body-xl font-medium text-on-surface-variant">
+                Simple, transparent pricing. Invest in your score.
+              </p>
+            </div>
+
+            <div className="mt-20 grid items-center gap-8 lg:grid-cols-4">
               {PRICING_PLANS.map((plan) => (
                 <PricingCard key={plan.name} plan={plan} />
               ))}
@@ -108,27 +56,9 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section className="mx-auto max-w-container px-margin-mobile py-stack-lg md:px-margin-desktop">
-          <h2 className="font-display text-headline-md text-on-surface">
-            Built around the published IELTS criteria
-          </h2>
-          <p className="mt-stack-sm font-body text-body-sm text-on-surface-variant">
-            The quotes below are placeholder copy from the design mockup, not collected
-            testimonials.
-          </p>
-          <div className="mt-stack-md grid gap-gutter md:grid-cols-3">
-            {EXPERT_REVIEWS.map((review, i) => (
-              <ExpertReviewCard key={i} review={review} />
-            ))}
-          </div>
-          <div className="mt-gutter grid gap-gutter md:grid-cols-3">
-            {LEARNER_REVIEWS.map((review, i) => (
-              <LearnerReviewCard key={i} review={review} />
-            ))}
-          </div>
-        </section>
-
+        <TestimonialsSection />
         <FinalCta />
+        <FaqTeaser />
       </main>
       <SiteFooter />
     </>

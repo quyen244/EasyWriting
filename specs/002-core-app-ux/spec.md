@@ -15,8 +15,8 @@ retired Stitch HTML mockups. FAQ, workspace, and profile no longer have a spec h
 **Design reference**: Figma file `writewise` (fileKey `JGr2ZuKKC8JEiAIHzNAFLH`), node `1001:2`
 ("Html → Body") — <https://www.figma.com/proto/JGr2ZuKKC8JEiAIHzNAFLH/writewise?node-id=1001-2>,
 read via the Figma MCP connection on 2026-08-21. This is now the source of truth for this page's
-layout and copy, the same role `stitch_writewise_ielts_editorial_saas` played for the retired
-version of this spec (constitution v3.0.0 §Technology Constraints).
+layout and copy.
+
 
 **Input**: User description: "UI/UX cho landing page, dùng thiết kế Figma project 'writewise'."
 

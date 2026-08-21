@@ -1,75 +1,107 @@
 /**
- * WriteWise vs. a traditional tutor (002 T012, FR-002).
+ * "WriteWise vs. Traditional Methods" (Figma node 1001:120).
  *
- * Rendered as a real `<table>`, not the mockup's grid of styled divs: this is tabular
- * data, and a div grid leaves a screen-reader user unable to tell which value belongs
- * to which column.
+ * The design is three offset, tilted cards with hard black shadows rather than a grid,
+ * so this is not a `<table>`: there is no shared row axis to announce. It is three
+ * lists, each headed by what it describes, which is what a screen reader can actually
+ * make sense of here.
+ *
+ * Every WriteWise claim below is one 001-ielts-score-assessment actually ships
+ * (FR-011). "Grammar & vocab fixes" is the design's wording and is kept, because the
+ * grader does comment on grammar and lexis per criterion — it is a description of the
+ * feedback, not a promise of automatic rewriting.
  */
 
-const ROWS: Array<{ dimension: string; writewise: string; tutor: string }> = [
-  {
-    dimension: "Turnaround time",
-    writewise: "Under 60 seconds",
-    tutor: "3–5 days",
-  },
-  {
-    dimension: "Feedback detail",
-    writewise: "Per-criterion, quoted from your essay",
-    tutor: "General end-of-essay notes",
-  },
-  {
-    dimension: "Cost per essay",
-    writewise: "Free daily, or cents on a paid plan",
-    tutor: "$20–$50+",
-  },
-  {
-    dimension: "Availability",
-    writewise: "Any time, no booking",
-    tutor: "Subject to scheduling",
-  },
+const TRADITIONAL = [
+  "Takes 2-5 days for feedback",
+  "Expensive ($20-$50 per essay)",
+  "Subjective scoring",
+];
+
+const OTHER_AI = ["Generic grammar checks", "Not IELTS aligned", "Inaccurate band scores"];
+
+const WRITEWISE = [
+  "Instant feedback (< 1 min)",
+  "Affordable subscription",
+  "Objective scoring",
+  "Grammar & vocab fixes",
 ];
 
 export default function ComparisonTable() {
   return (
-    <section className="mx-auto max-w-container px-margin-mobile py-stack-lg md:px-margin-desktop">
-      <h2 className="font-display text-headline-md text-on-surface">
-        How WriteWise compares
-      </h2>
-      <p className="mt-stack-sm font-body text-body-md text-on-surface-variant">
-        Not a replacement for a good teacher — a way to get the mechanical feedback
-        immediately, so their time goes to the parts that need a human.
-      </p>
+    <section className="bg-surface-variant py-section-y">
+      <div className="mx-auto max-w-container px-margin-mobile">
+        <div className="flex flex-col items-center gap-6 text-center">
+          <h2 className="font-display text-display-xl-mobile text-on-surface md:text-display-xl">
+            WriteWise <em className="italic">vs.</em> Traditional Methods
+          </h2>
+          <p className="max-w-prose font-body text-body-xl font-medium text-on-surface-variant">
+            See why students are switching to AI-powered evaluations.
+          </p>
+        </div>
 
-      <div className="mt-stack-md overflow-x-auto">
-        <table className="w-full min-w-[36rem] border-collapse text-left font-body">
-          <thead>
-            <tr className="border-b border-outline-variant">
-              <th scope="col" className="py-3 pr-4 text-label-caps uppercase text-on-surface-variant">
-                Feature
-              </th>
-              <th scope="col" className="py-3 pr-4 text-label-caps uppercase text-primary">
-                WriteWise
-              </th>
-              <th scope="col" className="py-3 text-label-caps uppercase text-on-surface-variant">
-                Traditional tutors
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {ROWS.map((row) => (
-              <tr key={row.dimension} className="border-b border-outline-variant">
-                <th
-                  scope="row"
-                  className="py-4 pr-4 text-body-md font-medium text-on-surface"
-                >
-                  {row.dimension}
-                </th>
-                <td className="py-4 pr-4 text-body-md text-on-surface">{row.writewise}</td>
-                <td className="py-4 text-body-md text-on-surface-variant">{row.tutor}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="mt-16 grid items-center gap-8 lg:grid-cols-3">
+          <article
+            data-tilt
+            className="-rotate-2 rounded-xl border-2 border-ink bg-accent-green-soft p-8 shadow-brutal"
+          >
+            <h3 className="font-display text-headline-sm text-on-surface">Traditional Teacher</h3>
+            <ul className="mt-6 flex flex-col gap-4">
+              {TRADITIONAL.map((item) => (
+                <li key={item} className="flex gap-3 font-body text-body-md font-medium text-on-surface">
+                  <span aria-hidden="true" className="text-error">
+                    ✕
+                  </span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </article>
+
+          {/* Centrepiece — deliberately larger and ordered first on small screens */}
+          <article className="relative order-first rounded-xl border-4 border-primary bg-surface-container-lowest p-11 shadow-brutal-accent-soft lg:order-none lg:scale-105">
+            <span
+              data-tilt
+              className="absolute -top-4 left-1/2 -translate-x-1/2 -rotate-2 rounded-md bg-inverse-surface px-6 py-2 font-body text-label-caps-lg uppercase text-inverse-on-surface"
+            >
+              Best choice
+            </span>
+            <h3 className="font-display text-headline-md text-primary">WriteWise</h3>
+            <ul className="mt-8 flex flex-col gap-5">
+              {WRITEWISE.map((item) => (
+                <li key={item} className="flex gap-3 font-body text-body-lg font-bold text-on-surface">
+                  <span aria-hidden="true" className="text-tertiary">
+                    ✓
+                  </span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+            <a
+              href="/signup"
+              className="mt-8 block rounded-md border-2 border-ink bg-primary-container px-8 py-4 text-center font-body text-body-md font-bold text-on-primary-container shadow-brutal-sm transition-transform hover:-translate-y-0.5"
+            >
+              Start Improving Now
+            </a>
+          </article>
+
+          <article
+            data-tilt
+            className="rotate-1 rounded-xl border-2 border-ink bg-accent-blue-soft p-8 shadow-brutal"
+          >
+            <h3 className="font-display text-headline-sm text-on-surface">Other AI Tools</h3>
+            <ul className="mt-6 flex flex-col gap-4">
+              {OTHER_AI.map((item) => (
+                <li key={item} className="flex gap-3 font-body text-body-md font-medium text-on-surface">
+                  <span aria-hidden="true" className="font-bold text-accent-yellow">
+                    !
+                  </span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </article>
+        </div>
       </div>
     </section>
   );

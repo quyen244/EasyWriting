@@ -2,49 +2,51 @@ import { expect, test } from "@playwright/test";
 
 import { stubBackend } from "./support/backend";
 
-/** T045 — US5 / FR-003: four steps, with the unbuilt ones honestly marked. */
+/**
+ * US3 / FR-007, FR-008 — the three-step explanation, rewritten for the `writewise`
+ * design. The retired version asserted four steps and a "Problem" section, neither of
+ * which exists in the new design.
+ */
 test.describe("How it works", () => {
   test.beforeEach(async ({ page }) => {
     await stubBackend(page, { signedIn: false });
   });
 
-  test("shows all four steps", async ({ page }) => {
+  test("shows exactly the three designed steps", async ({ page }) => {
     await page.goto("/");
     const section = page.locator("#how-it-works");
-    for (const step of ["Submit", "Get scored", "Learn the fix", "Track trend"]) {
-      await expect(section.getByRole("heading", { name: new RegExp(step, "i") })).toBeVisible();
+    for (const step of ["Analyze", "Evaluate Criteria", "Score & Improve"]) {
+      await expect(section.getByRole("heading", { name: step })).toBeVisible();
     }
   });
 
-  test("marks exactly the two unbuilt steps as coming soon", async ({ page }) => {
+  test("names the four official criteria rather than initials", async ({ page }) => {
     await page.goto("/");
-    await expect(page.locator("#how-it-works").getByText("Coming soon")).toHaveCount(2);
+    const section = page.locator("#how-it-works");
+    for (const criterion of [
+      "Task Achievement",
+      "Task Response",
+      "Coherence & Cohesion",
+      "Lexical Resource",
+      "Grammatical Range & Accuracy",
+    ]) {
+      await expect(section.getByText(criterion, { exact: false })).toBeVisible();
+    }
   });
 
-  test("does not mark the two working steps as future", async ({ page }) => {
-    await page.goto("/");
-    const submit = page
-      .locator("#how-it-works")
-      .getByRole("heading", { name: /^\s*Submit/i });
-    await expect(submit.getByText("Coming soon")).toHaveCount(0);
-  });
-
-  test("the problem section names the three frictions FR-002 lists", async ({ page }) => {
-    await page.goto("/");
-    await expect(page.getByRole("heading", { name: /slow feedback loop/i })).toBeVisible();
-    await expect(page.getByRole("heading", { name: /vague comments/i })).toBeVisible();
-    await expect(page.getByRole("heading", { name: /prohibitive cost/i })).toBeVisible();
-  });
-
-  test("nothing on the landing page implies sentence-level corrections exist today", async ({
+  test("the hero's secondary CTA reaches the section without leaving the page", async ({
     page,
   }) => {
-    // 001 returns per-criterion explanations and evidence quotes, not rewrites. The
-    // landing page must not sell what the product cannot deliver.
     await page.goto("/");
-    const heading = page.locator("#how-it-works").getByRole("heading", {
-      name: /learn the fix/i,
-    });
-    await expect(heading.getByText("Coming soon")).toBeVisible();
+    await page.getByRole("link", { name: "How it works" }).first().click();
+    await expect(page).toHaveURL(/#how-it-works$/);
+    await expect(page.locator("#how-it-works")).toBeVisible();
+  });
+
+  test("nothing on the page promises line-by-line corrections", async ({ page }) => {
+    // 001 returns a band and a per-criterion comment, not per-sentence rewrites. The
+    // Figma copy for step 3 said otherwise and was deliberately narrowed.
+    await page.goto("/");
+    await expect(page.getByText(/line-by-line/i)).toHaveCount(0);
   });
 });
