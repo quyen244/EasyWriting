@@ -7,11 +7,27 @@ import { TESTIMONIALS } from "@/lib/testimonials";
 /** US5 — FR-017, FR-018. */
 describe("Testimonials", () => {
   it("renders every rendered-set testimonial with its name and track (FR-017)", () => {
-    render(<TestimonialsSection />);
+    // Each quote is split around a <mark>, so it is matched against the blockquote's
+    // joined text rather than a single node.
+    const { container } = render(<TestimonialsSection />);
+    const quotes = Array.from(container.querySelectorAll("blockquote")).map(
+      (el) => el.textContent ?? "",
+    );
+
     for (const t of TESTIMONIALS) {
       expect(screen.getByText(t.name)).toBeInTheDocument();
-      expect(screen.getByText(new RegExp(t.quote.slice(0, 30)))).toBeInTheDocument();
+      expect(quotes.some((q) => q.includes(t.quote.slice(0, 30)))).toBe(true);
     }
+  });
+
+  it("highlights a phrase inside each quote, and that phrase is really in it", () => {
+    // The highlight is stored separately from the quote; if the two drift apart the
+    // <mark> would silently render nothing and the sentence would lose a fragment.
+    for (const t of TESTIMONIALS) {
+      expect(t.quote).toContain(t.highlight);
+    }
+    const { container } = render(<TestimonialsSection />);
+    expect(container.querySelectorAll("mark").length).toBe(TESTIMONIALS.length);
   });
 
   it("shows at least three testimonials (FR-017)", () => {

@@ -5,6 +5,7 @@ import FaqTeaser from "@/components/landing/FaqTeaser";
 import FinalCta from "@/components/landing/FinalCta";
 import FocusAreaSelector from "@/components/landing/FocusAreaSelector";
 import Hero from "@/components/landing/Hero";
+import TrustStrip from "@/components/landing/TrustStrip";
 import { HowItWorksSection } from "@/components/landing/HowItWorksStep";
 import PricingCard from "@/components/landing/PricingCard";
 import { TestimonialsSection } from "@/components/landing/TestimonialCard";
@@ -18,10 +19,9 @@ import { PRICING_PLANS } from "@/lib/pricing";
  * y-position, which is worth stating because it differs from the order tasks.md
  * assumed: the design puts the bold CTA band *before* the FAQ, not after it.
  *
- * The design's "SocialProof" strip (five partner logos) is deliberately not built. Its
- * contents are placeholder marks for companies that have no relationship with this
- * product; rendering invented partner logos is a claim about other organisations, not a
- * layout detail. Bring it back when there are real logos and real permission.
+ * The reference's "SocialProof" strip is built as `TrustStrip`, but with its contents
+ * replaced — see that file for why five real organisations' trademarks could not ship
+ * here.
  */
 export default function LandingPage() {
   return (
@@ -29,6 +29,7 @@ export default function LandingPage() {
       <SiteHeader />
       <main>
         <Hero />
+        <TrustStrip />
         <FocusAreaSelector />
         <HowItWorksSection />
         <WhyWriteWiseStats />
@@ -48,9 +49,9 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div className="mt-20 grid items-center gap-8 lg:grid-cols-4">
-              {PRICING_PLANS.map((plan) => (
-                <PricingCard key={plan.name} plan={plan} />
+            <div className="mt-20 grid grid-cols-1 items-stretch gap-8 md:grid-cols-2 lg:grid-cols-4">
+              {PRICING_PLANS.map((plan, i) => (
+                <PricingCard key={plan.name} plan={plan} index={i} />
               ))}
             </div>
           </div>

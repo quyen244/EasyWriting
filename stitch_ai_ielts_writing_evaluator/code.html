@@ -1,0 +1,702 @@
+<!DOCTYPE html><html lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>WriteWise - AI IELTS Evaluator</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style>
+    /* Custom styles for specific typography and layout tweaks */
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Inter:wght@400;500;600&family=Caveat:wght@600;700&display=swap');
+
+    body {
+      background-color: #FDFBF7; /* Warm cream background */
+      font-family: 'Inter', sans-serif;
+    }
+
+    h1, h2, h3, .serif-font {
+      font-family: 'Playfair Display', serif;
+    }
+
+    .handwritten {
+      font-family: 'Caveat', cursive;
+    }
+
+    @keyframes wobble {
+      0%, 100% {
+        transform: rotate(-1deg) translateX(-5px);
+      }
+      50% {
+        transform: rotate(1deg) translateX(5px);
+      }
+    }
+    
+    .animate-wobble {
+      animation: wobble 6s ease-in-out infinite;
+      transform-origin: bottom center;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(100px) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-400px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .animate-float {
+      animation: floatUp linear infinite;
+    }
+
+    .float-1 { animation-duration: 12s; animation-delay: 0s; }
+    .float-2 { animation-duration: 15s; animation-delay: 2s; }
+    .float-3 { animation-duration: 10s; animation-delay: 4s; }
+    .float-4 { animation-duration: 14s; animation-delay: 1s; }
+    .float-5 { animation-duration: 18s; animation-delay: 5s; }
+    
+    .organic-shape-1 {
+      border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    }
+    
+    .organic-shape-2 {
+      border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+    }
+
+  </style>
+<link data-snapdom="injected-import" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&amp;family=Inter:wght@400;500;600&amp;family=Caveat:wght@600;700&amp;display=swap" rel="stylesheet"></head>
+<body class="antialiased text-gray-900">
+<!-- BEGIN: Navigation -->
+<nav class="container mx-auto px-6 py-6 flex justify-between items-center relative z-50">
+<div class="flex items-center space-x-2">
+<!-- Logo placeholder -->
+<div class="bg-orange-500 w-8 h-8 rounded flex items-center justify-center text-white font-bold text-xl">
+        W
+      </div>
+<span class="font-bold text-xl tracking-tight">WriteWise</span>
+</div>
+<div class="hidden md:flex items-center space-x-8 font-medium text-gray-600">
+<a class="hover:text-gray-900 transition-colors" href="#">Academic</a>
+<a class="hover:text-gray-900 transition-colors" href="#">General Training</a>
+<a class="hover:text-gray-900 transition-colors" href="#">Pricing</a>
+<a class="hover:text-gray-900 transition-colors" href="#">Resources</a>
+</div>
+<div class="flex items-center space-x-4">
+<a class="text-gray-600 font-medium hover:text-gray-900 transition-colors" href="#">Login</a>
+<a class="bg-[#ff7a38] text-white px-6 py-2.5 rounded-md font-medium hover:bg-orange-600 transition-colors shadow-sm" href="#">
+        Join now
+      </a>
+</div>
+</nav>
+<!-- END: Navigation -->
+<!-- BEGIN: MainHero -->
+<main class="container mx-auto px-6 pt-8 pb-12 lg:pt-12 lg:pb-16 flex flex-col lg:flex-row items-center relative overflow-hidden">
+<!-- Left Content: Typography and CTAs -->
+<div class="w-full lg:w-1/2 z-10 lg:pr-12 relative flex flex-col">
+<img alt="Star sticker" class="absolute -top-12 -left-8 w-12 h-12 z-20 animate-float float-1 pointer-events-none opacity-80" src="https://lh3.googleusercontent.com/aida/AP1WRLtOijwG5WPMBtLupi0CcT9-yXSKlATpjX6TnSy2mBWW4f_quC2Dg4PncDltbFackbT9kpnZGr-H8yDGfg8wVc6YqTM3CPnuSJuE2Ks5U56RSG6E_hT2n8tnWFd4tzN0w1z9-oXfXercu523eGkS0ByTJ5zSOw0S9p9i6ESWJRXCZ1lgoBzXzvzQNxUkiyxlPcmRFtjIKWvphW11iZ0YG6PkN5t__02nWO5XR4zM-MtTEqy-36TeOZmDqA">
+<h1 class="text-5xl lg:text-7xl font-bold mb-6 text-gray-900 leading-[1.1] relative">
+        Master your IELTS Writing with <br class="hidden lg:block">
+<span class="italic font-normal">AI-powered feedback</span>
+</h1>
+<p class="text-lg text-gray-700 mb-8 max-w-lg leading-relaxed">
+        Get instant, examiner-grade evaluations and personalized tips to boost your band score. When and where you need it most.
+      </p>
+<div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-12">
+<a class="bg-[#ff7a38] text-white px-8 py-3.5 rounded-md font-semibold text-lg hover:bg-orange-600 transition-colors shadow-md text-center" href="#">
+          Get started for free
+        </a>
+<a class="bg-white text-gray-900 border border-gray-200 px-8 py-3.5 rounded-md font-semibold text-lg hover:bg-gray-50 transition-colors shadow-sm text-center" href="#">
+          How it works
+        </a>
+</div>
+<div class="flex items-center justify-start mt-auto">
+<div class="bg-blue-600 text-white font-bold px-2 py-1 transform -rotate-2 inline-block text-sm">Trusted</div>
+<span class="ml-2 text-lg italic font-serif">by students worldwide</span>
+<svg class="w-6 h-6 ml-2 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 8l4 4m0 0l-4 4m4-4H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+</div>
+<!-- Right Content: Workflow Animation -->
+<div class="w-full lg:w-1/2 z-10 relative mt-16 lg:mt-0">
+<div class="absolute top-0 right-0 w-72 h-72 bg-yellow-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-pulse"></div>
+<div class="absolute bottom-0 left-10 w-72 h-72 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-pulse" style="animation-delay: 2s;"></div>
+<img alt="Dot sticker" class="absolute top-1/4 right-8 w-8 h-8 z-20 pointer-events-none animate-float float-2" src="https://lh3.googleusercontent.com/aida/AEtjO1X2G145h2Leq2l5jqCVQr_Luynn9dckfrQIbcDbJzsQ_MG186GUG1gjmqQdhgvIPBaeiinJYCtwgFA_ovw4YhFMPkgUKesXt8e24ACy7jpbnC71gKVM_bCoK3TUkcrhV8HIkM1a6GwFx1bd0Cpctoaqjs4zk0-uvr2X4szJ896JgCbXWJnt-NLmSJYkFvYJ_4TJdoGVV3H3lA_Tu4YqBEHGJqbI7k48JJcXLvxjaMSj-uh2szWI20H9ca8">
+</div>
+</main>
+<!-- END: MainHero -->
+<!-- BEGIN: SocialProof -->
+<section class="container mx-auto px-6 pb-24 relative z-20">
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8 flex flex-wrap justify-center lg:justify-between items-center opacity-70 grayscale gap-8 lg:gap-4">
+<!-- Placeholder Logos for Partners -->
+<div class="p-2"><img alt="British Council Logo" class="h-8 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAALMQwgXSM4wDMoXr2OoaQCqODS7IGhdIpC1y6GMVxrjnMhxXJZGp-AWNB4nBlOEKqJ06OIjC9_vZtaLfk05nwDsQbzu5wJ0NQSoZsPbUmf-OZFP3zlQ74SxHoLP1FtbHmcYjvpkM78RAj94mlXvAQeY9xJKqeMw7yxAMqzMx-KzpVoBmXKuQNEUuB8R03h3gqcK0u3LxBYrk_BcUYAOLW-35xhORv2DxiSxeueaUzvewHBVyY4-PR"></div>
+<div class="p-2"><img alt="IDP Logo" class="h-8 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7WZFpgNXbwpvOKBU_KTCl-AoQCPl3pmqXn933joYP2OL0u_BCthdPurkpiQSUSQyfBfCBc0ie7NZzSc1tyit8i5dX5sSVoKsYvarZEUPNqHs7C0Q4Bo-fjPkR0cEK3tOkazVThlyxLGRgeFOAY4tQGHUHXMGiQQoTECnV9iHJdbIUr-EY6eozvn7wxR7ZJxgMTJFL-uZq2eKG6iFC3DIlqy9XgAITerDu0xh9g1qXDN_1DJCkb3C7"></div>
+<div class="p-2"><img alt="Cambridge Logo" class="h-8 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAm9NI1vDnFPbv9ueMW_TSq_BVslyl87rPGBjWZQG10c7V_WKdAiMRpOFoRCBwKhelLBAHvOFnwWdwUktgwhvLcKljTqCtPH7iUN1m_39wHdrfnYLXAyy2UItnZGDd_nVGJCU0ErPLgomDo1CmMdbj3wvUwhMGiPEvkUpjvTkwtSfy84iGkk0E1dUa2lou4vb9vfeM5bBM_8Fmh-fw1vR517vVjWossZJDTGtc9ptGQriwRsOe7b4ok"></div>
+<div class="p-2 hidden md:block"><img alt="Oxford Logo" class="h-8 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmUOPXJWX3AgwKj6lmdrfQ0jeAuL353PAKOzkgR7pIWrYrx9kmjjXSjAvyJ_Od0z5w2DjSCZe2ys-Zqs-1j0mRRu6YgHYEPNHHnx1b8cKvQPikv37Nw522O2VZdLFp8JfG1dR2Yf5xI5NdaYhO3_9m9WmRNMt2HEopVsGRtvRfv53KN4jcX7zDSQrfZDApxkIbiXJfaLLsEBS9YmZmXU4KDIBXwmHP5uEls01RhfOZjUZqzusBAZ5h"></div>
+<div class="p-2 hidden lg:block"><img alt="Pearson Logo" class="h-8 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8zoLxwcAo75p1h_AN-2fLDb2XPd1sa-5L2eQaH3uQmOPh0DtQQ1oqv_dgXFUo2Z3rDbNA2q5asqUo3sVQF7jGDb3Kx1sdohuNqFDPJf0ruWp3vV9i8u_S1E3Oazy7_8gkhywiFJkMmGbBIkqOKnTztAtwND259xrs4UPPhiOktZsM33tYR-F4TVc0N9jNcWsk6_wVWPmCj92sYzE3yU8GsCgGp45dneF3hP0aiR04L6YyWbqOuF1N"></div>
+</div>
+</section>
+<!-- END: SocialProof -->
+<!-- BEGIN: Skill Selection -->
+<section class="container mx-auto px-6 py-16 relative">
+<div class="text-center mb-16">
+<h2 class="text-4xl lg:text-5xl font-bold mb-4">Choose your <span class="italic font-normal">focus area</span></h2>
+<p class="text-gray-600 max-w-xl mx-auto text-lg">Select the skill you want to improve today with targeted AI feedback.</p>
+</div>
+<div class="flex flex-col md:flex-row justify-center items-center gap-12 max-w-4xl mx-auto">
+<!-- Writing Choice -->
+<div class="relative group cursor-pointer w-full md:w-1/2">
+<div class="absolute inset-0 bg-orange-200 transform -rotate-3 organic-shape-1 scale-105 transition-transform group-hover:scale-110 opacity-70"></div>
+<div class="bg-white p-10 relative z-10 organic-shape-1 shadow-xl border-2 border-orange-100 flex flex-col items-center text-center h-full transform transition-transform group-hover:-translate-y-2">
+<div class="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mb-6">
+<svg class="w-10 h-10 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<h3 class="text-3xl font-bold mb-3">Writing</h3>
+<p class="text-gray-600 mb-6">Task 1 &amp; Task 2 essays with detailed criteria breakdown.</p>
+<span class="handwritten text-2xl text-orange-500 font-bold transform -rotate-6 inline-block mt-auto">Start practicing →</span>
+</div>
+</div>
+<!-- Speaking Choice -->
+<div class="relative group cursor-pointer w-full md:w-1/2">
+<div class="absolute inset-0 bg-blue-200 transform rotate-3 organic-shape-2 scale-105 transition-transform group-hover:scale-110 opacity-70"></div>
+<div class="bg-white p-10 relative z-10 organic-shape-2 shadow-xl border-2 border-blue-100 flex flex-col items-center text-center h-full transform transition-transform group-hover:-translate-y-2">
+<div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mb-6">
+<svg class="w-10 h-10 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<h3 class="text-3xl font-bold mb-3">Speaking</h3>
+<p class="text-gray-600 mb-6">Mock interviews with fluency and pronunciation analysis.</p>
+<span class="handwritten text-2xl text-blue-500 font-bold transform rotate-6 inline-block mt-auto">Coming soon</span>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Skill Selection -->
+<!-- BEGIN: How It Works -->
+<section class="py-24 relative overflow-hidden bg-white border-y border-gray-100">
+<div class="container mx-auto px-6">
+<div class="mb-20 text-center relative z-10">
+<span class="handwritten text-2xl text-orange-500 font-bold transform -rotate-3 inline-block mb-2">Simple process</span>
+<h2 class="text-4xl lg:text-5xl font-bold">How <span class="italic font-normal">WriteWise</span> works</h2>
+</div>
+<div class="max-w-5xl mx-auto relative">
+<!-- Curved Path connecting steps (visible on lg screens) -->
+<svg class="absolute top-1/2 left-0 w-full h-full hidden lg:block -translate-y-1/2 z-0 pointer-events-none text-gray-200" fill="none" preserveAspectRatio="none" stroke="currentColor" stroke-dasharray="10 10" stroke-width="4" viewBox="0 0 1000 200">
+<path d="M50,100 C250,-50 400,250 600,100 C750,-20 850,200 950,100"></path>
+</svg>
+<div class="flex flex-col lg:flex-row justify-between relative z-10 gap-16 lg:gap-8">
+<!-- Step 1 -->
+<div class="flex flex-col items-center text-center w-full lg:w-1/3 relative">
+<div class="text-6xl font-black text-gray-100 absolute -top-8 -left-4 z-0 tracking-tighter">01</div>
+<div class="bg-yellow-100 w-24 h-24 rounded-full flex items-center justify-center mb-6 relative z-10 shadow-inner border-4 border-white">
+<svg class="w-10 h-10 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<h3 class="text-2xl font-bold mb-3 z-10">Analyze</h3>
+<p class="text-gray-600 z-10 leading-relaxed">Paste your essay or take a guided practice test. Our AI reads your text in milliseconds.</p>
+</div>
+<!-- Step 2 -->
+<div class="flex flex-col items-center text-center w-full lg:w-1/3 relative lg:translate-y-16">
+<div class="text-6xl font-black text-gray-100 absolute -top-8 -left-4 z-0 tracking-tighter">02</div>
+<div class="bg-blue-100 w-24 h-24 rounded-full flex items-center justify-center mb-6 relative z-10 shadow-inner border-4 border-white">
+<svg class="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<h3 class="text-2xl font-bold mb-3 z-10">Evaluate Criteria</h3>
+<p class="text-gray-600 z-10 leading-relaxed">We assess against the official 4 marking criteria: TR, CC, LR, and GRA.</p>
+</div>
+<!-- Step 3 -->
+<div class="flex flex-col items-center text-center w-full lg:w-1/3 relative">
+<div class="text-6xl font-black text-gray-100 absolute -top-8 -left-4 z-0 tracking-tighter">03</div>
+<div class="bg-green-100 w-24 h-24 rounded-full flex items-center justify-center mb-6 relative z-10 shadow-inner border-4 border-white">
+<svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<h3 class="text-2xl font-bold mb-3 z-10">Score &amp; Improve</h3>
+<p class="text-gray-600 z-10 leading-relaxed">Get your estimated band score alongside line-by-line actionable corrections.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: How It Works -->
+<!-- BEGIN: Why WriteWise -->
+<section class="py-24 relative overflow-hidden">
+<!-- Background decoration -->
+<div class="absolute right-0 top-0 w-1/3 h-full bg-orange-50 -z-10 rounded-l-full opacity-50 hidden lg:block"></div>
+<div class="container mx-auto px-6">
+<div class="flex flex-col lg:flex-row items-center gap-16">
+<!-- Left Content -->
+<div class="w-full lg:w-5/12 relative">
+<h2 class="text-4xl lg:text-5xl font-bold mb-6 leading-tight">
+          Why choose <br> <span class="italic font-normal">WriteWise?</span>
+</h2>
+<p class="text-lg text-gray-700 mb-8 leading-relaxed">
+          Don't wait days for expensive tutors. Get immediate, highly accurate feedback modeled on thousands of real examiner corrections.
+        </p>
+<!-- Stickers -->
+<div class="absolute -top-10 -left-10 transform -rotate-12 hidden md:block">
+<div class="bg-black text-white handwritten px-4 py-2 text-xl shadow-lg border-2 border-white rounded-md">Examiner Grade</div>
+</div>
+<img alt="Star sticker" class="absolute right-10 bottom-10 w-8 h-8 z-20 animate-float float-3 pointer-events-none" src="https://lh3.googleusercontent.com/aida/AP1WRLtOijwG5WPMBtLupi0CcT9-yXSKlATpjX6TnSy2mBWW4f_quC2Dg4PncDltbFackbT9kpnZGr-H8yDGfg8wVc6YqTM3CPnuSJuE2Ks5U56RSG6E_hT2n8tnWFd4tzN0w1z9-oXfXercu523eGkS0ByTJ5zSOw0S9p9i6ESWJRXCZ1lgoBzXzvzQNxUkiyxlPcmRFtjIKWvphW11iZ0YG6PkN5t__02nWO5XR4zM-MtTEqy-36TeOZmDqA">
+</div>
+<!-- Right Content: Stats Collage -->
+<div class="w-full lg:w-7/12 relative">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
+<!-- Card 1 -->
+<div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 transform transition-transform hover:-translate-y-1 relative overflow-hidden group -rotate-1">
+<div class="text-4xl font-bold text-orange-500 mb-2">+1.5</div>
+<div class="font-bold text-lg mb-2">Improve Your Score Faster</div>
+<p class="text-black mb-6 text-sm">For beginners trying IELTS</p>
+</div>
+<!-- Card 2 -->
+<div class="bg-blue-50 p-8 rounded-2xl shadow-sm border border-blue-100 transform transition-transform hover:-translate-y-1 md:translate-y-8 -rotate-1">
+<div class="text-4xl font-bold text-blue-600 mb-2">100+</div>
+<div class="font-bold text-lg mb-2">Detailed Actionable Feedback</div>
+<p class="text-gray-600 text-sm">Suggestions per essay, covering grammar, vocabulary, and structure.</p>
+<img alt="Star sticker" class="absolute -top-8 -right-6 w-10 h-10 z-20 animate-pulse" src="https://lh3.googleusercontent.com/aida/AP1WRLtOijwG5WPMBtLupi0CcT9-yXSKlATpjX6TnSy2mBWW4f_quC2Dg4PncDltbFackbT9kpnZGr-H8yDGfg8wVc6YqTM3CPnuSJuE2Ks5U56RSG6E_hT2n8tnWFd4tzN0w1z9-oXfXercu523eGkS0ByTJ5zSOw0S9p9i6ESWJRXCZ1lgoBzXzvzQNxUkiyxlPcmRFtjIKWvphW11iZ0YG6PkN5t__02nWO5XR4zM-MtTEqy-36TeOZmDqA"></div>
+<!-- Card 3 -->
+<div class="bg-green-50 p-8 rounded-2xl shadow-sm border border-green-100 transform transition-transform hover:-translate-y-1 rotate-1">
+<div class="text-4xl font-bold text-green-600 mb-2">&lt;1 min</div>
+<div class="font-bold text-lg mb-2">Instant Scoring</div>
+<p class="text-gray-600 text-sm">No waiting. Get your complete evaluation and band score immediately.</p>
+</div>
+<!-- Card 4 -->
+<div class="bg-yellow-50 p-8 rounded-2xl shadow-sm border border-yellow-100 transform transition-transform hover:-translate-y-1 md:translate-y-8 relative">
+<div class="text-4xl font-bold text-yellow-600 mb-2">5.0+</div>
+<div class="font-bold text-lg mb-2">For Every Level</div>
+<p class="text-black mb-6 text-sm">Pay once, use forever</p>
+<img alt="Dot sticker" class="absolute -right-4 -top-4 w-6 h-6 z-20 pointer-events-none" src="https://lh3.googleusercontent.com/aida/AEtjO1X2G145h2Leq2l5jqCVQr_Luynn9dckfrQIbcDbJzsQ_MG186GUG1gjmqQdhgvIPBaeiinJYCtwgFA_ovw4YhFMPkgUKesXt8e24ACy7jpbnC71gKVM_bCoK3TUkcrhV8HIkM1a6GwFx1bd0Cpctoaqjs4zk0-uvr2X4szJ896JgCbXWJnt-NLmSJYkFvYJ_4TJdoGVV3H3lA_Tu4YqBEHGJqbI7k48JJcXLvxjaMSj-uh2szWI20H9ca8">
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Why WriteWise -->
+<!-- BEGIN: Comparison -->
+<section class="py-24 relative bg-[#fdfaf3] text-gray-900 overflow-hidden">
+<div class="container mx-auto px-6 relative z-10">
+<div class="text-center mb-16"><h2 class="text-5xl lg:text-7xl font-bold mb-6 leading-tight">WriteWise <span class="italic font-normal">vs.</span> <br> Traditional Methods</h2><p class="text-gray-600 max-w-xl mx-auto text-xl font-medium">See why students are switching to AI-powered evaluations.</p></div>
+<div class="relative max-w-6xl mx-auto mt-12">
+<!-- Decorative Stickers -->
+<div class="absolute -top-12 -left-8 z-30 transform -rotate-12">
+<img alt="Star sticker" class="w-16 h-16" src="https://lh3.googleusercontent.com/aida/AP1WRLtOijwG5WPMBtLupi0CcT9-yXSKlATpjX6TnSy2mBWW4f_quC2Dg4PncDltbFackbT9kpnZGr-H8yDGfg8wVc6YqTM3CPnuSJuE2Ks5U56RSG6E_hT2n8tnWFd4tzN0w1z9-oXfXercu523eGkS0ByTJ5zSOw0S9p9i6ESWJRXCZ1lgoBzXzvzQNxUkiyxlPcmRFtjIKWvphW11iZ0YG6PkN5t__02nWO5XR4zM-MtTEqy-36TeOZmDqA">
+</div>
+<div class="absolute -bottom-8 right-1/4 z-30 transform rotate-12">
+<img alt="Dot sticker" class="w-10 h-10" src="https://lh3.googleusercontent.com/aida/AEtjO1X2G145h2Leq2l5jqCVQr_Luynn9dckfrQIbcDbJzsQ_MG186GUG1gjmqQdhgvIPBaeiinJYCtwgFA_ovw4YhFMPkgUKesXt8e24ACy7jpbnC71gKVM_bCoK3TUkcrhV8HIkM1a6GwFx1bd0Cpctoaqjs4zk0-uvr2X4szJ896JgCbXWJnt-NLmSJYkFvYJ_4TJdoGVV3H3lA_Tu4YqBEHGJqbI7k48JJcXLvxjaMSj-uh2szWI20H9ca8">
+</div>
+<div class="flex flex-col lg:flex-row gap-6 items-center lg:items-stretch">
+<!-- Traditional Teacher Card -->
+<div class="flex-1 bg-green-50 p-8 rounded-2xl border-2 border-black transform -rotate-2 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] relative z-10">
+<h3 class="text-2xl font-bold mb-6 serif-font">Traditional Teacher</h3>
+<ul class="space-y-4">
+<li class="flex items-start">
+<span class="text-red-500 font-bold mr-3">✕</span>
+<span class="text-gray-700 font-medium">Takes 2-5 days for feedback</span>
+</li>
+<li class="flex items-start">
+<span class="text-red-500 font-bold mr-3">✕</span>
+<span class="text-gray-700 font-medium">Expensive ($20-$50 per essay)</span>
+</li>
+<li class="flex items-start">
+<span class="text-red-500 font-bold mr-3">✕</span>
+<span class="text-gray-700 font-medium">Subjective scoring</span>
+</li>
+</ul>
+</div>
+<!-- WriteWise Card (Centerpiece) -->
+<div class="flex-1 bg-white p-10 rounded-2xl border-4 border-orange-500 transform scale-105 lg:-translate-y-8 shadow-[12px_12px_0px_0px_rgba(255,122,56,0.3)] relative z-20">
+<div class="absolute -top-6 left-1/2 -translate-x-1/2 bg-black text-white font-bold px-6 py-2 rounded-md text-sm uppercase tracking-widest -rotate-2">Best Choice</div>
+<h3 class="text-4xl font-bold mb-8 serif-font text-orange-500">WriteWise</h3>
+<ul class="space-y-5 mb-10">
+<li class="flex items-start">
+<span class="text-green-600 font-bold mr-3">✓</span>
+<span class="font-bold text-lg">Instant feedback (&lt; 1 min)</span>
+</li>
+<li class="flex items-start">
+<span class="text-green-600 font-bold mr-3">✓</span>
+<span class="font-bold text-lg">Affordable subscription</span>
+</li>
+<li class="flex items-start">
+<span class="text-green-600 font-bold mr-3">✓</span>
+<span class="font-bold text-lg">Objective scoring</span>
+</li>
+<li class="flex items-start">
+<span class="text-green-600 font-bold mr-3">✓</span>
+<span class="font-bold text-lg">Grammar &amp; vocab fixes</span>
+</li>
+</ul>
+<a class="block bg-[#ff7a38] text-white px-8 py-4 rounded-md font-bold text-center hover:bg-orange-600 transition-transform hover:scale-105 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]" href="#">
+        Start Improving Now
+      </a>
+</div>
+<!-- Other AI Tools Card -->
+<div class="flex-1 bg-blue-50 p-8 rounded-2xl border-2 border-black transform rotate-1 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] relative z-10">
+<h3 class="text-2xl font-bold mb-6 serif-font">Other AI Tools</h3>
+<ul class="space-y-4">
+<li class="flex items-start">
+<span class="text-yellow-600 font-bold mr-3">!</span>
+<span class="text-gray-700 font-medium">Generic grammar checks</span>
+</li>
+<li class="flex items-start">
+<span class="text-yellow-600 font-bold mr-3">!</span>
+<span class="text-gray-700 font-medium">Not IELTS aligned</span>
+</li>
+<li class="flex items-start">
+<span class="text-yellow-600 font-bold mr-3">!</span>
+<span class="text-gray-700 font-medium">Inaccurate band scores</span>
+</li>
+</ul>
+<div class="absolute -bottom-6 -right-4 transform rotate-12">
+<img alt="Star sticker" class="w-12 h-12 opacity-50" src="https://lh3.googleusercontent.com/aida/AP1WRLtOijwG5WPMBtLupi0CcT9-yXSKlATpjX6TnSy2mBWW4f_quC2Dg4PncDltbFackbT9kpnZGr-H8yDGfg8wVc6YqTM3CPnuSJuE2Ks5U56RSG6E_hT2n8tnWFd4tzN0w1z9-oXfXercu523eGkS0ByTJ5zSOw0S9p9i6ESWJRXCZ1lgoBzXzvzQNxUkiyxlPcmRFtjIKWvphW11iZ0YG6PkN5t__02nWO5XR4zM-MtTEqy-36TeOZmDqA">
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Comparison -->
+<!-- BEGIN: Pricing Section -->
+<section class="py-24 relative overflow-hidden bg-gradient-to-br from-orange-50 to-orange-100">
+<div class="container mx-auto px-6 relative z-10">
+<div class="text-center mb-20">
+<h2 class="text-5xl lg:text-7xl font-bold mb-6 serif-font tracking-tight text-black">Choose your <span class="italic font-normal">plan</span></h2>
+<p class="text-black max-w-xl mx-auto text-xl font-medium">Simple, transparent pricing. Invest in your score.</p>
+</div>
+<div class="relative max-w-7xl mx-auto">
+<!-- Editorial Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 items-stretch max-w-7xl mx-auto"><!-- Free Plan -->
+<div class="bg-white p-8 rounded-xl border border-black shadow-sm flex flex-col h-full -rotate-1">
+<div class="bg-yellow-400 text-black font-bold px-3 py-1 rounded text-xs uppercase tracking-widest mb-4 inline-block w-fit">Start here</div>
+<h3 class="text-2xl font-bold mb-2 serif-font">Free</h3>
+<div class="text-4xl font-bold text-gray-900 mb-4">$0</div>
+<p class="text-black mb-6 text-sm">For beginners trying IELTS</p>
+<ul class="space-y-3 mb-8 text-sm flex-1 text-black">
+<li class="flex items-center"><span class="text-orange-500 mr-2">•</span> 1 turn per day</li>
+<li class="flex items-center"><span class="text-orange-500 mr-2">•</span> Basic AI scoring</li>
+<li class="flex items-center"><span class="text-orange-500 mr-2">•</span> Task 1 &amp; 2 support</li>
+<li class="flex items-center"><span class="text-orange-500 mr-2">•</span> Limited feedback</li>
+</ul>
+<a class="block w-full border border-black text-black py-3 rounded font-bold text-center hover:bg-gray-50 transition-colors" href="#">Get started</a>
+</div><div class="bg-white p-8 rounded-xl border border-black shadow-sm flex flex-col h-full transform rotate-1 relative">
+<div class="bg-blue-100 text-blue-800 font-bold px-3 py-1 rounded text-xs uppercase tracking-widest mb-4 inline-block w-fit">Popular</div>
+<h3 class="text-2xl font-bold mb-2 serif-font">Monthly</h3>
+<div class="text-4xl font-bold text-gray-900 mb-4">$4.99<span class="text-lg font-normal text-gray-500">/mo</span></div>
+<p class="text-black mb-6 text-sm">Flexible for quick prep</p>
+<ul class="space-y-3 mb-8 text-sm flex-1 text-black">
+<li class="flex items-center"><span class="text-orange-500 mr-2">•</span> 10 turns per day</li>
+<li class="flex items-center"><span class="text-orange-500 mr-2">•</span> Full AI scoring</li>
+<li class="flex items-center"><span class="text-orange-500 mr-2">•</span> Detailed feedback</li>
+<li class="flex items-center"><span class="text-orange-500 mr-2">•</span> Email support</li>
+</ul>
+<a class="block w-full border border-black text-black py-3 rounded font-bold text-center hover:bg-gray-50 transition-colors" href="#">Get started</a>
+<img alt="Dot sticker" class="absolute -bottom-4 -right-4 w-8 h-8 z-20" src="https://lh3.googleusercontent.com/aida/AEtjO1X2G145h2Leq2l5jqCVQr_Luynn9dckfrQIbcDbJzsQ_MG186GUG1gjmqQdhgvIPBaeiinJYCtwgFA_ovw4YhFMPkgUKesXt8e24ACy7jpbnC71gKVM_bCoK3TUkcrhV8HIkM1a6GwFx1bd0Cpctoaqjs4zk0-uvr2X4szJ896JgCbXWJnt-NLmSJYkFvYJ_4TJdoGVV3H3lA_Tu4YqBEHGJqbI7k48JJcXLvxjaMSj-uh2szWI20H9ca8">
+</div>
+<!-- Yearly Plan (Focal Point) -->
+<div class="bg-orange-50 p-8 rounded-xl border-2 border-orange-500 shadow-md relative flex flex-col h-full -rotate-1">
+<div class="absolute -top-5 left-1/2 -translate-x-1/2 bg-orange-500 text-white font-bold px-6 py-2 rounded text-sm uppercase tracking-widest">RECOMMENDED</div>
+<h3 class="text-3xl font-bold mb-2 serif-font text-black mt-4">Yearly</h3>
+<div class="text-5xl font-bold text-gray-900 mb-2">$49.9<span class="text-lg font-normal text-gray-500">/year</span></div>
+<div class="bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded inline-block mb-4 w-fit">Save 17%</div>
+<p class="text-black mb-6 font-medium">Best value for achievers</p>
+<ul class="space-y-3 mb-8 flex-1 text-black">
+<li class="flex items-center font-bold"><span class="text-green-600 mr-2">✓</span> Unlimited turns</li>
+<li class="flex items-center"><span class="text-green-600 mr-2">✓</span> Everything in Monthly</li>
+<li class="flex items-center"><span class="text-green-600 mr-2">✓</span> Speaking assessment</li>
+<li class="flex items-center"><span class="text-green-600 mr-2">✓</span> Priority support</li>
+</ul>
+<a class="block w-full bg-[#ff7a38] text-white py-4 rounded font-bold text-xl text-center shadow-sm hover:bg-orange-600 transition-colors" href="#">Get started</a>
+<img alt="Star sticker" class="absolute -top-8 -right-6 w-10 h-10 z-20 animate-pulse" src="https://lh3.googleusercontent.com/aida/AP1WRLtOijwG5WPMBtLupi0CcT9-yXSKlATpjX6TnSy2mBWW4f_quC2Dg4PncDltbFackbT9kpnZGr-H8yDGfg8wVc6YqTM3CPnuSJuE2Ks5U56RSG6E_hT2n8tnWFd4tzN0w1z9-oXfXercu523eGkS0ByTJ5zSOw0S9p9i6ESWJRXCZ1lgoBzXzvzQNxUkiyxlPcmRFtjIKWvphW11iZ0YG6PkN5t__02nWO5XR4zM-MtTEqy-36TeOZmDqA"></div>
+<!-- Lifetime Plan -->
+<div class="bg-white p-8 rounded-xl border border-black shadow-sm flex flex-col h-full rotate-1">
+<div class="bg-blue-600 text-white font-bold px-3 py-1 rounded text-xs uppercase tracking-widest mb-4 inline-block w-fit">Pay once</div>
+<h3 class="text-2xl font-bold mb-2 serif-font">Lifetime</h3>
+<div class="text-4xl font-bold text-gray-900 mb-4">$149.9</div>
+<p class="text-black mb-6 text-sm">Pay once, use forever</p>
+<ul class="space-y-3 mb-8 text-sm flex-1 text-black">
+<li class="flex items-center"><span class="text-orange-500 mr-2">•</span> Unlimited turns forever</li>
+<li class="flex items-center"><span class="text-orange-500 mr-2">•</span> All future features</li>
+<li class="flex items-center"><span class="text-orange-500 mr-2">•</span> VIP support</li>
+</ul>
+<a class="block w-full bg-gray-900 text-white py-3 rounded font-bold text-center hover:bg-gray-800 transition-colors" href="#">Go Lifetime</a>
+</div></div>
+<!-- Static Editorial Decorations -->
+<img alt="Star sticker" class="absolute -left-16 top-1/4 w-12 h-12 opacity-40" src="https://lh3.googleusercontent.com/aida/AP1WRLtOijwG5WPMBtLupi0CcT9-yXSKlATpjX6TnSy2mBWW4f_quC2Dg4PncDltbFackbT9kpnZGr-H8yDGfg8wVc6YqTM3CPnuSJuE2Ks5U56RSG6E_hT2n8tnWFd4tzN0w1z9-oXfXercu523eGkS0ByTJ5zSOw0S9p9i6ESWJRXCZ1lgoBzXzvzQNxUkiyxlPcmRFtjIKWvphW11iZ0YG6PkN5t__02nWO5XR4zM-MtTEqy-36TeOZmDqA">
+<img alt="Dot sticker" class="absolute -right-8 bottom-10 w-10 h-10 opacity-40" src="https://lh3.googleusercontent.com/aida/AEtjO1X2G145h2Leq2l5jqCVQr_Luynn9dckfrQIbcDbJzsQ_MG186GUG1gjmqQdhgvIPBaeiinJYCtwgFA_ovw4YhFMPkgUKesXt8e24ACy7jpbnC71gKVM_bCoK3TUkcrhV8HIkM1a6GwFx1bd0Cpctoaqjs4zk0-uvr2X4szJ896JgCbXWJnt-NLmSJYkFvYJ_4TJdoGVV3H3lA_Tu4YqBEHGJqbI7k48JJcXLvxjaMSj-uh2szWI20H9ca8">
+<svg class="absolute left-1/4 -bottom-12 w-24 h-24 text-orange-200 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 100 100"><path d="M10 50 Q 50 10 90 50" stroke-linecap="round" stroke-width="2"></path></svg>
+</div>
+</div>
+</section>
+<!-- END: Pricing Section -->
+<!-- BEGIN: Testimonials -->
+<section class="py-24 relative bg-[#fdfaf3] overflow-hidden">
+<div class="container mx-auto px-6">
+<div class="text-center mb-16">
+<h2 class="text-4xl lg:text-5xl font-bold mb-4">What <span class="italic font-normal">Students</span> Think</h2>
+<p class="text-gray-600 max-w-xl mx-auto text-lg">Real students. Real essays. Real progress.</p>
+</div>
+<div class="relative max-w-6xl mx-auto mt-12">
+<!-- Featured Testimonial (Nguyễn Minh Anh) -->
+<div class="relative z-20 mb-16 lg:mb-24">
+<div class="bg-white p-10 lg:p-16 rounded-2xl border-2 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] relative overflow-hidden">
+<!-- Large Quote Mark -->
+<div class="absolute -top-4 -left-2 text-[12rem] font-black text-yellow-400 opacity-30 leading-none select-none serif-font">“</div>
+<div class="relative z-10 flex flex-col lg:flex-row gap-12 items-center">
+<div class="flex-1">
+<div class="inline-block bg-green-500 text-white font-black px-6 py-2 rounded-full text-2xl mb-8 shadow-sm transform -rotate-2">
+            6.5 → 7.5
+          </div>
+<blockquote class="text-3xl lg:text-5xl font-bold leading-tight text-gray-900 mb-8 serif-font">
+            "WriteWise completely changed my approach to Task 2. The <span class="bg-yellow-200 px-2">instant feedback</span> helped me identify my repetitive grammar mistakes immediately."
+          </blockquote>
+<div class="flex items-center">
+<div class="w-16 h-16 bg-gray-200 rounded-full mr-4 border-2 border-black overflow-hidden">
+<img alt="Student avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1F_FAzJgRfE9MmHg4_l0740Kf_vpTETtZbetkU1jTqnPRDw8yBGE-yZFvFF7t8xLsmfZVZNtiwX7fqwQ3H6xoEwNtd8oT4rWuhtk8QtbxN5e2v78MepgxgWOp4jAIJQYWUF2q82Wuo4_rycYPSjpUw6XrcwjXmBlUf1kVhdtHMcmukpf_IweFc8nrYkMWw08kNCiTaygAwdfNxJ_loD0e0uDgqvTqqJsPjlYko0EErsNeIL_SflCc">
+</div>
+<div>
+<div class="font-black text-xl">Nguyễn Minh Anh</div>
+<div class="text-gray-600 font-medium">Academic IELTS</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Decorative Stickers -->
+<img alt="Star sticker" class="absolute top-10 right-10 w-16 h-16 opacity-20" src="https://lh3.googleusercontent.com/aida/AP1WRLtOijwG5WPMBtLupi0CcT9-yXSKlATpjX6TnSy2mBWW4f_quC2Dg4PncDltbFackbT9kpnZGr-H8yDGfg8wVc6YqTM3CPnuSJuE2Ks5U56RSG6E_hT2n8tnWFd4tzN0w1z9-oXfXercu523eGkS0ByTJ5zSOw0S9p9i6ESWJRXCZ1lgoBzXzvzQNxUkiyxlPcmRFtjIKWvphW11iZ0YG6PkN5t__02nWO5XR4zM-MtTEqy-36TeOZmDqA">
+</div>
+</div>
+<!-- Supporting Testimonials Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+<!-- Alex Tran -->
+<div class="relative group">
+<div class="absolute inset-0 bg-blue-200 rounded-2xl transform rotate-3 translate-x-2 translate-y-2 -z-10"></div>
+<div class="bg-white p-8 rounded-2xl border-2 border-black shadow-sm transform -rotate-2">
+<div class="flex justify-between items-start mb-6">
+<div class="bg-blue-600 text-white font-bold px-4 py-1 rounded text-lg transform -rotate-3">
+            6.0 → 7.0
+          </div>
+<img alt="Dot sticker" class="w-8 h-8" src="https://lh3.googleusercontent.com/aida/AEtjO1X2G145h2Leq2l5jqCVQr_Luynn9dckfrQIbcDbJzsQ_MG186GUG1gjmqQdhgvIPBaeiinJYCtwgFA_ovw4YhFMPkgUKesXt8e24ACy7jpbnC71gKVM_bCoK3TUkcrhV8HIkM1a6GwFx1bd0Cpctoaqjs4zk0-uvr2X4szJ896JgCbXWJnt-NLmSJYkFvYJ_4TJdoGVV3H3lA_Tu4YqBEHGJqbI7k48JJcXLvxjaMSj-uh2szWI20H9ca8">
+</div>
+<p class="text-xl font-bold mb-8 leading-relaxed italic">"I was stuck at 6.0 for months. Using WriteWise every day for a month gave me the <span class="bg-orange-100 px-1">vocabulary boost</span> I needed to finally hit 7.0."</p>
+<div class="flex items-center">
+<div class="w-12 h-12 bg-gray-200 rounded-full mr-3 border border-black overflow-hidden">
+<img alt="Student avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBiU9f7pBT2cP9BSuHTd5mIIlfgPRqAVyMani9g9RQaW9aBkDTTBzKloiA3PMu06JzSJHsBoX2uMzZQxefETY--90ockPJQggvkQizB9jGyQtj5csVYVQxCqee2l5Gedzsf7n6Z_SvQTtwrzrmOjtb9EglWOuEQa7-v1F4N7ZXuDf02yEHVN6TdcGKAc8gHjyjISjSFy4RlSP39Dew5-Nm-rEIm1oQlVmvLZK9Ag7hC8zHWROtKrLek">
+</div>
+<div>
+<div class="font-bold">Alex Tran</div>
+<div class="text-sm text-gray-500">General Training</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Sarah Nguyen -->
+<div class="relative mt-8 lg:mt-16">
+<div class="absolute inset-0 bg-yellow-100 rounded-2xl transform -rotate-2 translate-x-2 translate-y-2 -z-10"></div>
+<div class="bg-white p-8 rounded-2xl border-2 border-black shadow-sm transform rotate-1">
+<div class="flex justify-between items-start mb-6">
+<div class="bg-yellow-400 text-black font-bold px-4 py-1 rounded text-lg transform rotate-2">
+            7.0 → 8.0
+          </div>
+<img alt="Star sticker" class="w-10 h-10" src="https://lh3.googleusercontent.com/aida/AP1WRLtOijwG5WPMBtLupi0CcT9-yXSKlATpjX6TnSy2mBWW4f_quC2Dg4PncDltbFackbT9kpnZGr-H8yDGfg8wVc6YqTM3CPnuSJuE2Ks5U56RSG6E_hT2n8tnWFd4tzN0w1z9-oXfXercu523eGkS0ByTJ5zSOw0S9p9i6ESWJRXCZ1lgoBzXzvzQNxUkiyxlPcmRFtjIKWvphW11iZ0YG6PkN5t__02nWO5XR4zM-MtTEqy-36TeOZmDqA">
+</div>
+<p class="text-xl font-bold mb-8 leading-relaxed italic">"The nuanced feedback on <span class="bg-blue-100 px-1">Coherence and Cohesion</span> was exactly what I needed to push my score to an 8.0. Highly recommended!"</p>
+<div class="flex items-center">
+<div class="w-12 h-12 bg-gray-200 rounded-full mr-3 border border-black overflow-hidden">
+<img alt="Student avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCR9rLr_1gslZgapXVu05gBRPD-Yww6i1235MqLpJ447D9Fq4MJtSjkYBV4GNaG8VJkbaOfNAdChXbf9r9uAPnmB2k2eplvI8eTfn0OAKlzug1PmC5ppXGLtsN6AuWuIMpxg5jZlRlSzqj8gGUfXvlhSY_PzmS8iGcVDyo4FwBJVKAIlL-wapuGu_a_msP1C3ngJcrWwIUzQh3gZlaTc8gLWZ5XohfQGxOHg2lXPTSbyRPUV9kRLfTj">
+</div>
+<div>
+<div class="font-bold">Sarah Nguyen</div>
+<div class="text-sm text-gray-500">Academic IELTS</div>
+</div>
+</div>
+</div>
+<!-- Hand-drawn arrow decoration -->
+<svg class="absolute -left-16 -bottom-12 w-24 h-24 text-orange-500 opacity-40 hidden lg:block" fill="none" stroke="currentColor" viewBox="0 0 100 100">
+<path d="M10 10 Q 50 10 90 90" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path>
+<path d="M70 90 L 90 90 L 90 70" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path>
+</svg>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Testimonials -->
+<!-- BEGIN: Bold CTA Section -->
+<section class="py-32 relative overflow-hidden border-y-2 border-black bg-gradient-to-r from-orange-500 to-yellow-400">
+<div class="absolute inset-0 opacity-40" style="background: radial-gradient(circle at 70% 30%, #F0F9FF 0%, #FFF7ED 30%, #FFFBEB 60%, #FDFBF7 100%);"></div>
+<div class="container mx-auto px-6 relative z-10">
+<div class="flex flex-col lg:flex-row items-center lg:items-start gap-12">
+<div class="w-full lg:w-2/3 text-left relative">
+<div class="absolute -top-12 -left-4 transform -rotate-12">
+<div class="bg-white border-2 border-black p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] rounded-lg">
+<span class="handwritten text-2xl font-bold text-gray-900">6.5 <span class="text-green-600">→ 7.5</span></span>
+</div>
+</div>
+<h2 class="text-5xl lg:text-7xl font-bold mb-6 serif-font tracking-tight text-white">Ready to turn your <br class=""> next essay into a <br class="">
+<span class="relative inline-block">
+<span class="relative z-10 italic font-normal text-white">higher band score?</span>
+<span class="absolute bottom-2 left-0 w-full h-6 bg-black/20 -z-10 transform -rotate-1"></span>
+</span></h2>
+<div class="flex flex-wrap gap-4 items-center">
+<div class="relative">
+<a class="bg-black text-white px-12 py-6 text-2xl font-black uppercase tracking-tighter hover:bg-gray-900 transition-transform hover:scale-105 shadow-[8px_8px_0px_0px_rgba(255,122,56,1)] border-2 border-black inline-block" href="#" style="border-radius: 4px 20px;">
+              Start Scoring for Free
+            </a>
+<div class="absolute -right-24 -top-8 hidden lg:block">
+<svg class="w-20 h-20 text-orange-500 transform -rotate-12" fill="none" stroke="currentColor" viewBox="0 0 100 100">
+<path d="M10 10 Q 30 10 80 70" stroke-linecap="round" stroke-width="4"></path>
+<path d="M60 70 L 80 70 L 80 50" stroke-linecap="round" stroke-width="4"></path>
+</svg>
+</div>
+</div>
+</div>
+</div>
+<div class="w-full lg:w-1/3 relative flex justify-center lg:justify-end">
+<div class="relative">
+<img alt="Star sticker" class="w-16 h-16 absolute -top-10 -right-10 transform rotate-12" src="https://lh3.googleusercontent.com/aida/AP1WRLtOijwG5WPMBtLupi0CcT9-yXSKlATpjX6TnSy2mBWW4f_quC2Dg4PncDltbFackbT9kpnZGr-H8yDGfg8wVc6YqTM3CPnuSJuE2Ks5U56RSG6E_hT2n8tnWFd4tzN0w1z9-oXfXercu523eGkS0ByTJ5zSOw0S9p9i6ESWJRXCZ1lgoBzXzvzQNxUkiyxlPcmRFtjIKWvphW11iZ0YG6PkN5t__02nWO5XR4zM-MtTEqy-36TeOZmDqA">
+<img alt="Dot sticker" class="w-12 h-12 absolute bottom-0 -left-12 opacity-60" src="https://lh3.googleusercontent.com/aida/AEtjO1X2G145h2Leq2l5jqCVQr_Luynn9dckfrQIbcDbJzsQ_MG186GUG1gjmqQdhgvIPBaeiinJYCtwgFA_ovw4YhFMPkgUKesXt8e24ACy7jpbnC71gKVM_bCoK3TUkcrhV8HIkM1a6GwFx1bd0Cpctoaqjs4zk0-uvr2X4szJ896JgCbXWJnt-NLmSJYkFvYJ_4TJdoGVV3H3lA_Tu4YqBEHGJqbI7k48JJcXLvxjaMSj-uh2szWI20H9ca8">
+<div class="border-2 border-black p-6 rounded-xl transform rotate-3 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] bg-white">
+<p class="text-black font-bold text-lg italic">"The best investment I made for my IELTS prep."</p>
+<p class="text-gray-600 text-sm mt-2">— Verified Student</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Bold CTA Section -->
+<!-- BEGIN: FAQ -->
+<section class="py-24 relative bg-white">
+<div class="container mx-auto px-6 max-w-4xl">
+<div class="text-center mb-16">
+<h2 class="text-4xl lg:text-5xl font-bold mb-4">Questions? <span class="italic font-normal">We’ve Got Answers.</span></h2>
+</div>
+<div class="space-y-6">
+<!-- FAQ 1 -->
+<details class="group bg-gray-50 rounded-lg border border-gray-200 [&amp;_summary::-webkit-details-marker]:hidden">
+<summary class="flex cursor-pointer items-center justify-between gap-1.5 p-6 text-gray-900">
+<h2 class="font-semibold text-lg flex items-center">
+<span class="text-orange-500 font-bold mr-4 text-xl">01</span>
+                    How accurate is the AI scoring?
+                </h2>
+<span class="relative size-5 shrink-0">
+<svg class="absolute inset-0 size-5 opacity-100 group-open:opacity-0 transition-opacity" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<svg class="absolute inset-0 size-5 opacity-0 group-open:opacity-100 transition-opacity" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M20 12H4" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</span>
+</summary>
+<p class="mt-4 px-6 pb-6 text-gray-600 leading-relaxed pl-14">
+                Our AI is trained on thousands of real examiner-graded essays. It consistently predicts scores within 0.5 bands of official examiner ratings.
+            </p>
+</details>
+<!-- FAQ 2 -->
+<details class="group bg-gray-50 rounded-lg border border-gray-200 [&amp;_summary::-webkit-details-marker]:hidden">
+<summary class="flex cursor-pointer items-center justify-between gap-1.5 p-6 text-gray-900">
+<h2 class="font-semibold text-lg flex items-center">
+<span class="text-orange-500 font-bold mr-4 text-xl">02</span>
+                    Does it support both Task 1 and Task 2?
+                </h2>
+<span class="relative size-5 shrink-0">
+<svg class="absolute inset-0 size-5 opacity-100 group-open:opacity-0 transition-opacity" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<svg class="absolute inset-0 size-5 opacity-0 group-open:opacity-100 transition-opacity" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M20 12H4" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</span>
+</summary>
+<p class="mt-4 px-6 pb-6 text-gray-600 leading-relaxed pl-14">
+                Yes! WriteWise fully supports both Task 1 (Academic graphs/charts and General letters) and Task 2 essays.
+            </p>
+</details>
+<!-- FAQ 3 -->
+<details class="group bg-gray-50 rounded-lg border border-gray-200 [&amp;_summary::-webkit-details-marker]:hidden">
+<summary class="flex cursor-pointer items-center justify-between gap-1.5 p-6 text-gray-900">
+<h2 class="font-semibold text-lg flex items-center">
+<span class="text-orange-500 font-bold mr-4 text-xl">03</span>
+                    Will I understand why I got a certain score?
+                </h2>
+<span class="relative size-5 shrink-0">
+<svg class="absolute inset-0 size-5 opacity-100 group-open:opacity-0 transition-opacity" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<svg class="absolute inset-0 size-5 opacity-0 group-open:opacity-100 transition-opacity" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M20 12H4" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</span>
+</summary>
+<p class="mt-4 px-6 pb-6 text-gray-600 leading-relaxed pl-14">
+                Absolutely. We break down your score into the 4 official criteria (Task Response, Coherence &amp; Cohesion, Lexical Resource, Grammatical Range &amp; Accuracy) and provide specific explanations for each.
+            </p>
+</details>
+<!-- Add more FAQs as needed to reach 07 -->
+</div>
+</div>
+</section>
+<!-- END: FAQ -->
+<!-- BEGIN: Footer -->
+<footer class="bg-[#FDFBF7] pt-20 pb-10 border-t border-gray-200 relative overflow-hidden">
+<!-- Decorative elements -->
+<img alt="Star sticker" class="absolute top-10 left-10 w-8 h-8 opacity-50 animate-float float-5 pointer-events-none" src="https://lh3.googleusercontent.com/aida/AP1WRLtOijwG5WPMBtLupi0CcT9-yXSKlATpjX6TnSy2mBWW4f_quC2Dg4PncDltbFackbT9kpnZGr-H8yDGfg8wVc6YqTM3CPnuSJuE2Ks5U56RSG6E_hT2n8tnWFd4tzN0w1z9-oXfXercu523eGkS0ByTJ5zSOw0S9p9i6ESWJRXCZ1lgoBzXzvzQNxUkiyxlPcmRFtjIKWvphW11iZ0YG6PkN5t__02nWO5XR4zM-MtTEqy-36TeOZmDqA">
+<div class="container mx-auto px-6">
+<div class="mb-16 text-center lg:text-left">
+<h2 class="text-4xl lg:text-6xl font-bold serif-font mb-4">
+                Write better. <br>
+<span class="italic text-gray-600">Think clearer.</span> <br>
+<span class="text-orange-500">Score higher.</span>
+</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12 border-b border-gray-200 pb-12">
+<div class="col-span-1 md:col-span-1">
+<div class="flex items-center space-x-2 mb-6 justify-center md:justify-start">
+<div class="bg-orange-500 w-8 h-8 rounded flex items-center justify-center text-white font-bold text-xl">W</div>
+<span class="font-bold text-xl tracking-tight">WriteWise</span>
+</div>
+<p class="text-black mb-6 text-sm">For beginners trying IELTS</p>
+<div class="flex space-x-4 justify-center md:justify-start text-gray-400">
+<a class="hover:text-gray-900 transition-colors" href="#">
+<svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path clip-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" fill-rule="evenodd"></path></svg>
+</a>
+<a class="hover:text-gray-900 transition-colors" href="#">
+<svg aria-hidden="true" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path clip-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" fill-rule="evenodd"></path></svg>
+</a>
+</div>
+</div>
+<div class="col-span-1 text-center md:text-left">
+<h4 class="font-bold mb-4">Product</h4>
+<ul class="space-y-2 text-gray-600 text-black">
+<li class=""><a class="hover:text-orange-500 transition-colors" href="#">Academic</a></li>
+<li class=""><a class="hover:text-orange-500 transition-colors" href="#">General Training</a></li>
+<li class=""><a class="hover:text-orange-500 transition-colors" href="#">Pricing</a></li>
+</ul>
+</div>
+<div class="col-span-1 text-center md:text-left">
+<h4 class="font-bold mb-4">Resources</h4>
+<ul class="space-y-2 text-gray-600">
+<li class=""><a class="hover:text-orange-500 transition-colors" href="#">Blog</a></li>
+<li class=""><a class="hover:text-orange-500 transition-colors" href="#">Practice Tests</a></li>
+<li class=""><a class="hover:text-orange-500 transition-colors" href="#">Band Calculators</a></li>
+</ul>
+</div>
+<div class="col-span-1 text-center md:text-left">
+<h4 class="font-bold mb-4">Company</h4>
+<ul class="space-y-2 text-gray-600 text-black">
+<li class=""><a class="hover:text-orange-500 transition-colors" href="#">About Us</a></li>
+<li class=""><a class="hover:text-orange-500 transition-colors" href="#">Contact</a></li>
+<li class=""><a class="hover:text-orange-500 transition-colors" href="#">Privacy Policy</a></li>
+</ul>
+</div>
+</div>
+<div class="flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+<p class="">© 2024 WriteWise. All rights reserved.</p>
+<p class="mt-2 md:mt-0">Made with AI.</p>
+</div>
+</div>
+</footer>
+<!-- END: Footer -->
+
+
+</body></html>

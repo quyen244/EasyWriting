@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { ArrowRightIcon } from "@/components/ui/Icon";
 import { Blob, Dot, Star } from "@/components/ui/Sticker";
 
 /**
@@ -62,7 +63,7 @@ export default function Hero() {
               Trusted
             </span>
             <em className="font-display italic">by students worldwide</em>
-            <span aria-hidden="true">→</span>
+            <ArrowRightIcon className="size-6 text-on-surface" />
           </p>
         </div>
 

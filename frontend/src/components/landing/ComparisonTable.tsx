@@ -40,10 +40,10 @@ export default function ComparisonTable() {
           </p>
         </div>
 
-        <div className="mt-16 grid items-center gap-8 lg:grid-cols-3">
+        <div className="mt-16 flex flex-col items-center gap-6 lg:flex-row lg:items-stretch">
           <article
             data-tilt
-            className="-rotate-2 rounded-xl border-2 border-ink bg-accent-green-soft p-8 shadow-brutal"
+            className="relative z-10 flex-1 -rotate-2 rounded-2xl border-2 border-ink bg-accent-green-soft p-8 shadow-brutal"
           >
             <h3 className="font-display text-headline-sm text-on-surface">Traditional Teacher</h3>
             <ul className="mt-6 flex flex-col gap-4">
@@ -59,10 +59,10 @@ export default function ComparisonTable() {
           </article>
 
           {/* Centrepiece — deliberately larger and ordered first on small screens */}
-          <article className="relative order-first rounded-xl border-4 border-primary bg-surface-container-lowest p-11 shadow-brutal-accent-soft lg:order-none lg:scale-105">
+          <article className="relative z-20 order-first flex-1 rounded-2xl border-4 border-primary bg-surface-container-lowest p-10 shadow-brutal-accent-soft lg:order-none lg:-translate-y-8 lg:scale-105">
             <span
               data-tilt
-              className="absolute -top-4 left-1/2 -translate-x-1/2 -rotate-2 rounded-md bg-inverse-surface px-6 py-2 font-body text-label-caps-lg uppercase text-inverse-on-surface"
+              className="absolute -top-6 left-1/2 w-max -translate-x-1/2 -rotate-2 rounded-md bg-inverse-surface px-6 py-2 font-body text-label-caps-lg uppercase text-inverse-on-surface"
             >
               Best choice
             </span>
@@ -87,7 +87,7 @@ export default function ComparisonTable() {
 
           <article
             data-tilt
-            className="rotate-1 rounded-xl border-2 border-ink bg-accent-blue-soft p-8 shadow-brutal"
+            className="relative z-10 flex-1 rotate-1 rounded-2xl border-2 border-ink bg-accent-blue-soft p-8 shadow-brutal"
           >
             <h3 className="font-display text-headline-sm text-on-surface">Other AI Tools</h3>
             <ul className="mt-6 flex flex-col gap-4">

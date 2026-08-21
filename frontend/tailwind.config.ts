@@ -115,14 +115,17 @@ const config: Config = {
         lg: "1rem",
         xl: "1.5rem",
         // The Skill Selection cards use asymmetric "organic" corners rather than a
-        // uniform radius — this is the design's signature shape, not a rounding choice.
-        blob: "229px 85px 234px 148px",
-        "blob-alt": "115px 148px 267px 234px",
+        // uniform radius — the design's signature shape, not a rounding choice. Values
+        // are the reference's own percentage pairs, which keep the blob proportional at
+        // any card size where a px radius would distort it.
+        blob: "60% 40% 30% 70% / 60% 30% 70% 40%",
+        "blob-alt": "30% 70% 70% 30% / 30% 30% 70% 70%",
       },
       boxShadow: {
         // The comparison and CTA cards use hard offset shadows (no blur), which is what
         // gives the page its sticker-on-paper feel. Blurred shadows read as generic.
         brutal: "8px 8px 0px 0px #000000",
+        "brutal-lg": "12px 12px 0px 0px #000000",
         "brutal-sm": "4px 4px 0px 0px #000000",
         "brutal-accent": "8px 8px 0px 0px #ff7a38",
         "brutal-accent-soft": "12px 12px 0px 0px rgba(255,122,56,0.3)",
@@ -146,6 +149,19 @@ const config: Config = {
       },
       rotate: {
         "1.5": "1.5deg",
+      },
+      keyframes: {
+        floatUp: {
+          "0%": { transform: "translateY(100px) rotate(0deg)", opacity: "0" },
+          "10%, 90%": { opacity: "1" },
+          "100%": { transform: "translateY(-400px) rotate(360deg)", opacity: "0" },
+        },
+      },
+      animation: {
+        "float-1": "floatUp 12s linear infinite",
+        "float-2": "floatUp 15s linear infinite 2s",
+        "float-3": "floatUp 10s linear infinite 4s",
+        "float-5": "floatUp 18s linear infinite 5s",
       },
     },
   },
