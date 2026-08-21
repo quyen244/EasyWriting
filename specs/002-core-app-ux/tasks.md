@@ -1,202 +1,336 @@
----
-
-> **STALE — 2026-08-21.** Written against the retired FastAPI backend, the retired
-> `003-account-authentication` HTTP contract, and the old four-surface scope (landing + FAQ +
-> workspace + profile) built against the `stitch_writewise_ielts_editorial_saas` mockups.
-> `spec.md` was rewritten and narrowed to the landing page alone, grounded in the real
-> `writewise` Figma design. This file has not been regenerated yet — run `/speckit-plan` and
-> `/speckit-tasks` to replace it. See [../README.md](../README.md).
-
-
-description: "Task list for feature implementation"
----
-
-# Tasks: Core App UX — Landing, FAQ, Workspace & Profile
+# Tasks: WriteWise Landing Page
 
 **Input**: Design documents from `/specs/002-core-app-ux/`
 **Prerequisites**: [plan.md](./plan.md), [spec.md](./spec.md), [research.md](./research.md), [data-model.md](./data-model.md), [contracts/page-routes.md](./contracts/page-routes.md), [quickstart.md](./quickstart.md)
 
-**Tests**: Included — plan.md's Technical Context commits to component tests (Vitest) and E2E tests (Playwright) written before implementation, and Constitution Principle III (Test-First Development) is NON-NEGOTIABLE for application code.
+**Tests**: **Required, not optional.** Constitution Principle III (NON-NEGOTIABLE) mandates
+red-green-refactor. `plan.md`'s Constitution Check already commits every rewritten/new component
+to a test stating its data-model.md validation rule as a falsifiable proposition. Each test task
+below MUST be written and confirmed failing before its paired implementation task.
 
-**Organization**: Tasks are grouped by user story (per spec.md's priority order: US1 P1, US2 P1, US3 P2, US4 P2, US5 P3) to enable independent implementation and testing of each story.
+**Organization**: Grouped by user story from spec.md (US1–US6), preceded by Setup and
+Foundational phases. Priorities: US1/US2/US3 (P1), US4/US5 (P2), US6 (P3).
 
-## Format: `[ID] [P?] [Story] Description`
-
-- **[P]**: Can run in parallel (different files, no dependencies)
-- **[Story]**: Which user story this task belongs to (US1–US5)
-- File paths are exact, relative to repository root
+**No backend, no API, no database, no deployment step.** This feature is entirely inside
+`frontend/`, already deployed via the existing Vercel pipeline — nothing here needs the
+"ask before touching the live project" gate that `001`'s tasks.md carries; there is no live
+project surface this feature touches.
 
 ## Path Conventions
 
-Web app split established by `001-ielts-score-assessment` and `003-account-authentication`:
-`backend/src/`, `frontend/src/`. This feature is **frontend-only** — no `backend/` paths appear
-below (plan.md Summary; research.md decision 4).
+Per plan.md's Project Structure:
 
-**Dependency note**: This feature assumes `001`'s Setup phase (creates `frontend/` with Next.js,
-TypeScript, Tailwind — see `001` tasks T001–T003) and `003`'s auth client (`frontend/src/lib/auth.ts`,
-`useAuth` hook) already exist or are implemented alongside this feature. This feature's own Setup
-phase does not recreate them.
+- `frontend/src/app/page.tsx` — composition
+- `frontend/src/components/{SiteHeader,SiteFooter}.tsx`, `frontend/src/components/ui/`,
+  `frontend/src/components/landing/*`
+- `frontend/src/lib/*` — static content modules
+- `frontend/tests/unit/landing/*`, `frontend/tests/e2e/*`
 
 ---
 
 ## Phase 1: Setup
 
-**Purpose**: Confirm the shared frontend scaffold this feature builds on is in place; nothing new to initialize.
+**Purpose**: Clear away what the redesign has no equivalent for, so nothing later accidentally
+builds on top of retired content.
 
-- [X] T001 Verify `frontend/` (Next.js App Router + TypeScript + Tailwind, from `001` tasks T001–T003) and `003`'s `frontend/src/lib/auth.ts` / `useAuth` hook exist before starting; if either is missing, coordinate implementation order with `001`/`003` rather than duplicating scaffold here.
+- [ ] T001 [P] Remove `frontend/src/components/landing/ProblemSection.tsx` — no equivalent
+      section in the `writewise` design (research.md R1)
+- [ ] T002 [P] Remove `frontend/src/components/landing/ExpertReviewCard.tsx` and
+      `frontend/src/components/landing/LearnerReviewCard.tsx` — replaced by one `TestimonialCard`
+      shape (research.md R1); confirmed no dedicated test files exist for either, so no orphaned
+      test to remove alongside them
+- [ ] T003 Remove the now-dangling imports/usages of the three components above from
+      `frontend/src/app/page.tsx` (full rewrite happens in US1, but this keeps the tree buildable
+      in between)
 
-**Checkpoint**: Scaffold confirmed — foundational work can begin.
+**Checkpoint**: The tree builds with the retired content gone; nothing later re-imports it by
+accident.
 
 ---
 
 ## Phase 2: Foundational (Blocking Prerequisites)
 
-**Purpose**: Shared building blocks every later user story phase depends on.
+**Purpose**: The shared nav/footer shell and the static content shapes every user story's section
+renders from. No section is independently testable before its content module and the shared
+disabled-link treatment exist.
 
-**⚠️ CRITICAL**: No user story work can begin until this phase is complete.
+### Shared disabled-link pattern (research.md R5 — used by US2, US3's footer-adjacent claims, US5, US6)
 
-- [X] T002 [P] Create client-side auth guard component in `frontend/src/components/ProtectedRoute.tsx`, implementing the `checking`/`authenticated`/`unauthenticated` flow from [contracts/page-routes.md](./contracts/page-routes.md) (research.md decision 1) — used by US2's workspace and US3's profile page.
-- [X] T003 [P] Create theme utility in `frontend/src/lib/theme.ts`: read/write a `light`/`dark` preference to `localStorage`, apply/remove a `dark` class on `<html>` (research.md decision 5) — used by US2's `ThemeToggle`.
-- [X] T004 [P] Port the `academic_editorial` design tokens (colors, typography, border radius, spacing) and the `darkMode: "class"` strategy from the Stitch mockups' embedded Tailwind config into `frontend/tailwind.config.ts` — the canonical design system for every page in this feature (spec Assumptions; plan.md).
-- [X] T005 [P] Load the Literata (display) and Geist (body/UI) fonts in the shared root layout `frontend/src/app/layout.tsx`.
+- [ ] T004 [P] Write `frontend/tests/unit/ui/DisabledLink.test.tsx` asserting: renders with
+      `aria-disabled="true"` and a visible "Coming soon" marker when `available: false`; renders
+      as a normal navigable link when `available: true`. Confirm it fails (red) —
+      `DisabledLink.tsx` doesn't exist yet.
+- [ ] T005 [P] Implement `frontend/src/components/ui/DisabledLink.tsx` — makes T004 pass
 
-**Checkpoint**: Foundation ready — user story implementation can now begin.
+### Static content shapes (data-model.md — each a testable, falsifiable shape per Principle III)
+
+- [ ] T006 [P] Write `frontend/tests/unit/lib/pricing.test.ts` asserting: exactly 4 plans; exactly
+      1 has `recommended: true`; the Free plan's `features` describe an actual scored result, not
+      preview/demo wording (FR-014); `speakingIncluded` is `true` only for Yearly and Lifetime
+      (FR-015). Confirm it fails (red).
+- [ ] T007 [P] Rewrite `frontend/src/lib/pricing.ts` to the real four tiers (`$0` / `$4.99` /
+      `$49.9` / `$149.9`, badges `START HERE`/`POPULAR`/`RECOMMENDED`/`PAY ONCE`, `speakingIncluded`
+      flag), with a file-level comment flagging the Yearly/Lifetime figures as
+      as-designed-pending-confirmation (research.md R3) — makes T006 pass
+- [ ] T008 [P] Write `frontend/tests/unit/lib/navigation.test.ts` asserting: every entry with
+      `available: true` has a non-empty `href`; the Speaking-adjacent and (pending the General
+      Training decision) General Training entries default to `available: false` (FR-006, FR-018,
+      FR-019). Confirm it fails (red).
+- [ ] T009 [P] Create `frontend/src/lib/navigation.ts` — `NavLink`/`FooterLink` shape and content
+      for the primary nav, footer columns (Product/Resources/Company), and the stub-destination
+      entries (Blog, Practice Tests, Band Calculators, About Us, Contact, Privacy Policy) — makes
+      T008 pass
+- [ ] T010 [P] Write `frontend/tests/unit/lib/testimonials.test.ts` asserting: at least 3 entries;
+      each `quote` names a specific improvement rather than generic praise (FR-017); no
+      `track: "General Training"` entry is included while the flagged decision remains unresolved
+      (FR-018, data-model.md). Confirm it fails (red).
+- [ ] T011 [P] Create `frontend/src/lib/testimonials.ts` — makes T010 pass
+- [ ] T012 [P] Write `frontend/tests/unit/lib/faqTeaser.test.ts` asserting: exactly 3 items; the
+      explainability answer's text does not contain "verbatim" or "exact quote" (research.md R6,
+      data-model.md). Confirm it fails (red).
+- [ ] T013 [P] Create `frontend/src/lib/faqTeaser.ts` — first two answers adapted from
+      `frontend/src/lib/faqData.ts`'s `"accuracy"` and `"task-types"` entries, third written fresh
+      against `001-ielts-score-assessment`'s current FR-013..FR-016 (research.md R6) — makes T012
+      pass
+- [ ] T014 [P] Write `frontend/tests/unit/lib/whyWriteWise.test.ts` asserting: exactly 4 stat
+      cards; no caption reads as a guaranteed individual outcome (FR-009 — checked as a
+      string-pattern discipline, e.g. rejecting first-person guarantee phrasing). Confirm it fails
+      (red).
+- [ ] T015 [P] Create `frontend/src/lib/whyWriteWise.ts` — the four cards
+      (`+1.5`/`100+`/`<1 min`/`5.0+`) — makes T014 pass
+
+### Persistent shell (renders on every story regardless of scroll position)
+
+- [ ] T016 [P] Write `frontend/tests/unit/SiteHeader.test.tsx` asserting: WriteWise mark present;
+      "Login" and "Join now" both rendered (FR-003); the General-Training-pending link uses
+      `DisabledLink` per its current `available` value (FR-018). Confirm it fails (red).
+- [ ] T017 Rewrite `frontend/src/components/SiteHeader.tsx` against `lib/navigation.ts` and
+      `ui/DisabledLink.tsx` — makes T016 pass (depends on T005, T009)
+- [ ] T018 [P] Write `frontend/tests/unit/SiteFooter.test.tsx` asserting: WriteWise mark, tagline,
+      three link columns, copyright line all present (FR-022); every footer entry with
+      `available: false` renders via `DisabledLink`, never as a plain dead link (FR-019). Confirm
+      it fails (red).
+- [ ] T019 Rewrite `frontend/src/components/SiteFooter.tsx` against `lib/navigation.ts` — makes
+      T018 pass (depends on T005, T009)
+
+**Checkpoint**: Shared shell and every content shape exist and are independently proven. Each user
+story below is now section-by-section composition + its own test, not shape design.
 
 ---
 
-## Phase 3: User Story 1 - Discover the product and sign up (Priority: P1) 🎯 MVP
+## Phase 3: User Story 1 - Understand the pitch and start for free (Priority: P1) 🎯 MVP
 
-**Goal**: A visitor understands what WriteWise does, sees pricing, and can start creating an account from the landing page.
+**Goal**: A visitor reads the hero, understands the product, and can reach sign-up from the hero
+or the final CTA band.
 
-**Independent Test**: Load `/` as an unauthenticated visitor; verify the value proposition, problem/comparison content, and pricing are present, and sign-up completes and redirects to `/workspace`.
+**Independent Test**: Load `/` with only Hero + FinalCta composed (this story's scope); verify
+SC-001/SC-002 hold without any other section existing yet.
 
-### Tests for User Story 1 ⚠️
+### Tests for User Story 1 ⚠️ Write first, confirm they fail
 
-> Write these tests FIRST, ensure they FAIL before implementation
-
-- [X] T006 [P] [US1] Component test for `Hero` in `frontend/tests/unit/landing/Hero.test.tsx`
-- [X] T007 [P] [US1] Component test for `ComparisonTable` in `frontend/tests/unit/landing/ComparisonTable.test.tsx`
-- [X] T008 [P] [US1] Component test for `PricingCard` — four plans rendered, exactly one marked recommended, corrected figures (Free 1/day, Monthly $4.99, Yearly $49.9, Lifetime $99) — in `frontend/tests/unit/landing/PricingCard.test.tsx`
-- [X] T009 [P] [US1] E2E test: visitor reads landing page, selects sign-up, completes the form, is redirected to `/workspace` in `frontend/tests/e2e/discover-and-signup.spec.ts`
+- [ ] T020 [P] [US1] Write `frontend/tests/unit/landing/Hero.test.tsx` asserting: headline and
+      supporting line render without requiring interaction (FR-001); "Get started for free" and
+      "How it works" both present (FR-002); "How it works" links to `#how-it-works`, not a full
+      navigation
+- [ ] T021 [P] [US1] Write `frontend/tests/unit/landing/FinalCta.test.tsx` asserting: a sign-up
+      action equivalent to the hero's primary action is present (FR-021)
+- [ ] T022 [P] [US1] Add a landing-page flow case to `frontend/tests/e2e/landing-page.spec.ts`
+      (new file, shared across US1–US6): load `/`, assert the hero is visible without scrolling
+      and a sign-up link is reachable at both the top and bottom of the page (SC-001, SC-002)
 
 ### Implementation for User Story 1
 
-- [X] T010 [P] [US1] Create `Hero` component in `frontend/src/components/landing/Hero.tsx`
-- [X] T011 [P] [US1] Create `ProblemSection` component (three named frictions: slow feedback, vague comments, cost — FR-002) in `frontend/src/components/landing/ProblemSection.tsx`
-- [X] T012 [P] [US1] Create `ComparisonTable` component (turnaround time, feedback detail, cost, availability — FR-002) in `frontend/src/components/landing/ComparisonTable.tsx`
-- [X] T013 [P] [US1] Create `ExpertReviewCard` and `LearnerReviewCard` components in `frontend/src/components/landing/ExpertReviewCard.tsx` and `frontend/src/components/landing/LearnerReviewCard.tsx`
-- [X] T014 [US1] Create `PricingCard` component with the corrected numbers, not the mockup's placeholders (research.md decision 7; FR-017) in `frontend/src/components/landing/PricingCard.tsx`
-- [X] T015 [US1] Create `FinalCta` component in `frontend/src/components/landing/FinalCta.tsx`
-- [X] T016 [US1] Assemble the landing page in `frontend/src/app/page.tsx`, composing `Hero`, `ProblemSection`, `ComparisonTable`, a product-experience preview, three `ExpertReviewCard`s, three `LearnerReviewCard`s, four `PricingCard`s, `FinalCta`, and footer, per `marketing_landing_page_fresh_refresh` (depends on T010–T015)
-- [X] T017 [US1] Create the sign-up page in `frontend/src/app/signup/page.tsx`, calling `003`'s `signUp()`, redirecting to `/workspace` on success
-- [X] T018 [US1] Create the sign-in page in `frontend/src/app/signin/page.tsx`, calling `003`'s `signIn()`, redirecting to `/workspace` on success, with both sign-up and sign-in CTAs reachable from the landing page header
+- [ ] T023 [US1] Rewrite `frontend/src/components/landing/Hero.tsx` with the real headline
+      ("Master your IELTS Writing with AI-powered feedback"), supporting line, and dual CTA — makes
+      T020 pass
+- [ ] T024 [US1] Rewrite `frontend/src/components/landing/FinalCta.tsx` with the real closing copy
+      ("Ready to turn your next essay into a higher band score?") — makes T021 pass
+- [ ] T025 [US1] Rewrite `frontend/src/app/page.tsx`'s composition root: `SiteHeader` + `Hero` +
+      (placeholder anchors for sections added in later phases) + `FinalCta` + `SiteFooter` — the
+      minimal composable skeleton every later story's task appends a section into (depends on
+      T017, T019, T023, T024)
+- [ ] T026 [US1] Run `npm test` and `npm run test:e2e` and confirm T020–T022 pass (green)
 
-**Checkpoint**: User Story 1 is independently functional and testable.
+**Checkpoint**: User Story 1 is fully functional and independently testable — the MVP: a visitor
+can understand the pitch and reach sign-up.
 
 ---
 
-## Phase 4: User Story 2 - Run an assessment and see it visualized in the workspace (Priority: P1)
+## Phase 4: User Story 2 - Choose a focus area honestly (Priority: P1)
 
-**Goal**: A signed-in learner submits an essay and sees the visualized result in the workspace, in either light or dark theme.
+**Goal**: A visitor sees Writing (usable) and Speaking (coming soon) and cannot mistake one for
+the other.
 
-**Independent Test**: As a signed-in learner with no prior assessments, submit an essay from the workspace and verify the scored result renders in the same view, in both light and dark theme.
+**Independent Test**: With US1's skeleton in place, add the focus-area section; verify Speaking's
+"coming soon" marker is unmistakable and its interaction never implies a working assessment.
 
-### Tests for User Story 2 ⚠️
+### Tests for User Story 2 ⚠️ Write first, confirm they fail
 
-> Write these tests FIRST, ensure they FAIL before implementation
-
-- [X] T019 [P] [US2] Component test for `EmptyState` in `frontend/tests/unit/workspace/EmptyState.test.tsx`
-- [X] T020 [P] [US2] Component test for `EssayForm` in `frontend/tests/unit/workspace/EssayForm.test.tsx`
-- [X] T021 [P] [US2] Component test for `AssessmentResult` — 2×2 criteria grid with proportion indicators, expandable line-by-line feedback — in `frontend/tests/unit/workspace/AssessmentResult.test.tsx`
-- [X] T022 [P] [US2] Component test for `ThemeToggle` — persists to `localStorage`, applies/removes `dark` class — in `frontend/tests/unit/workspace/ThemeToggle.test.tsx`
-- [X] T023 [P] [US2] E2E test: submit essay → in-progress → result; a rejected submission preserves essay text in the input in `frontend/tests/e2e/workspace-assessment.spec.ts`
-- [X] T024 [P] [US2] E2E test: toggling theme mid-submission does not interrupt the in-flight request; theme choice persists across reload in `frontend/tests/e2e/workspace-theme.spec.ts`
-- [X] T025 [P] [US2] E2E test: an unauthenticated visit to `/workspace` redirects to `/signin` in `frontend/tests/e2e/workspace-auth-guard.spec.ts`
+- [ ] T027 [P] [US2] Write `frontend/tests/unit/landing/FocusAreaSelector.test.tsx` asserting:
+      exactly two cards (FR-004); Writing's action leads toward the grader
+      (`001-ielts-score-assessment`'s entry point, not a placeholder — FR-005); Speaking renders
+      via `DisabledLink`/an equivalent inert control and is visibly marked "Coming soon" (FR-006)
+- [ ] T028 [P] [US2] Add a focus-area case to `frontend/tests/e2e/landing-page.spec.ts`: click the
+      Speaking card; assert no navigation to a live assessment occurs (US2 scenario 4)
 
 ### Implementation for User Story 2
 
-- [X] T026 [US2] Create `EmptyState` component (first-time guidance — FR-007) in `frontend/src/components/workspace/EmptyState.tsx`
-- [X] T027 [US2] Create `EssayForm` component (task-type toggle, prompt/essay inputs, submit) in `frontend/src/components/workspace/EssayForm.tsx`
-- [X] T028 [US2] Create `AssessmentResult` component (band badge, 2×2 criteria grid with proportion indicators, expandable line-by-line feedback with category tag + correction/praise — FR-005) in `frontend/src/components/workspace/AssessmentResult.tsx`, calling `001`'s `POST /api/v1/assessments` via the existing API client
-- [X] T029 [US2] Create `ThemeToggle` component in `frontend/src/components/workspace/ThemeToggle.tsx`, using `frontend/src/lib/theme.ts` (T003)
-- [X] T030 [US2] Add `dark:` variants to `EmptyState`, `EssayForm`, `AssessmentResult`, and `ThemeToggle` so every workspace element is legible and correctly styled in both themes (FR-018, SC-007) (depends on T026–T029)
-- [X] T031 [US2] Assemble the workspace page in `frontend/src/app/workspace/page.tsx`, wiring `WorkspaceViewState` (`idle` / `submitting` / `result` / `error`) per [data-model.md](./data-model.md), wrapped in `ProtectedRoute` (T002), per `learner_workspace`
+- [ ] T029 [US2] Create `frontend/src/components/landing/FocusAreaSelector.tsx` — two cards,
+      Writing wired to the grader entry point, Speaking wired through `DisabledLink` — makes T027
+      pass (depends on T005)
+- [ ] T030 [US2] Insert `FocusAreaSelector` into `frontend/src/app/page.tsx`'s composition,
+      immediately after `Hero` per the design's section order (depends on T025, T029)
+- [ ] T031 [US2] Run `npm test` and `npm run test:e2e` and confirm T027–T028 pass (green)
 
-**Checkpoint**: User Stories 1 AND 2 both work independently — this is the MVP.
+**Checkpoint**: US1 + US2 — a visitor understands the pitch and cannot be misled about Speaking.
 
 ---
 
-## Phase 5: User Story 3 - Manage account from the profile page (Priority: P2)
+## Phase 5: User Story 3 - Trust the scoring and understand how it works (Priority: P1)
 
-**Goal**: A signed-in learner views their account details and can sign out from a profile page.
+**Goal**: How-It-Works, Why-WriteWise stats, and the Comparison table all stay truthful to
+`001-ielts-score-assessment`'s actual behavior.
 
-**Independent Test**: As a signed-in learner, open the profile page and verify account details display and sign-out works.
+**Independent Test**: With US1+US2 composed, add these three sections; cross-check every claim
+against `001`'s spec directly (quickstart.md User Story 3).
 
-### Tests for User Story 3 ⚠️
+### Tests for User Story 3 ⚠️ Write first, confirm they fail
 
-- [X] T032 [P] [US3] Component test for `ProfileView` (display name, email) in `frontend/tests/unit/profile/ProfileView.test.tsx`
-- [X] T033 [P] [US3] E2E test: view profile, sign out, redirected to `/`; subsequent visits to `/workspace` or `/profile` redirect to `/signin` in `frontend/tests/e2e/profile-signout.spec.ts`
+- [ ] T032 [P] [US3] Write `frontend/tests/unit/landing/HowItWorksStep.test.tsx` asserting:
+      exactly 3 steps (Analyze, Evaluate Criteria, Score & Improve — FR-007); the Evaluate
+      Criteria step's description names all four official criteria by
+      `001-ielts-score-assessment`'s exact criterion labels (FR-008)
+- [ ] T033 [P] [US3] Write `frontend/tests/unit/landing/WhyWriteWiseStats.test.tsx` asserting:
+      exactly 4 cards; no caption reads as a promised individual outcome (FR-009)
+- [ ] T034 [P] [US3] Write `frontend/tests/unit/landing/ComparisonTable.test.tsx` (rewritten)
+      asserting: three columns (Traditional Teacher, Other AI Tools, WriteWise); WriteWise is
+      visibly marked as the recommended choice; every WriteWise-column claim is one
+      `001-ielts-score-assessment`'s current spec actually backs (FR-010, FR-011)
 
 ### Implementation for User Story 3
 
-- [X] T034 [US3] Create `ProfileView` component in `frontend/src/components/profile/ProfileView.tsx`, calling `003`'s `GET /api/v1/auth/me`
-- [X] T035 [US3] Assemble the profile page in `frontend/src/app/profile/page.tsx`, wrapped in `ProtectedRoute` (T002), with sign-out calling `003`'s `POST /api/v1/auth/signout` and redirecting to `/`
+- [ ] T035 [P] [US3] Rewrite `frontend/src/components/landing/HowItWorksStep.tsx` with the real
+      3-step content — makes T032 pass
+- [ ] T036 [P] [US3] Create `frontend/src/components/landing/WhyWriteWiseStats.tsx` reading
+      `lib/whyWriteWise.ts` — makes T033 pass (depends on T015)
+- [ ] T037 [P] [US3] Rewrite `frontend/src/components/landing/ComparisonTable.tsx` with the real
+      3-column content (Traditional Teacher: 2-5 days / $20-50 per essay / subjective;
+      Other AI Tools: generic checks / not IELTS-aligned / inaccurate bands; WriteWise: affordable
+      subscription / objective scoring / grammar & vocab fixes, "Best choice" marker) — makes T034
+      pass
+- [ ] T038 [US3] Insert `HowItWorksStep`'s section, `WhyWriteWiseStats`, and `ComparisonTable` into
+      `frontend/src/app/page.tsx`'s composition in the design's real order — How It Works → Why
+      WriteWise → Comparison (depends on T030, T035, T036, T037)
+- [ ] T039 [US3] Run `npm test` and confirm T032–T034 pass (green)
 
-**Checkpoint**: User Stories 1, 2, and 3 all work independently.
+**Checkpoint**: US1+US2+US3 — every credibility claim on the page is checked against what `001`
+actually ships, not assumed.
 
 ---
 
-## Phase 6: User Story 4 - Find answers on the FAQ page (Priority: P2)
+## Phase 6: User Story 4 - Compare pricing and choose a plan (Priority: P2)
 
-**Goal**: A visitor or learner searches or browses a dedicated FAQ page and finds a direct answer, including the official-score disclaimer.
+**Goal**: Four pricing tiers, one recommended, Speaking's future-entitlement status clear, plan
+identity carried into sign-up.
 
-**Independent Test**: Load `/faq` without an account, search for a term, and verify matching questions surface; confirm the "is the score official" disclaimer is present.
+**Independent Test**: With US1–US3 composed, add pricing; verify quickstart.md User Story 4's five
+scenarios directly.
 
-### Tests for User Story 4 ⚠️
+### Tests for User Story 4 ⚠️ Write first, confirm they fail
 
-- [X] T036 [P] [US4] Component test for `FaqSearch` (filters visible questions by text) in `frontend/tests/unit/faq/FaqSearch.test.tsx`
-- [X] T037 [P] [US4] Component test for `FaqAccordionCategory` (one open question per category) in `frontend/tests/unit/faq/FaqAccordionCategory.test.tsx`
-- [X] T038 [P] [US4] E2E test: search FAQ, no-match state, official-score disclaimer present in the Essay Scoring category, FAQ reachable from main navigation in `frontend/tests/e2e/faq.spec.ts`
+- [ ] T040 [P] [US4] Write `frontend/tests/unit/landing/PricingCard.test.tsx` (rewritten)
+      asserting: renders `lib/pricing.ts`'s four plans; the recommended plan is visibly marked
+      (FR-013); a plan with `speakingIncluded: true` shows the not-yet-usable qualifier next to
+      that feature line, not just in the data (FR-015); the CTA `href` carries the plan identity
+      (e.g. `/signup?plan=yearly` — FR-016)
+- [ ] T041 [P] [US4] Add a pricing case to `frontend/tests/e2e/landing-page.spec.ts`: click each
+      plan's CTA; assert the resulting URL/query carries that plan's identity (FR-016)
 
 ### Implementation for User Story 4
 
-- [X] T039 [P] [US4] Define the static FAQ content array (Getting Started, Account & Login, Essay Scoring categories, including the mandatory official-score disclaimer — FR-015) in `frontend/src/lib/faqData.ts`
-- [X] T040 [US4] Create `FaqSearch` component in `frontend/src/components/faq/FaqSearch.tsx`
-- [X] T041 [US4] Create `FaqAccordionCategory` component (single-open-per-category — FR-016) in `frontend/src/components/faq/FaqAccordionCategory.tsx`
-- [X] T042 [US4] Assemble the FAQ page in `frontend/src/app/faq/page.tsx`, composing `FaqSearch` and three `FaqAccordionCategory` instances from `faqData.ts`, per `frequently_asked_questions` restyled to `academic_editorial` tokens (depends on T039–T041)
-- [X] T043 [US4] Add a FAQ link to the shared site navigation (landing header/footer) (depends on T016)
+- [ ] T042 [US4] Rewrite `frontend/src/components/landing/PricingCard.tsx` against the rewritten
+      `lib/pricing.ts` (T007) — makes T040 pass
+- [ ] T043 [US4] Insert the pricing section into `frontend/src/app/page.tsx`'s composition,
+      immediately after Comparison per the design's order (depends on T038, T042)
+- [ ] T044 [US4] Run `npm test` and `npm run test:e2e` and confirm T040–T041 pass (green)
 
-**Checkpoint**: User Stories 1–4 all work independently.
+**Checkpoint**: US1–US4 — a visitor can compare, choose, and carry their choice into sign-up.
 
 ---
 
-## Phase 7: User Story 5 - Learn how scoring works before trusting it (Priority: P3)
+## Phase 7: User Story 5 - See evidence real learners improved (Priority: P2)
 
-**Goal**: A visitor reads the landing page's how-it-works content and understands, honestly, what's available today versus planned.
+**Goal**: At least three specific, non-generic testimonials; no unresolved-track testimonial
+rendered.
 
-**Independent Test**: Load the landing page without an account and verify the four-step how-it-works section is present, with future steps honestly marked.
+**Independent Test**: With US1–US4 composed, add testimonials; verify quickstart.md User Story 5.
 
-### Tests for User Story 5 ⚠️
+### Tests for User Story 5 ⚠️ Write first, confirm they fail
 
-- [X] T044 [P] [US5] Component test for `HowItWorksStep` — four steps rendered, future steps visually marked — in `frontend/tests/unit/landing/HowItWorksStep.test.tsx`
-- [X] T045 [P] [US5] E2E test: how-it-works section shows all four steps (Submit, Get Scored, Learn the Fix, Track Trend) with the not-yet-built ones honestly marked in `frontend/tests/e2e/how-it-works.spec.ts`
+- [ ] T045 [P] [US5] Write `frontend/tests/unit/landing/TestimonialCard.test.tsx` asserting: a
+      single card shape renders name, track, and quote (replacing the old expert/learner split —
+      research.md R1); no card renders for a `track: "General Training"` entry unless the flagged
+      decision has resolved in favour of it (FR-018)
 
 ### Implementation for User Story 5
 
-- [X] T046 [US5] Create `HowItWorksStep` component (Submit, Get Scored, Learn the Fix\*, Track Trend\* — future steps marked, FR-003) in `frontend/src/components/landing/HowItWorksStep.tsx`
-- [X] T047 [US5] Integrate the how-it-works section into the landing page in `frontend/src/app/page.tsx` (extends T016)
+- [ ] T046 [US5] Create `frontend/src/components/landing/TestimonialCard.tsx` reading
+      `lib/testimonials.ts` — makes T045 pass (depends on T011)
+- [ ] T047 [US5] Insert the testimonials section into `frontend/src/app/page.tsx`'s composition,
+      immediately after Pricing per the design's order (depends on T043, T046)
+- [ ] T048 [US5] Run `npm test` and confirm T045 passes (green)
 
-**Checkpoint**: All five user stories are independently functional.
+**Checkpoint**: US1–US5 — social proof is present and scope-honest.
 
 ---
 
-## Phase 8: Polish & Cross-Cutting Concerns
+## Phase 8: User Story 6 - Get quick answers without leaving the page (Priority: P3)
 
-**Purpose**: Verification that spans multiple user stories.
+**Goal**: A 3-item inline FAQ accordion, independently expandable, honest about task coverage and
+explainability.
 
-- [X] T048 [P] Run [quickstart.md](./quickstart.md) validation scenarios 1–5 manually against a local dev build
-- [X] T049 [P] Accessibility pass: verify text contrast and visible keyboard focus states across all new pages, in both light and dark theme (SC-007)
-- [X] T050 [P] Verify the "WriteWise" product name is applied consistently across page titles/metadata and footer copyright in `frontend/src/app/layout.tsx` and every new page
+**Independent Test**: With US1–US5 composed, add the FAQ teaser; verify quickstart.md User Story
+6's four scenarios, including the no-verbatim-overclaim check (research.md R6).
+
+### Tests for User Story 6 ⚠️ Write first, confirm they fail
+
+- [ ] T049 [P] [US6] Write `frontend/tests/unit/landing/FaqTeaser.test.tsx` asserting: exactly 3
+      items (FR-020); expanding one does not affect the other two's collapsed state; no navigation
+      occurs on expand/collapse
+- [ ] T050 [P] [US6] Add a FAQ-teaser case to `frontend/tests/e2e/landing-page.spec.ts`: expand
+      each of the three items independently; assert the URL never changes
+
+### Implementation for User Story 6
+
+- [ ] T051 [US6] Create `frontend/src/components/landing/FaqTeaser.tsx` reading
+      `lib/faqTeaser.ts` — makes T049 pass (depends on T013)
+- [ ] T052 [US6] Insert the FAQ teaser into `frontend/src/app/page.tsx`'s composition, immediately
+      before `FinalCta` per the design's order (depends on T047, T051)
+- [ ] T053 [US6] Run `npm test` and `npm run test:e2e` and confirm T049–T050 pass (green)
+
+**Checkpoint**: All six user stories independently functional and testable — the full page.
+
+---
+
+## Phase 9: Polish & Cross-Cutting Concerns
+
+**Purpose**: The two audits spec.md's Success Criteria name explicitly, plus the existing-suite
+regression check.
+
+- [ ] T054 [P] Link audit (SC-005): enumerate every nav/footer entry from `lib/navigation.ts`;
+      assert each either resolves to a real route already in `frontend/src/app/` or renders with
+      `available: false` — zero silent dead ends
+- [ ] T055 [P] Reduced-motion check (Edge Cases): with `prefers-reduced-motion` simulated, assert
+      the hero's core content and every section's text remain fully readable with no animation
+- [ ] T056 Update `frontend/tests/e2e/how-it-works.spec.ts` for the new copy/structure (it
+      currently asserts against the retired content — research.md R7)
+- [ ] T057 Confirm `frontend/tests/e2e/discover-and-signup.spec.ts` and `profile-signout.spec.ts`
+      are left unmodified, per research.md R4/R7 — their auth-contract stubs are the
+      Supabase-platform feature's concern, not this one's; this task is a check, not a change
+- [ ] T058 Run the full `npm test` + `npm run test:e2e` suite together as a final regression pass
+- [ ] T059 Run quickstart.md end-to-end in a dev server (`npm run dev`) and confirm every
+      Acceptance Scenario in spec.md §User Scenarios passes, including the stated known limitation
+      (research.md R4 — `/signup`/`/signin` reachable but not yet functional)
 
 ---
 
@@ -204,206 +338,83 @@ phase does not recreate them.
 
 ### Phase Dependencies
 
-- **Setup (Phase 1)**: No dependencies — confirms prerequisites only.
-- **Foundational (Phase 2)**: Depends on Setup — BLOCKS all user stories.
-- **User Stories (Phase 3–7)**: All depend on Foundational completion.
-  - US1 and US2 (both P1) should be built first — together they are the MVP.
-  - US3 and US4 (both P2) can follow, in either order.
-  - US5 (P3) can follow last, or in parallel once Foundational is done.
-- **Polish (Phase 8)**: Depends on all desired user stories being complete.
+- **Setup (Phase 1)**: No dependencies — start immediately.
+- **Foundational (Phase 2)**: Depends on Setup (T003 leaves `page.tsx` in a buildable state for
+  T025 to rewrite). **Blocks all user stories** — every story's component reads a `lib/*` shape or
+  renders inside `SiteHeader`/`SiteFooter`.
+- **User Stories (Phase 3–8)**: Each depends on Foundational, and **each depends on the previous
+  story's `page.tsx` composition task** (T025 → T030 → T038 → T043 → T047 → T052) because they
+  share one file being assembled incrementally in the design's real section order — this is the
+  one place these stories are not fully parallel, unlike a typical multi-route feature. Component
+  and test authorship *within* each story has no such dependency and can proceed in parallel with
+  other stories' component authorship.
+- **Polish (Phase 9)**: Depends on all six user stories being composed.
 
-### User Story Dependencies
+### Within Each Phase
 
-- **US1 (P1)**: No dependency on other stories. Provides the `/signup`, `/signin` destinations US2/US3 land on after auth, but is independently testable on its own (a visitor can read the landing page and sign up without US2–US5 existing).
-- **US2 (P1)**: No dependency on other stories; depends on `ProtectedRoute` (T002) and `theme.ts` (T003) from Foundational.
-- **US3 (P2)**: No dependency on other stories; depends on `ProtectedRoute` (T002) from Foundational.
-- **US4 (P2)**: No dependency on other stories; T043 (nav link) touches the landing page built in US1 but does not block US4's own page from being independently testable at `/faq` directly.
-- **US5 (P3)**: Extends the landing page assembled in US1 (T016); independently testable as a landing-page section once US1's page shell exists.
-
-### Within Each User Story
-
-- Tests MUST be written and FAIL before implementation.
-- Components before page assembly.
-- Story complete before moving to the next priority (if working sequentially).
+- Tests MUST be written and confirmed failing before their paired implementation task
+  (Principle III) — every phase above is ordered that way already.
+- The five `lib/*.ts` content modules (Foundational) have no dependencies on each other and can
+  be authored in parallel; `DisabledLink` similarly.
 
 ### Parallel Opportunities
 
-- All Foundational tasks marked [P] (T002–T005) can run in parallel.
-- Once Foundational completes, US1 and US2 (both P1) can be worked in parallel by different people.
-- All tests for a user story marked [P] can run in parallel.
-- All components within a story marked [P] can run in parallel.
+- **Setup**: T001, T002 — different files.
+- **Foundational**: T004/T006/T008/T010/T012/T014 (five independent content-shape test files) and
+  T016/T018 (shell tests) — six independent lanes, all startable together. Their implementations
+  (T005, T007, T009, T011, T013, T015) are similarly independent of each other, though T017/T019
+  each depend on their own shell test plus `DisabledLink`+`navigation.ts`.
+- **Within a user story**: test-writing tasks marked `[P]` (e.g. T032/T033/T034 in US3) are
+  independent files and can be written together; their paired implementations are equally
+  independent of each other, though all funnel into the same shared `page.tsx` composition task
+  for that story.
 
 ---
 
-## Parallel Example: User Story 1
+## Parallel Example: Foundational Phase
 
 ```bash
-# Launch all tests for User Story 1 together:
-Task: "Component test for Hero in frontend/tests/unit/landing/Hero.test.tsx"
-Task: "Component test for ComparisonTable in frontend/tests/unit/landing/ComparisonTable.test.tsx"
-Task: "Component test for PricingCard in frontend/tests/unit/landing/PricingCard.test.tsx"
-Task: "E2E test discover-and-signup in frontend/tests/e2e/discover-and-signup.spec.ts"
+# Six independent lanes, all startable together once Setup (Phase 1) is done:
+Task: "Write frontend/tests/unit/ui/DisabledLink.test.tsx — T004"
+Task: "Write frontend/tests/unit/lib/pricing.test.ts — T006"
+Task: "Write frontend/tests/unit/lib/navigation.test.ts — T008"
+Task: "Write frontend/tests/unit/lib/testimonials.test.ts — T010"
+Task: "Write frontend/tests/unit/lib/faqTeaser.test.ts — T012"
+Task: "Write frontend/tests/unit/lib/whyWriteWise.test.ts — T014"
 
-# Launch independent components for User Story 1 together:
-Task: "Create Hero component in frontend/src/components/landing/Hero.tsx"
-Task: "Create ProblemSection component in frontend/src/components/landing/ProblemSection.tsx"
-Task: "Create ComparisonTable component in frontend/src/components/landing/ComparisonTable.tsx"
-Task: "Create ExpertReviewCard and LearnerReviewCard components in frontend/src/components/landing/"
+# Each lane's implementation follows once its own test fails as expected:
+Task: "Implement frontend/src/components/ui/DisabledLink.tsx — T005 (after T004 fails)"
+Task: "Rewrite frontend/src/lib/pricing.ts — T007 (after T006 fails)"
 ```
 
 ---
 
 ## Implementation Strategy
 
-### MVP First (User Stories 1 + 2)
+### MVP First (User Story 1 only)
 
-1. Complete Phase 1: Setup
-2. Complete Phase 2: Foundational (CRITICAL — blocks all stories)
-3. Complete Phase 3: User Story 1
-4. Complete Phase 4: User Story 2
-5. **STOP and VALIDATE**: Run quickstart.md Scenarios 1–2 independently
-6. Deploy/demo if ready — this is the product's core loop (discover → sign up → get scored)
+1. Complete Phase 1 (Setup) and Phase 2 (Foundational) — the shared shell and every content shape
+   are non-negotiable prerequisites regardless of which story ships first.
+2. Complete Phase 3 (US1).
+3. **STOP and VALIDATE**: run T020–T022 and quickstart.md's User Story 1 section in a dev server.
+4. This is a demonstrable landing page — hero, pitch, reachable sign-up — even before the
+   focus-area, credibility, pricing, testimonial, or FAQ sections exist.
 
 ### Incremental Delivery
 
-1. Setup + Foundational → Foundation ready
-2. US1 → Test independently → Demo (landing + sign-up works)
-3. US2 → Test independently → Demo (MVP — the full core loop works)
-4. US3 → Test independently → Demo (profile/sign-out)
-5. US4 → Test independently → Demo (FAQ)
-6. US5 → Test independently → Demo (how-it-works trust content)
-7. Polish → Full quickstart.md validation, accessibility, naming consistency
+1. Setup + Foundational → shell and content shapes proven.
+2. US1 → the pitch and a reachable CTA → demo-able MVP.
+3. US2 → Speaking's roadmap status stops being ambiguous.
+4. US3 → the credibility arc is checked against what `001` actually ships, not assumed.
+5. US4 → pricing is complete and the Speaking-gating is explicit.
+6. US5 → social proof, scope-honest about General Training.
+7. US6 → the FAQ teaser closes with the same honesty discipline the rest of the page carries.
+8. Polish → the link audit and reduced-motion check are the gate before calling this page done,
+   not an afterthought.
 
-### Parallel Team Strategy
+### What is deliberately NOT in this task list
 
-With multiple developers, after Foundational is done:
-
-- Developer A: US1 (landing + auth pages)
-- Developer B: US2 (workspace + dark mode)
-- Developer C: US3 + US4 (profile, FAQ)
-- Developer D: US5 (how-it-works, once US1's page shell exists)
-
----
-
-## Notes
-
-- [P] tasks = different files, no dependencies.
-- [Story] label maps task to specific user story for traceability.
-- Verify tests fail before implementing.
-- Commit after each task or logical group.
-- Stop at any checkpoint to validate a story independently.
-- This feature adds zero backend endpoints or persisted entities (research.md decision 4) — every
-  task above is frontend-only.
-
----
-
-## Implementation notes (2026-08-20)
-
-All 50 tasks complete. **126 component tests (Vitest) + 53 end-to-end tests (Playwright,
-real Chromium) passing**, with `tsc --noEmit` and `eslint` clean.
-
-Five things were built differently from the literal task text. Each is a deliberate
-decision with a reason, recorded here so the difference is not mistaken for drift.
-
-### 1. FR-005's "suggested correction" does not exist in `001`'s API — and was not invented
-
-T028 and FR-005 ask the workspace for "expandable line-by-line feedback where each item
-shows the quoted sentence, a category tag, and a suggested correction or a note of
-praise". Checked against `backend/src/schemas/assessment.py`, `001` returns:
-
-```
-{ submission_id, overall_band, criteria[], created_at }
-criteria[i] = { criterion, band, explanation, evidence_quotes[], descriptor_reference? }
-```
-
-Three of the four requested pieces are real and are rendered from live data — the quoted
-sentence (`evidence_quotes`, verified verbatim server-side), the category tag
-(`criterion`), and the reasoning (`explanation`). The fourth has no field: `001` scores
-essays, it does not rewrite them.
-
-Synthesising a correction in the browser would put teaching advice in front of a learner
-that no model produced and no rubric grounds — the exact failure `001`'s evidence
-anchoring exists to prevent. So the panel shows what the API can justify, and nothing
-more. `AssessmentResult.test.tsx` asserts the absence explicitly, so a future change that
-starts fabricating corrections fails the suite rather than shipping quietly.
-
-The spec is internally consistent with this reading once you notice **FR-003 already
-classes sentence-level corrections ("Learn the Fix") as a not-yet-built capability**. The
-landing page marks that step "Coming soon" and the FAQ says the same. FR-005 and FR-003
-contradicted each other; `001`'s contract settles it.
-
-**Follow-up for whoever owns the spec**: FR-005 and quickstart Scenario 2 step 4 still
-describe the correction UI. They should be reworded, or a scoped feature added to `001`
-to produce corrections, before either is treated as unimplemented.
-
-### 2. Semantic colour tokens instead of hand-written `dark:` variants (T004, T030)
-
-T030 says to add `dark:` variants to each workspace component. Implemented instead as CSS
-custom properties in `globals.css` that Tailwind reads (`tailwind.config.ts`), so `bg-surface`
-resolves per theme automatically.
-
-The requirement behind T030 is FR-018/SC-007: no element may be legible in only one
-theme. Per-element `dark:` satisfies that only until someone forgets one — and the
-forgotten one *is* the SC-007 failure. Tokens make a light-only component structurally
-impossible. The `academic_editorial` design file specifies only a light palette; the dark
-values were derived from the same Material-3 tonal palettes, keeping Muted Gold in its
-"medal" role for scores in both themes.
-
-### 3. Three FAQ answers contradict the mockup, because the mockup describes a product that does not exist
-
-`frequently_asked_questions` was generated before the backend was built. Copying it would
-have published three false statements:
-
-| Mockup says | Reality | What ships |
-|---|---|---|
-| "Yes, WriteWise supports SSO with Google" | `003` is email + password only; OAuth deferred | "Not yet… on the roadmap" |
-| "Click the Forgot Password link" | No reset endpoint exists (verified against the live OpenAPI document) | "Not built yet — contact support" |
-| Generic "academic writing / research papers" | The product scores IELTS Writing Task 1 and Task 2 | Rewritten for IELTS |
-
-This closes `/speckit-analyze` finding I3, which flagged the Google sign-in copy. The
-"is the score official" answer was already correct in the mockup and is kept firm, with a
-test asserting it opens with the word "No."
-
-Landing-page testimonials are likewise labelled as placeholder copy rather than presented
-as real quotes from named professionals.
-
-### 4. E2E stubs `001`/`003` at the network boundary rather than running them
-
-`playwright.config.ts` explains the reasoning. `001` and `003` already verify their own
-APIs against a real Postgres and a real model; these specs exist to prove the page flows.
-Booting a database and spending API credits to re-test another feature's contract would
-make the suite slow and expensive without covering anything new. Stub payloads are copied
-from the real schemas, so a contract change still surfaces.
-
-### 5. Sign-out uses a full-page navigation (T035)
-
-Found by the E2E suite, not by review: `router.replace("/")` after `signOut()` landed the
-learner on `/signin`, not `/`. `signOut()` flips auth state while the page is still
-mounted inside `ProtectedRoute`, whose effect fires first and wins the race — a direct
-FR-009 violation. A hard navigation tears the tree down before the guard can react, and
-also drops the in-memory access token, which is desirable for a sign-out regardless. This
-required overriding a Next lint rule; the reason is recorded at the call site.
-
-### Quickstart validation (T048)
-
-Scenarios 1–5 are executed as Playwright specs against a production build in real
-Chromium, rather than walked through by hand:
-
-| Quickstart scenario | Spec |
-|---|---|
-| 1 — Discover and sign up | `tests/e2e/discover-and-signup.spec.ts` |
-| 2 — Assessment + both themes | `workspace-assessment.spec.ts`, `workspace-theme.spec.ts`, `workspace-auth-guard.spec.ts` |
-| 3 — Profile and sign out | `profile-signout.spec.ts` |
-| 4 — FAQ | `faq.spec.ts` |
-| 5 — How it works | `how-it-works.spec.ts` |
-
-T049's accessibility pass is `tests/e2e/accessibility.spec.ts`: WCAG contrast measured on
-every text node across all six pages in **both** themes, plus keyboard reachability and
-focus visibility. It composites semi-transparent layers, because the design system uses
-10%-opacity tints and treating them as opaque produces false failures.
-
-### Not covered by this feature
-
-`001`'s `GET /api/v1/assessments/{id}` is unused: FR-011 scopes the workspace to the
-current assessment only, so nothing reloads a past one. The endpoint stays available for
-the history/dashboard feature that FR-011 defers.
+Fixing `/signup`/`/signin`'s actual auth wiring, building the standalone `/faq` page, or resolving
+the General Training scope question. Each is named explicitly in research.md and spec.md as
+someone else's feature or the product owner's decision — this task list ships an honest landing
+page around those gaps, not a page that pretends they're already closed.
