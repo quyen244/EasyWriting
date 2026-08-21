@@ -75,6 +75,34 @@ Sync Impact Report
   `specs/002-*/plan.md`, and `backend/pipelines/v1.yaml` cite principles by numeral; renumbering
   would silently break every one of those references. The new principle is appended as VIII.
 - Deferred TODOs: none
+---
+
+- Version change: 3.0.0 -> 3.1.0
+- Trigger: `001-ielts-score-assessment` was rewritten (design confirmed with the product owner
+  2026-08-21) as the standalone grader -- one task per request -- and now specifies bilingual
+  per-criterion comments grounded in the official descriptors (`FR-013`..`FR-016`). This closes
+  most of what TP-1 was suspending, but not all of it.
+- Modified principles: none redefined. Principle I's per-feature status changes via TP-1, not via
+  the principle text itself.
+- Added principles: none.
+- Added sections: none.
+- Modified sections: **Transitional Provisions / TP-1** -- narrowed rather than closed. The blanket
+  suspension of Principle I is retired for `001-ielts-score-assessment`, which now satisfies it in
+  full except for one residual gap: comments reference the learner's own writing but are not
+  machine-verified as exact quotations, unlike the inherited pipeline's `verify.py` step. TP-1
+  continues to cover (a) that residual gap, project-wide, and (b) the mock-test feature, which is
+  planned but not yet specified and may persist scores before its own spec addresses explanation.
+  The blanket "no public launch" constraint is narrowed to apply only to what remains suspended,
+  since blocking the grader's launch over a gap it does not have would be disproportionate.
+- Removed sections: none.
+- Rationale for MINOR bump: this expands and narrows a Transitional Provision's scope in a
+  materially significant way (a suspension that applied project-wide now applies to a named
+  residual gap plus one named feature) without redefining or removing a principle -- MINOR per the
+  Governance versioning rule, not PATCH, because the change in what is and is not compliant is
+  substantive, not just wording.
+- Deferred TODOs: TP-1 remains open pending (a) a decision on whether machine-verified evidence
+  anchoring is required at all or whether reviewed-but-unverified comments are an accepted
+  permanent posture, and (b) the mock-test feature's own specification addressing Principle I.
 -->
 
 # IE Writing Constitution
@@ -87,8 +115,7 @@ Achievement/Response, Coherence & Cohesion, Lexical Resource, Grammatical Range 
 per-criterion sub-scores and a stated rationale for *why* that score was given. No score without
 an explanation.
 
-**Currently suspended under TP-1** — see Transitional Provisions. The suspension is time-boxed and
-carries a named exit condition; it does not repeal this principle.
+**Status per TP-1**: satisfied in full by `001-ielts-score-assessment` (the standalone grader), which produces a per-criterion band and a bilingual comment for every submission. A narrower suspension remains -- see Transitional Provisions -- for machine-verified evidence anchoring project-wide, and for any feature (the planned mock test) that has not yet specified its own compliance.
 
 **Why**: explainability of the verdict is the product's first core feature and the basis for user trust.
 
@@ -259,26 +286,46 @@ remain blocking under Governance.
 
 ### TP-1 — Principle I suspended during platform migration
 
-**Status**: Active. Opened 2026-08-21.
+**Status**: Active, narrowed. Opened 2026-08-21. Narrowed 2026-08-21.
 
-**Scope of suspension.** During the platform-migration phase, a scored attempt MAY persist band
-scores without a per-criterion explanation. This exists because the migration's goal is to prove
-the Supabase platform, auth, job dispatch, and end-to-end flow are stable, and carrying the full
-explanation-generating pipeline through that migration would couple two independently risky changes.
+**Original scope of suspension.** During the platform-migration phase, a scored attempt was
+permitted to persist band scores without a per-criterion explanation, because carrying the full
+explanation-generating pipeline through the migration would have coupled two independently risky
+changes.
 
-**Constraints while active.** All of the following hold:
+**What has closed.** `001-ielts-score-assessment` (the standalone grader) now produces a band and a
+bilingual, descriptor-grounded comment for every one of the four criteria on every submission
+(constitution Principle I's own wording: no score without an explanation). For results produced by
+that feature, Principle I is satisfied in full and this provision no longer applies to them.
+
+**What remains suspended**, project-wide, until closed:
+
+1. **Machine-verified evidence anchoring.** Comments reference identifiable characteristics of the
+   learner's own writing, but nothing programmatically verifies them as exact quotations from that
+   writing — unlike the inherited pipeline's dedicated verification step. A comment could in
+   principle misquote, and no automated check would catch it.
+2. **Any feature that has not yet specified its own compliance** with Principle I — currently, the
+   planned mock-test feature (Task 1 + Task 2 in one timed attempt), which does not yet have a
+   specification and may persist scores before one exists.
+
+**Constraints while active** (apply only to what remains suspended under 1-2 above):
 
 1. Every scored attempt MUST still record `pipeline_version` and `model_id` (Principle IV is NOT
    suspended).
-2. The stored score shape MUST be forward-compatible — adding explanations later MUST NOT require
-   migrating or discarding attempts scored during this phase.
-3. Scores produced during this phase MUST be presented to learners as provisional, and MUST NOT be
-   sold, advertised as diagnostic feedback, or included in a paid tier.
-4. No public launch while this provision is active.
+2. The stored score shape MUST be forward-compatible — adding or strengthening explanations later
+   MUST NOT require migrating or discarding attempts scored during this phase.
+3. Scores produced under the still-suspended parts of this provision MUST be presented to learners
+   as provisional, and MUST NOT be sold, advertised as diagnostic feedback, or included in a paid
+   tier.
+4. No public launch of a feature still covered by this provision. A feature that has closed its
+   own gap (per "What has closed" above) is not blocked by this clause on that basis alone.
 
-**Exit condition.** This provision closes when per-criterion explanations, grounded in the official
-descriptors and anchored to the learner's own text, are produced by the scoring pipeline and
-persisted (for example, in a dedicated feedback table) — restoring Principle I in full.
+**Exit condition.** This provision closes fully when: (a) a deliberate decision is recorded on
+whether machine-verified evidence anchoring is required at all, or whether reviewed-but-unverified
+comments are an accepted permanent posture — and if required, it is implemented; and (b) every
+feature that persists a score, including the mock-test feature, has its own specification
+satisfying Principle I. Until both hold, this provision stays open even though it no longer covers
+the grader.
 
 **Review.** Re-examined at each constitution amendment. If still active after the platform
 migration is complete, the amendment MUST record why.
@@ -301,4 +348,4 @@ All specs, plans, and task lists MUST be checked against this constitution befor
 blocking, not advisory. A deviation covered by an active Transitional Provision is justified, and
 MUST cite the provision by identifier in the plan's Constitution Check.
 
-**Version**: 3.0.0 | **Ratified**: 2026-08-19 | **Last Amended**: 2026-08-21
+**Version**: 3.1.0 | **Ratified**: 2026-08-19 | **Last Amended**: 2026-08-21

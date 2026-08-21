@@ -5,7 +5,7 @@ so a reader landing on a stale spec can find out what happened to it without rea
 
 | Spec | Status | Notes |
 |---|---|---|
-| [001-ielts-score-assessment](./001-ielts-score-assessment/) | **Active — spec rewritten 2026-08-21** | Rescoped to a full mock-test grader: Task 1 + Task 2 in one attempt, one grading call instead of four, official 1/3–2/3 weighting. Its **Result Contract** section is the interface the grader UI and attempt history build against. Explanations deferred under TP-1. `plan.md`/`tasks.md` and the OpenAPI contract are stale pending `/speckit-plan`. **3 clarifications open.** |
+| [001-ielts-score-assessment](./001-ielts-score-assessment/) | **Active — spec rewritten 2026-08-21** | The **standalone grader**: one task per request, `task_type` supplied by the caller, one LLM call, bilingual per-criterion comments. Distinct from the mock test (separate, future spec using `writing_attempts`); the grader page's "Thi thử đầy đủ" card links to it. Closes most of constitution TP-1 — see the v3.1.0 amendment. `plan.md`/`tasks.md` and the OpenAPI contract are stale pending `/speckit-plan`. No open clarifications. |
 | [002-core-app-ux](./002-core-app-ux/) | **Superseded** | The landing/FAQ/workspace/profile UI is being redesigned from scratch against new visual references. Route structure and access rules are still worth reading; the API dependencies and the Stitch design references are obsolete. |
 | [003-account-authentication](./003-account-authentication/) | **Retired** | Authentication moved to Supabase Auth in constitution v3.0.0. Its requirements survive as a tombstone in that directory and carry forward to the Supabase platform spec. |
 

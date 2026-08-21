@@ -1,364 +1,726 @@
-# Feature Specification: IELTS Writing Mock Test Grader
+# Feature Specification: WriteWise Grader — Single-Task IELTS Writing Assessment
 
 **Feature Branch**: `001-ielts-score-assessment`
 
 **Created**: 2026-08-19
-**Revised**: 2026-08-20 — minor wording alignment with `002-core-app-ux`.
-**Rewritten**: 2026-08-21 — rescoped from single-essay assessment to a **full mock test grader**
-(Task 1 + Task 2 in one timed attempt), and from a four-call criterion-by-criterion pipeline to a
-**single grading operation**. Explanations are deferred under constitution **TP-1**. The previous
-version of this spec, its plan, tasks, and OpenAPI contract were written against the retired
-FastAPI backend and are superseded — see [../README.md](../README.md).
+**Rewritten**: 2026-08-21 — scoped to the **standalone grader**: one task per request, `task_type`
+supplied by the caller, one LLM call. Design reference: [../../design/grader.png](../../design/grader.png).
+The previous version of this spec described a four-call pipeline on a FastAPI backend that no
+longer exists; an intermediate draft mistakenly described a full mock test. Both are superseded.
 
 **Status**: Draft
 
-**Input**: User description: "1 request đến và có kết quả từng tiêu chí + overall band. Vẫn kế
-thừa pipeline kiểu extract_features + length_penalty => đưa vào prompt duy nhất => LLM => kết quả
-từng tiêu chí + overall band => lưu vào database lịch sử bài thi. Thống nhất việc output của nó
-trông như thế nào để sau này đồng nhất UI/UX của trang grader."
-
-## Why this rewrite exists
-
-Three things changed since the original spec, and each invalidates part of it:
-
-1. **The product is a mock test, not an essay checker.** A learner now completes Task 1 and
-   Task 2 in one timed sitting. Scoring is per task, then combined with the official weighting —
-   not one essay in isolation.
-2. **Scoring is one operation, not four.** The inherited pipeline asked the model once per
-   criterion. This feature asks once, with the extracted features in the prompt, and applies the
-   length penalty deterministically afterwards.
-3. **The result shape is now a first-class deliverable.** The grader UI has not been designed
-   yet. Pinning the result structure here — before any screen exists — is what stops the UI and
-   the grader from drifting apart later. The *Result Contract* section below is the part of this
-   spec that other features are expected to build against.
-
-## Scope boundary
-
-**In scope**: turning a completed attempt into bands, and persisting that result to the learner's
-history in a fixed shape.
-
-**Out of scope**: the exam-taking experience (timer, autosave, editor), authentication, the test
-bank, the grader screen's visual design, teach-to-improve guidance, and the progress dashboard.
-This feature defines *what a result is*; other features decide how it is produced and shown.
-
-## User Scenarios & Testing *(mandatory)*
-
-### User Story 1 - Receive a scored mock test (Priority: P1)
-
-A learner finishes a mock test — Task 1 and Task 2 — and submits it. They see their overall band
-alongside a per-task breakdown showing how each of the four criteria scored for each task.
-
-**Why this priority**: This is the product. Everything else in the app exists to lead here or to
-follow from here.
-
-**Independent Test**: Submit an attempt containing both tasks and verify the result contains an
-overall band, a band for each task, and four criterion bands per task, all on the official scale.
-
-**Acceptance Scenarios**:
-
-1. **Given** a learner has completed both tasks, **When** they submit the attempt, **Then** they
-   receive an overall band, a Task 1 band, a Task 2 band, and eight criterion bands (four per
-   task), every one of them a valid band value.
-2. **Given** an attempt is being scored, **When** the learner waits, **Then** they see an
-   explicit in-progress state rather than an empty result or a frozen screen.
-3. **Given** a scored attempt, **When** the learner reads the overall band, **Then** it equals
-   the official weighting of the two task bands — Task 1 counting one third and Task 2 two
-   thirds — and not a plain average of the two.
-4. **Given** Task 1 is scored, **When** the learner reads its criteria, **Then** the first
-   criterion is labelled **Task Achievement**; for Task 2 the same position is labelled **Task
-   Response**, reflecting the different official descriptors.
-5. **Given** a scored attempt, **When** the learner views their band, **Then** it is presented as
-   a provisional practice estimate, not as an official or diagnostic score (constitution TP-1).
+**Design decisions confirmed with the product owner on 2026-08-21**: per-criterion comments are in
+scope; comments are bilingual; sign-in is required; the grading function persists a row and returns
+the result in the same call.
 
 ---
 
-### User Story 2 - Review a past attempt (Priority: P1)
+## 1. Problem / Goal
 
-A learner opens an attempt they completed earlier and sees exactly the same result, laid out
-exactly the same way as when it was first scored.
+An IELTS learner writing on their own has no way to know what band their writing would receive, or
+why. Human feedback costs money and takes days, so most learners practise blind — they produce
+essays without ever learning which of the four assessed criteria is actually holding their score
+down.
 
-**Why this priority**: An attempt history nobody can read back is a write-only log. This is also
-the requirement that forces the result to be stored in a stable shape rather than reconstructed
-differently on each read.
-
-**Independent Test**: Score an attempt, reload it later, and verify the stored result is
-structurally identical — same fields, same criterion order, same values.
-
-**Acceptance Scenarios**:
-
-1. **Given** a previously scored attempt, **When** the learner opens it from their history,
-   **Then** every band shown matches what was shown at scoring time.
-2. **Given** two attempts scored at different times, **When** the learner views both, **Then**
-   both present the same fields in the same order, so the two are directly comparable.
-3. **Given** an attempt scored before a later change to the scoring method, **When** it is viewed,
-   **Then** it still displays correctly and remains attributable to the method that produced it.
-4. **Given** a learner is signed in, **When** they request an attempt belonging to someone else,
-   **Then** it is not returned to them.
+**Goal**: a learner pastes one piece of writing, picks which task it answers, and within about a
+minute receives an estimated band for each of the four official criteria, an overall band, and a
+plain-language comment explaining each criterion's band — with every band traceable to the exact
+prompt and model that produced it.
 
 ---
 
-### User Story 3 - Recover from a failed scoring run (Priority: P2)
+## 2. Scope
 
-A learner's submission fails to score. They are told plainly, their writing is still there, and
-they can try again without rewriting anything.
+- Assessing **one task per request**. The caller states which task type via `task_type`.
+- Both IELTS Academic Writing task types: **Task 1** (minimum 150 words) and **Task 2** (minimum
+  250 words).
+- An optional exam prompt supplied by the learner.
+- Deterministic pre-processing: a scoreability gate and feature extraction.
+- Exactly **one** LLM call per graded submission.
+- Deterministic post-processing: band snapping, the under-length penalty, and overall aggregation.
+- Persisting every submission and its outcome — including failures — to the learner's history.
+- Recording every LLM call for cost and quality analysis.
 
-**Why this priority**: Scoring depends on an external service that will sometimes be slow, rate
-limited, or return unusable output. Losing a learner's timed exam writing to a transient failure
-is the worst outcome this feature can produce.
+## 3. Non-goals
 
-**Independent Test**: Force a scoring failure and verify the attempt's text survives intact, the
-failure is visible and distinguishable from a low score, and a retry is possible.
+- **The full mock test** (Task 1 + Task 2 in one timed 60-minute sitting). A separate feature, with
+  its own specification, reached from the "Thi thử đầy đủ" card on the grader page. It will reuse
+  this feature's pipeline rather than reimplement it — see §16.
+- **Teach-to-improve guidance** — rewriting a learner's weak sentences into strong ones
+  (constitution Principle II). This feature explains a band; it does not coach.
+- **The progress dashboard** — trends across submissions over time.
+- **Authentication itself.** A signed-in learner is a precondition.
+- **IELTS General Training.** Its Task 1 uses different descriptors — see §17.
+- **Handwriting or image upload.** Text only.
+- **Verbatim evidence-quote verification.** Comments reference the learner's writing but are not
+  machine-verified as exact quotations — see §17.
+
+---
+
+## 4. User Scenarios & Testing *(mandatory)*
+
+### User Story 1 - Grade one piece of writing (Priority: P1)
+
+A learner opens the grader, chooses Task 1 or Task 2, optionally pastes the exam prompt, pastes
+their writing, and submits. They receive four criterion bands with a comment on each, plus an
+overall band.
+
+**Why this priority**: This is the feature. Nothing else here has value without it.
+
+**Independent Test**: Submit a Task 2 essay of adequate length and verify the result contains four
+criterion bands, four non-empty comments, and an overall band, all on the official scale.
 
 **Acceptance Scenarios**:
 
-1. **Given** scoring fails, **When** the learner sees the outcome, **Then** it is clearly a
-   failure — never a zero, a blank band, or a partially filled result.
-2. **Given** scoring fails, **When** the learner returns to the attempt, **Then** both tasks'
-   text is exactly as submitted.
-3. **Given** a failed attempt, **When** the learner retries, **Then** the attempt is scored again
-   without them re-entering anything.
-4. **Given** the grader produces an incomplete result — some criteria missing, **When** the
-   outcome is recorded, **Then** it is treated as a failure rather than persisted as a score.
+1. **Given** a signed-in learner with Task 2 selected and an essay of at least 250 words, **When**
+   they submit, **Then** they receive four criterion bands, a comment for each, and an overall band.
+2. **Given** Task 1 is selected, **When** the result is shown, **Then** the first criterion is
+   labelled **Task Achievement**; with Task 2 selected the same position is labelled **Task
+   Response**.
+3. **Given** a submission is being graded, **When** the learner waits, **Then** an explicit
+   in-progress state is shown rather than a blank or frozen result area.
+4. **Given** a result is displayed, **When** the learner reads the overall band, **Then** it is the
+   average of the four criterion bands rounded to the nearest half band, not a figure the model
+   volunteered.
+5. **Given** the learner selects Task 1, **When** the form updates, **Then** the stated minimum
+   changes to 150 words and the live word counter compares against that minimum.
+
+---
+
+### User Story 2 - Understand why the band was given (Priority: P1)
+
+Each criterion band arrives with a comment written for a Vietnamese learner, explaining in Vietnamese
+what in their writing produced that band, while keeping the official IELTS terminology in English.
+
+**Why this priority**: A bare number tells a learner nothing they can act on, and the grader page
+explicitly promises detailed comments against the four criteria. Constitution Principle I makes an
+unexplained band a defect, not a simplification.
+
+**Independent Test**: Grade an essay with a deliberate mix of strengths and weaknesses and verify
+each comment refers to that essay's actual characteristics rather than generic advice.
+
+**Acceptance Scenarios**:
+
+1. **Given** a graded submission, **When** the learner reads any criterion's comment, **Then** it
+   refers to identifiable features of their own writing rather than generic praise or criticism.
+2. **Given** a graded submission, **When** the learner reads a comment, **Then** the explanation is
+   in Vietnamese while criterion names and IELTS descriptor wording remain in English.
+3. **Given** a submission that scored below the length minimum, **When** the learner reads the
+   result, **Then** the deduction is stated explicitly — how many words short, how much was
+   deducted, and from which criterion — rather than silently folded into the band.
+4. **Given** any displayed band, **When** the learner sees it, **Then** it is presented as an
+   estimate for practice, not as an official IELTS result.
+
+---
+
+### User Story 3 - Revisit past submissions (Priority: P2)
+
+A learner opens "Lịch sử" and sees their previous submissions, and can reopen any one to see the
+writing they submitted alongside the result it received.
+
+**Why this priority**: The sidebar already offers it, and a grader with no history makes a learner
+retype work to compare. It is P2 because the grader delivers value on its first use without it.
+
+**Independent Test**: Grade two submissions, open the history, and verify both appear with the same
+bands they were originally given.
+
+**Acceptance Scenarios**:
+
+1. **Given** previous submissions, **When** the learner opens the history, **Then** each entry shows
+   its task type, overall band, and when it was graded.
+2. **Given** a past submission, **When** the learner opens it, **Then** the writing and the full
+   result are exactly as first produced.
+3. **Given** a learner is signed in, **When** they attempt to open a submission belonging to another
+   learner, **Then** it is not returned.
+
+---
+
+### User Story 4 - Recover from a failed grading (Priority: P2)
+
+Grading fails. The learner is told plainly, their writing is intact, and they can retry.
+
+**Why this priority**: Grading depends on an external model that will sometimes be slow, rate
+limited, or return unusable output. Losing a learner's writing to a transient fault is the worst
+outcome this feature can produce.
+
+**Independent Test**: Force a model failure and verify the writing survives, the failure is
+distinguishable from a low band, and a retry succeeds.
+
+**Acceptance Scenarios**:
+
+1. **Given** grading fails, **When** the outcome is shown, **Then** it is unmistakably a failure —
+   never a zero, a blank band, or a partly filled result.
+2. **Given** grading fails, **When** the learner returns, **Then** their writing is exactly as
+   submitted.
+3. **Given** the model returns only three of four criteria, **When** the outcome is recorded,
+   **Then** it is treated as a failure rather than stored as a band.
+4. **Given** the learner loses their connection while grading runs, **When** they return,
+   **Then** the completed result is available — they are not charged a second grading run for work
+   already done.
 
 ---
 
 ### Edge Cases
 
-- **The timer runs out mid-sentence.** Whatever was written is what gets scored; a truncated
-  final sentence is normal input, not an error.
-- **A task is left completely blank.** Realistic under time pressure, and it must not be treated
-  as a system fault. See [NEEDS CLARIFICATION 2].
-- **A task is far under the minimum length.** Scored, then penalised on that task's first
-  criterion only — not rejected, and not deducted twice (FR-008).
-- **The grader returns a band that is not on the scale** — a 6.3, a 12, a negative. Must never
-  reach a learner as-is.
-- **The grader returns unparseable output** or omits a criterion. Treated as a failed run.
-- **The submission is not usable English writing** — gibberish, wrong language, pasted lorem
-  ipsum. The learner must be told, rather than shown a fabricated band.
-- **The learner submits the same attempt twice**, or double-clicks submit. Must not produce two
-  results or two charges against the model budget.
-- **A learner submits attempt after attempt** to probe the grader. Must be bounded — every run
-  costs real money (constitution Principle V).
+- **Empty submission**, or a few stray characters. Rejected before any model call, at no cost.
+- **Writing that is not English** — Vietnamese, or pasted placeholder text. Rejected before any
+  model call.
+- **Far under the minimum length.** Graded, then penalised on the first criterion only — not
+  rejected, and never deducted twice (§9).
+- **No prompt supplied.** Permitted; the grader page marks the field optional. Task
+  Achievement/Response is then judged with less certainty, and the result must say so (§17).
+- **The model returns a band off the scale** — a 6.3, a 12, a negative number. Must never reach a
+  learner unaltered.
+- **The model returns unparseable output**, or omits a criterion. A failed run.
+- **"Chấm điểm ngay" pressed twice**, or the request retried. Must not produce two results or two
+  charges.
+- **A learner submits repeatedly** to probe the grader. Bounded — every run costs real money.
+- **Extremely long input** — a pasted book chapter. Bounded before it reaches the model.
 
-## Requirements *(mandatory)*
+---
+
+## 5. User flow
+
+```
+Sign in ──▶ "Chấm bài" ──▶ choose task type (Task 1 / Task 2)
+                              │  minimum words and word counter update
+                              ▼
+                        paste prompt (optional)
+                              ▼
+                        paste writing — live count "N / min từ"
+                              ▼
+                        "Chấm điểm ngay"
+                              ▼
+                     in-progress state shown
+                              ▼
+              ┌───────────────┴───────────────┐
+              ▼                               ▼
+      four criterion cards               failure notice
+      (band + comment each)              reason + retry
+      overall band                       writing preserved
+      length deduction if any
+              │
+              └──▶ saved to "Lịch sử"
+```
+
+"Làm mới" clears the form without submitting. The "Thi thử đầy đủ" card leaves for the separate
+mock-test feature.
+
+---
+
+## 6. Grader flow
+
+```
+① GATE       deterministic, before any spend
+             rate limit → empty? → below absolute minimum? → not English?
+             fail ⇒ rejected, error code, zero model calls
+
+② PERSIST    create the submission row, status = scoring
+             writing is durable from this point on
+
+③ EXTRACT    word count, minimum for the task, sentences, paragraphs,
+             cohesive devices, repeated content words
+             ⇒ supplied to the model as ground truth
+
+④ JUDGE      ONE model call — semantic assessment only
+             explicitly instructed NOT to deduct for length
+             fail ⇒ one retry ⇒ failed
+
+⑤ SNAP       every band clamped to the scale and onto the half-band grid;
+             any correction recorded as a model-quality signal
+
+⑥ ADJUST     under-length penalty applied to the FIRST criterion only
+
+⑦ AGGREGATE  overall = mean of the four bands, rounded to the nearest half
+
+⑧ COMPLETE   store the result, record the model call, return to the caller
+```
+
+**The governing rule: the model never counts and never calculates.** Counting is what language
+models fail at most reliably, and arithmetic performed by a model is neither reproducible nor
+auditable. Steps ① ③ ⑤ ⑥ ⑦ exist to keep both out of the model's hands. The only thing the model
+produces is four bands and four comments.
+
+---
+
+## 7. Supported `task_type`
+
+| `task_type` | Minimum words | First criterion | Rubric |
+|---|---|---|---|
+| `TASK_1` | 150 | `TASK_ACHIEVEMENT` — "Task Achievement" | Academic Task 1 descriptors |
+| `TASK_2` | 250 | `TASK_RESPONSE` — "Task Response" | Task 2 descriptors |
+
+Criteria 2–4 are identical for both: Coherence & Cohesion, Lexical Resource, Grammatical Range &
+Accuracy.
+
+`task_type` determines three things — the minimum word count, the identity of the first criterion,
+and which rubric text enters the prompt. These three MUST be resolved from a single mapping rather
+than being decided independently wherever they are needed (§17).
+
+---
+
+## 8. Request schema
+
+```jsonc
+{
+  "task_type":   "TASK_1" | "TASK_2",   // required
+  "essay_text":  "string",              // required, non-empty
+  "prompt_text": "string" | null        // optional — the page marks it "Không bắt buộc"
+}
+```
+
+The learner's identity is taken from their session, never from the request body.
+
+---
+
+## 9. Preprocessing / feature extraction
+
+**Gate** — runs before anything is charged for:
+
+| Check | Outcome |
+|---|---|
+| Rate limit exceeded | `RATE_LIMITED` |
+| Empty or whitespace only | `EMPTY_SUBMISSION` |
+| Below the absolute floor (20 words) — nothing assessable regardless of task | `TOO_SHORT` |
+| Not predominantly Latin-script English | `NOT_ENGLISH` |
+| Beyond the maximum accepted length | `TOO_LONG` |
+
+**Extraction** — measured facts passed into the prompt as ground truth: word count, the task's
+minimum, sentence and paragraph counts, cohesive devices found, and repeated content words.
+
+**Under-length penalty** — computed here, applied at step ⑥:
+
+| Shortfall against the minimum | Deduction |
+|---|---|
+| Up to 15% short | none |
+| More than 15% short | **0.5 band** |
+| More than 40% short | **1.0 band** |
+
+Applied to the **first criterion only** (Task Achievement or Task Response), never to the other
+three and never to the overall band directly. This mirrors how examiners absorb under-length into
+that criterion instead of deducting separately.
+
+⚠️ **This deduction and the prompt are two halves of one arrangement.** The prompt MUST instruct
+the model not to deduct for length itself. If both apply a penalty, every under-length learner is
+punished twice for one fault — and nothing surfaces the error, because the resulting band still
+looks plausible. The pairing MUST be covered by a test that fails if either half changes alone.
+
+---
+
+## 10. LLM evaluation step
+
+Exactly one call per graded submission. The prompt carries:
+
+- the role of an IELTS examiner and the descriptors **for the requested task type only**;
+- the exam prompt, if the learner supplied one — and, if not, an instruction to judge the first
+  criterion on internal coherence and completeness while flagging reduced certainty;
+- the learner's writing;
+- the extracted measurements as ground truth;
+- the instruction **not** to deduct for length;
+- the required output shape, and the requirement that comments explain in Vietnamese while keeping
+  IELTS terminology in English.
+
+The model, its parameters, and the prompt version come from versioned configuration, never from
+code (constitution Principles IV and V).
+
+---
+
+## 11. LLM output contract
+
+The model returns **only** what requires judgement:
+
+```jsonc
+{
+  "criteria": [
+    { "code": "TASK_RESPONSE",              "band": 6.5, "comment": "…" },
+    { "code": "COHERENCE_COHESION",         "band": 6.0, "comment": "…" },
+    { "code": "LEXICAL_RESOURCE",           "band": 6.5, "comment": "…" },
+    { "code": "GRAMMATICAL_RANGE_ACCURACY", "band": 6.0, "comment": "…" }
+  ]
+}
+```
+
+The model MUST NOT return the overall band (calculated), the display labels (mapped from `code`),
+or any length deduction (applied afterwards). Everything derivable is derived, so every number in
+the stored result except the four raw bands can be reproduced from the inputs.
+
+**Rejected if**: the JSON does not parse; any of the four expected codes is missing; a code is
+unrecognised; a band is absent or non-numeric; a comment is empty. One retry, then failure.
+
+---
+
+## 12. Result schema
+
+```jsonc
+{
+  "id": "uuid",
+  "task_type": "TASK_2",
+  "status": "scored",
+  "overall_band": 6.5,
+  "criteria": [
+    { "code":  "TASK_RESPONSE",
+      "label": "Task Response",
+      "band":  6.5,
+      "comment": "Bài viết trả lời được cả hai phần của đề, nhưng phần giải pháp
+                  chỉ dừng ở mức khái quát — thiếu ví dụ cụ thể. Đây là đặc điểm
+                  của band 6: \"addresses all parts of the task though some parts
+                  may be more fully covered than others\"." }
+    // …three more, always in the order of §7
+  ],
+  "word_count": 243,
+  "min_words": 250,
+  "length_penalty": 0,
+  "provisional": true,
+  "pipeline_version": "pipeline-v1.0",
+  "model_id": "…",
+  "created_at": "…",
+  "scored_at": "…"
+}
+```
+
+**Why `criteria` is an ordered array of objects, not a keyed map**: an array preserves display
+order; a `code` keeps each criterion identifiable when its wording changes; and the `label` travels
+with the result because the first criterion's name **differs between task types**. A display that
+assumed one name for position 1 would mislabel half of all results.
+
+**Failure result** — the shape a display must also handle:
+
+```jsonc
+{ "id": "uuid", "task_type": "TASK_2", "status": "failed",
+  "error_code": "LLM_INVALID_OUTPUT",
+  "message": "…", "retryable": true }
+```
+
+No bands appear in a failure result. A display MUST NOT substitute zeroes or blanks for missing
+bands.
+
+---
+
+## 13. Database schema
+
+> Included at the product owner's explicit request so the storage design is agreed before planning.
+
+```sql
+-- One assessed task. Readable by its owner.
+create table public.grader_results (
+  id               uuid primary key default gen_random_uuid(),
+  user_id          uuid not null references auth.users(id) on delete cascade,
+  source           text not null default 'grader'
+                   check (source in ('grader','mock_test')),
+
+  -- input
+  task_type        text not null check (task_type in ('TASK_1','TASK_2')),
+  prompt_text      text,                    -- nullable: optional on the page
+  essay_text       text not null,
+
+  -- deterministic features
+  word_count       int  not null check (word_count >= 0),
+  min_words        int  not null,           -- snapshot, so old rows explain themselves
+  length_penalty   numeric(2,1) not null default 0
+                   check (length_penalty in (0, 0.5, 1.0)),
+
+  -- job state
+  status           text not null default 'queued'
+                   check (status in ('queued','scoring','scored','failed','rejected')),
+  error_code       text,
+
+  -- result
+  overall_band     numeric(2,1)
+                   check (overall_band is null or
+                          (overall_band between 1 and 9 and
+                           overall_band * 2 = floor(overall_band * 2))),
+  criteria         jsonb,
+
+  -- traceability (Principle IV)
+  pipeline_version text,
+  prompt_version   text,
+  model_id         text,
+
+  created_at       timestamptz not null default now(),
+  scored_at        timestamptz,
+
+  -- a scored row is never partial
+  constraint scored_rows_are_complete check (
+    status <> 'scored' or
+    (overall_band is not null and criteria is not null
+     and jsonb_array_length(criteria) = 4
+     and pipeline_version is not null and model_id is not null)
+  )
+);
+
+create index on public.grader_results (user_id, created_at desc);
+
+-- Every model call. Service-role only; never exposed to a learner.
+create table public.llm_calls (
+  id                uuid primary key default gen_random_uuid(),
+  grader_result_id  uuid references public.grader_results(id) on delete cascade,
+  user_id           uuid references auth.users(id),
+  pipeline_version  text not null,
+  prompt_version    text not null,
+  model_id          text not null,
+  status            text not null,     -- ok | parse_error | timeout | rate_limited | http_error
+  latency_ms        int,
+  prompt_tokens     int,
+  completion_tokens int,
+  cost_usd          numeric(10,6),
+  retry_count       int not null default 0,
+  bands_coerced     boolean not null default false,
+  raw_response      jsonb,             -- purged on a schedule (Principle VII)
+  error_message     text,
+  created_at        timestamptz not null default now()
+);
+```
+
+**Access control** — enforced in the database, not in application code:
+
+```sql
+alter table public.grader_results enable row level security;
+alter table public.llm_calls      enable row level security;   -- no policy: service_role only
+
+create policy "read own"   on public.grader_results
+  for select to authenticated using (auth.uid() = user_id);
+create policy "insert own" on public.grader_results
+  for insert to authenticated with check (auth.uid() = user_id);
+
+-- RLS makes the row theirs, which would otherwise let a learner set their own band to 9.0.
+revoke update (overall_band, criteria, status, error_code,
+               length_penalty, pipeline_version, prompt_version, model_id)
+  on public.grader_results from authenticated;
+```
+
+The `scored_rows_are_complete` constraint and the band-grid check are deliberate: they make an
+invalid result **unstorable**, so a defect in the grading code surfaces as a rejected write instead
+of a wrong band shown to a learner.
+
+**Why the raw model response lives in a separate table**: it has a different retention life (it
+embeds the learner's writing and must be purged on a schedule), a different audience (service role
+only, never the learner), and it must exist even when there is no result row to attach it to —
+a failed call is precisely the record most worth keeping.
+
+**Why `criteria` is JSONB rather than a normalized table**: the four criteria are always written
+together, always read together, and are never queried individually at this stage — a join would be
+paid on every read to buy nothing. Adding evidence quotes or rewrite suggestions later then costs
+no migration. The trade-off is accepted knowingly: when the progress dashboard needs per-criterion
+aggregation, a generated column or view is added **then**.
+
+---
+
+## 14. Persistence flow
+
+```
+① gate fails      ─▶ insert row  status = 'rejected' + error_code       no model call
+② gate passes     ─▶ insert row  status = 'scoring'                     writing now durable
+④ model fails     ─▶ update      status = 'failed'  + error_code
+                     insert llm_calls (the failure is recorded too)
+⑧ success         ─▶ update      status = 'scored', criteria, overall_band,
+                                 length_penalty, pipeline_version,
+                                 prompt_version, model_id, scored_at
+                     insert llm_calls (ok, with latency, tokens, cost)
+                  ─▶ return the result to the caller
+```
+
+The row is written **before** the model call, so a lost connection or a timeout never costs the
+learner their writing or hides a completed grading. The caller receives the result directly from
+the same invocation; the stored row is what makes that convenience non-essential rather than
+load-bearing.
+
+---
+
+## 15. Requirements *(mandatory)*
 
 ### Functional Requirements
 
-**Scoring**
+**Grading**
 
-- **FR-001**: System MUST accept one completed attempt — Task 1 and Task 2 together — as a single
-  submission, and produce one result for it.
-- **FR-002**: System MUST score each task against that task's own four official criteria: **Task
-  Achievement** (Task 1) or **Task Response** (Task 2), plus Coherence & Cohesion, Lexical
-  Resource, and Grammatical Range & Accuracy.
-- **FR-003**: System MUST produce a band for every criterion of every task, a band for each task,
-  and one overall band for the attempt.
-- **FR-004**: System MUST derive each task's band from the mean of that task's four criterion
-  bands.
-- **FR-005**: System MUST derive the overall band by weighting Task 1 at one third and Task 2 at
-  two thirds.
-- **FR-006**: System MUST express every band as a multiple of 0.5, rounding a value that falls
-  exactly halfway **upward** (so 6.25 becomes 6.5 and 6.75 becomes 7.0), matching IELTS practice.
-- **FR-007**: System MUST derive task bands and the overall band by fixed arithmetic, not by
-  asking the grader for them. The same criterion bands MUST always produce the same task and
-  overall bands.
+- **FR-001**: System MUST accept one submission consisting of a task type, writing, and an optional
+  prompt, and produce one result for it.
+- **FR-002**: System MUST assess the submission against the four official criteria for the stated
+  task type, using Task Achievement for Task 1 and Task Response for Task 2.
+- **FR-003**: System MUST produce a band and a comment for each of the four criteria, plus one
+  overall band.
+- **FR-004**: System MUST derive the overall band from the mean of the four criterion bands, and
+  MUST NOT accept an overall band offered by the model.
+- **FR-005**: System MUST express every band as a multiple of 0.5 within the 1–9 range, rounding a
+  value falling exactly halfway **upward**, so 6.25 becomes 6.5 and 6.75 becomes 7.0.
+- **FR-006**: System MUST use exactly one model call per graded submission.
+- **FR-007**: Given the same four criterion bands, the system MUST always produce the same overall
+  band.
 
-**Length handling**
+**Length**
 
-- **FR-008**: System MUST count the words in each task and compare that count against the task's
-  minimum (150 for Task 1, 250 for Task 2).
-- **FR-009**: System MUST apply an under-length penalty to the affected task's **first criterion
-  only** (Task Achievement or Task Response), never to the other three and never to the overall
-  band directly — mirroring how examiners absorb under-length rather than deducting separately.
-- **FR-010**: The penalty MUST be: no penalty at or near the minimum; **0.5 bands** when the task
-  is more than 15% short; **1.0 band** when more than 40% short.
-- **FR-011**: The penalty MUST be applied by fixed arithmetic after grading, and the grading step
-  MUST be instructed **not** to deduct for length itself. These two halves MUST stay in sync —
-  if grading also penalises length, every under-length learner is punished twice for one fault.
-- **FR-012**: The measured word counts MUST be available to the grading step as context, so it
-  can judge development and completeness, even though it does not apply the penalty.
+- **FR-008**: System MUST count the words in the submission and compare that count with the
+  minimum for the stated task type — 150 for Task 1, 250 for Task 2.
+- **FR-009**: System MUST deduct 0.5 bands when the submission is more than 15% below the minimum
+  and 1.0 band when more than 40% below, applying the deduction to the first criterion only.
+- **FR-010**: The deduction MUST be applied by fixed arithmetic after assessment, and the
+  assessment step MUST be instructed not to deduct for length itself.
+- **FR-011**: System MUST make the measured word count available to the assessment step as ground
+  truth rather than leaving it to be counted.
+- **FR-012**: System MUST show the learner any deduction applied, including how far short the
+  submission was and which criterion absorbed it.
 
-**Result integrity**
+**Comments**
 
-- **FR-013**: System MUST NOT present any band that is off the official scale. A band outside the
-  valid range or off the half-point grid MUST be corrected onto the scale before it is shown, and
-  the fact that a correction was needed MUST be recorded as a quality signal rather than hidden.
-- **FR-014**: System MUST treat an incomplete result — any missing criterion — as a failed run.
-  A partial result MUST NOT be persisted or displayed as a score.
-- **FR-015**: System MUST preserve both tasks' text through any failure, and allow the attempt to
-  be scored again without re-entry.
-- **FR-016**: System MUST distinguish, in what the learner sees, between *not yet scored*, *being
-  scored*, *scored*, and *failed*. A failure MUST never be displayed as a low band.
-- **FR-017**: System MUST detect a submission it cannot meaningfully score — not English, not
-  writing — and say so, rather than returning an invented band.
+- **FR-013**: Every criterion band MUST be accompanied by a non-empty comment explaining it.
+- **FR-014**: Comments MUST refer to identifiable characteristics of the learner's own writing
+  rather than generic advice.
+- **FR-015**: Comments MUST be written in Vietnamese while retaining IELTS criterion names and
+  descriptor wording in English.
+- **FR-016**: A band MUST NOT be displayed without its comment.
 
-**Persistence and traceability**
+**Integrity**
 
-- **FR-018**: System MUST persist every scored result to the learner's attempt history, in the
-  structure defined by the Result Contract below.
-- **FR-019**: A stored result MUST be readable later and structurally identical to what was shown
-  when it was produced.
-- **FR-020**: System MUST record, with every scored attempt, which scoring method and which model
-  produced it, so any past band can be traced to the methodology behind it (constitution
-  Principle IV).
-- **FR-021**: A learner MUST only be able to read their own attempts and results.
-- **FR-022**: A learner MUST NOT be able to set or alter their own bands or an attempt's scoring
-  state by any route.
+- **FR-017**: System MUST NOT present a band that is off the official scale; an off-scale value
+  MUST be corrected onto the scale before display, and the correction MUST be recorded as a
+  model-quality signal rather than silently discarded.
+- **FR-018**: System MUST treat a result missing any criterion as a failure, and MUST NOT store or
+  display it as a band.
+- **FR-019**: System MUST preserve the learner's writing through any failure and permit a retry
+  without re-entry.
+- **FR-020**: System MUST distinguish, in what the learner sees, between in progress, graded,
+  failed, and rejected — and MUST NOT render a failure as a low band.
+- **FR-021**: System MUST reject a submission it cannot meaningfully assess before making any model
+  call, and MUST tell the learner why.
 
-**Cost and abuse**
+**Persistence and access**
 
-- **FR-023**: System MUST bound how often one learner can trigger scoring (constitution Principle
-  V), and MUST NOT score the same submission twice because of a repeated or duplicated request.
-- **FR-024**: System MUST record every grading call durably — including the method version, model,
-  outcome, duration, size, cost, and the grader's raw output — so scoring quality and spend can be
-  examined after the fact (constitution Principle VII).
+- **FR-022**: System MUST persist every submission — rejected, failed, and graded alike — to the
+  learner's history.
+- **FR-023**: A stored result MUST be readable later and identical to what was first shown.
+- **FR-024**: System MUST record the pipeline version, prompt version, and model with every graded
+  submission.
+- **FR-025**: A learner MUST be signed in to submit, and MUST be able to read only their own
+  submissions.
+- **FR-026**: A learner MUST NOT be able to set or alter any band, deduction, or status by any
+  route, including direct data access.
+- **FR-027**: System MUST record every model call durably — version, model, outcome, duration,
+  token counts, cost, retries, and the raw response.
 
-**Result shape stability** *(the requirement this rewrite exists to pin down)*
+**Cost**
 
-- **FR-025**: Every scored attempt MUST present the same fields, in the same order, regardless of
-  the bands it received. A high-scoring and a low-scoring attempt MUST be structurally identical.
-- **FR-026**: Criteria MUST always be returned in a fixed order — the task's own first criterion,
-  then Coherence & Cohesion, Lexical Resource, Grammatical Range & Accuracy — so a display can
-  render them positionally without sorting or lookup.
-- **FR-027**: Each criterion MUST carry a stable identifier that does not change when its display
-  wording changes, so stored results survive relabelling.
-- **FR-028**: The result structure MUST be extensible without alteration: adding per-criterion
-  explanations later (closing constitution TP-1) MUST NOT rename, remove, reorder, or change the
-  meaning of any field defined here, and MUST NOT require migrating attempts scored before then.
-- **FR-029**: Until TP-1 closes, bands MUST be labelled to the learner as provisional practice
-  estimates, and MUST NOT be presented as diagnostic feedback or placed behind payment.
+- **FR-028**: System MUST limit how often one learner can trigger grading.
+- **FR-029**: System MUST NOT charge two model calls for one submission because a request was
+  repeated or retried.
+- **FR-030**: System MUST bound accepted input length before it reaches the model.
 
-### Result Contract
+**Shape stability**
 
-The structure every scored attempt takes. This is the interface the grader screen, the attempt
-history, and any later dashboard all build against.
-
-**Attempt result**
-
-| Field | Meaning |
-|---|---|
-| `attempt_id` | Which attempt this result belongs to |
-| `status` | `scored` here; the same field carries `not_started`, `in_progress`, `scoring`, `failed`, `rejected` at other times (FR-016) |
-| `overall_band` | The attempt's band, weighted per FR-005 |
-| `tasks` | Exactly two task results, Task 1 first (FR-025) |
-| `scored_at` | When the result was produced |
-| `pipeline_version` | Which scoring method produced it (FR-020) |
-| `model_id` | Which model produced it (FR-020) |
-| `provisional` | True while TP-1 is active (FR-029) |
-
-**Task result** — exactly two, always in task order
-
-| Field | Meaning |
-|---|---|
-| `task_number` | 1 or 2 |
-| `band` | Mean of this task's four criteria (FR-004) |
-| `criteria` | Exactly four, in the fixed order of FR-026 |
-| `word_count` | Words measured in this task |
-| `minimum_words` | 150 for Task 1, 250 for Task 2 |
-| `length_penalty` | `0`, `0.5`, or `1.0` — what was deducted, and from which criterion, made visible rather than silently folded in |
-
-**Criterion result** — exactly four per task, fixed order
-
-| Field | Meaning |
-|---|---|
-| `code` | Stable identifier, unchanged by relabelling (FR-027) |
-| `label` | Display wording |
-| `band` | This criterion's band, after any length penalty |
-| *(reserved)* | Per-criterion explanation and supporting quotations, added when TP-1 closes (FR-028). Absent, not empty, until then. |
-
-**Criterion codes and order**
-
-| Position | Task 1 | Task 2 |
-|---|---|---|
-| 1 | `TASK_ACHIEVEMENT` — "Task Achievement" | `TASK_RESPONSE` — "Task Response" |
-| 2 | `COHERENCE_COHESION` — "Coherence and Cohesion" | same |
-| 3 | `LEXICAL_RESOURCE` — "Lexical Resource" | same |
-| 4 | `GRAMMATICAL_RANGE_ACCURACY` — "Grammatical Range and Accuracy" | same |
-
-Position 1 differs between the two tasks. Any display MUST take its wording from the result
-rather than assuming a single label for both tasks (User Story 1, scenario 4).
-
-**Failure result** — the shape a display must also handle
-
-| Field | Meaning |
-|---|---|
-| `attempt_id` | Which attempt |
-| `status` | `failed` or `rejected` |
-| `reason` | Why, in terms a learner can act on — the grader was unavailable, the submission was not usable writing |
-| `retryable` | Whether trying again may succeed without changing anything |
-
-No bands appear in a failure result. A display MUST NOT substitute zeroes or blanks for missing
-bands (FR-014, FR-016).
+- **FR-031**: Every graded result MUST carry the same fields in the same order regardless of the
+  bands awarded.
+- **FR-032**: Criteria MUST always appear in the fixed order of §7, so a display can render them
+  positionally.
+- **FR-033**: Each criterion MUST carry a stable code that does not change when its display wording
+  changes.
+- **FR-034**: Adding evidence quotations or rewrite suggestions later MUST NOT rename, remove,
+  reorder, or change the meaning of any field defined here, nor require migrating existing rows.
 
 ### Key Entities
 
-- **Attempt**: One learner's sitting of one mock test — the two tasks' text, which test was taken,
-  when, and its current scoring state. Owned by the mock-test experience feature; this feature
-  reads it and writes its result back.
-- **Attempt Result**: The bands produced for one attempt, plus what produced them. One per
-  successfully scored attempt.
-- **Task Result**: One task's outcome within a result — its band, its four criterion bands, and
-  the length facts behind any penalty.
-- **Criterion Result**: One official criterion's band within one task.
-- **Grading Record**: A durable record of one call to the grader — method version, model, outcome,
-  duration, size, cost, and raw output (FR-024). Operational and methodological evidence, not
-  something a learner sees.
+- **Grader Result**: One assessed task — the writing, the prompt if given, the measured features,
+  the four criterion outcomes, the overall band, and what produced them.
+- **Criterion Result**: One official criterion's band and comment within a result.
+- **LLM Call**: A durable record of one model call — version, model, outcome, timing, size, cost,
+  and raw response. Operational evidence, not learner-facing.
 
-## Success Criteria *(mandatory)*
+---
 
-### Measurable Outcomes
+## 16. Acceptance criteria / Success Criteria *(mandatory)*
 
-- **SC-001**: A learner who submits a completed attempt sees a finished result within 60 seconds
-  for at least 95% of attempts.
-- **SC-002**: On a benchmark set, at least 90% of overall bands fall within 0.5 of the band an
-  independent qualified human rater gives the same attempt.
-- **SC-003**: 100% of stored results carry a full set of bands — eight criterion bands, two task
-  bands, one overall band. No stored result is partial.
-- **SC-004**: 100% of stored results share an identical structure — same fields, same criterion
-  order — verified across a sample spanning the full band range.
-- **SC-005**: 100% of bands shown to learners are valid band values on the official scale.
-- **SC-006**: 100% of stored results can be traced to the exact scoring method and model that
-  produced them.
-- **SC-007**: Given the same criterion bands, the same task bands and the same overall band are
-  produced every time, with no variation.
-- **SC-008**: Fewer than 2% of submitted attempts fail to produce a result, excluding those
-  correctly identified as not scoreable.
-- **SC-009**: 100% of failed scoring runs leave the learner's writing fully intact.
-- **SC-010**: 0% of attempts belonging to one learner are readable by another, and 0% of attempts
-  to set one's own band from outside the grader succeed.
-- **SC-011**: 100% of grading calls appear in the durable record with their cost, so spend per
-  attempt is known without estimation.
+- **SC-001**: A learner submitting valid writing receives a complete result within 60 seconds for
+  at least 95% of submissions.
+- **SC-002**: On the benchmark dataset, at least 90% of overall bands fall within 0.5 of the band
+  an independent qualified human rater assigns the same writing.
+- **SC-003**: 100% of stored graded results contain four criterion bands, four non-empty comments,
+  and an overall band. No stored result is partial.
+- **SC-004**: 100% of graded results share an identical field structure and criterion order,
+  verified across a sample spanning the full band range and both task types.
+- **SC-005**: 100% of bands shown are valid values on the official scale.
+- **SC-006**: 100% of graded results can be traced to the exact pipeline version, prompt version,
+  and model that produced them.
+- **SC-007**: The overall band is reproducible from the four criterion bands in 100% of cases.
+- **SC-008**: Submissions rejected at the gate consume zero model calls, verified across every
+  rejection reason.
+- **SC-009**: Fewer than 2% of accepted submissions fail to produce a result.
+- **SC-010**: 100% of failures leave the learner's writing intact and retryable.
+- **SC-011**: 0% of submissions are readable by a learner other than their owner, and 0% of
+  attempts to alter one's own band from outside the grading function succeed.
+- **SC-012**: 100% of model calls appear in the durable record with their cost, so spend per
+  submission is known without estimation.
+- **SC-013**: In a usability review, at least 90% of learners report they understood why they
+  received their band after reading the comments.
+- **SC-014**: A submission 40% below the minimum receives exactly a 1.0-band deduction on the first
+  criterion and no deduction elsewhere, verified for both task types.
 
-## Assumptions
+---
 
-- **The exam questions are available to the grader.** Task Achievement and Task Response cannot be
-  judged without knowing what the learner was asked. See [NEEDS CLARIFICATION 3].
-- **Grading happens once per attempt, not once per criterion.** The inherited pipeline made one
-  call per criterion; this feature deliberately consolidates that, both for cost (Principle V) and
-  because a single view of both tasks is closer to how an examiner reads a script. See
-  [NEEDS CLARIFICATION 1] for how far that consolidation goes.
-- **The length penalty is arithmetic, not judgement** (FR-011). This follows the inherited
-  pipeline, where the grading prompt is explicitly told not to deduct for length so the two do not
-  double-count. The pairing is easy to break silently and must be tested as a pair.
-- **Band arithmetic follows the inherited implementation**: bands clamp to the 1–9 range and round
-  to the nearest half with halfway values going up.
-- **Minimum lengths follow standard IELTS convention** — 150 words for Task 1, 250 for Task 2.
-- **Submissions are typed or pasted text.** Handwriting or image upload with OCR is out of scope.
-- **Essays are expected in English.** Other languages are reported as not scoreable rather than
-  translated.
-- **Explanations are deferred, not cancelled.** Constitution TP-1 permits bands without
-  explanations only during the platform-migration phase; FR-028 exists so closing TP-1 is an
-  addition rather than a rewrite.
-- **This feature does not own the exam-taking experience.** The timer, autosave, and editor belong
-  to the mock-test experience feature. This feature begins at a submitted attempt.
-- **A learner is already signed in.** Authentication is a prerequisite, not part of this feature.
+## 17. Extensibility considerations
 
-## Dependencies
+**The mock test reuses this pipeline.** The `source` column exists from the start so the timed
+Task 1 + Task 2 feature creates **two `grader_results` rows** and references them, rather than
+implementing a second grading path that would drift from this one. Adding it requires no change
+here.
 
-- **The mock-test experience feature** owns the attempt (both tasks' text, the timer, the test
-  taken) and is where a submission originates.
-- **The Supabase platform feature** owns the attempt history table, the scoring-state field this
-  feature transitions, the ownership rules behind FR-021 and FR-022, and the durable grading
-  record of FR-024.
-- **Constitution TP-1** governs the deferral of explanations. When it closes, FR-028 governs how
-  they are added.
+**Comments grow into full feedback.** `criteria[]` entries can gain `evidence_quotes` and rewrite
+suggestions without touching any existing field (FR-034), which is what makes the teach-to-improve
+feature an addition rather than a rewrite.
+
+**IELTS General Training.** Its Task 1 is a letter, assessed against different descriptors, so
+`TASK_1` would become ambiguous if it were added. It is out of scope now, and the mitigation is
+cheap: the mapping of §7 must live in **one** place, so a new task type is a new row in that
+mapping rather than an edit scattered across the prompt builder, the validator, and the UI.
+
+**Per-criterion analytics.** JSONB is queryable but clumsy for trend analysis. When the progress
+dashboard needs it, a generated column or materialized view is added then — deliberately not now.
+
+**Prompt and model iteration.** Because `pipeline_version` and `prompt_version` are stored per row,
+two versions can run side by side and be compared on real submissions, which is how the benchmark
+dataset grows beyond its current ten samples.
+
+**JSONB has no schema.** Nothing prevents a later version writing a differently shaped object. The
+stored `pipeline_version` is the mitigation — it identifies which shape a row follows — and is
+therefore required, not optional.
+
+---
+
+## 18. Architecture decisions
+
+| # | Decision | Rationale |
+|---|---|---|
+| AD-1 | The model never counts and never calculates | Counting is a reliable model failure; model-performed arithmetic is neither reproducible nor auditable. Only the four bands and comments require judgement. |
+| AD-2 | One model call per submission | A quarter of the previous pipeline's cost. Four criteria assessed together also lets one weakness inform another, as a human examiner reads. |
+| AD-3 | Length deducted deterministically, prompt told not to | Keeps the deduction reproducible and explainable to the learner. The paired instruction prevents double penalisation. |
+| AD-4 | `criteria` as an ordered array with stable codes | Preserves display order, survives relabelling, and carries the first criterion's task-dependent name. |
+| AD-5 | Raw model responses in a separate table | Different retention, different audience, and must survive when no result row exists. |
+| AD-6 | Row written before the model call | The learner's writing and any completed grading survive a lost connection. |
+| AD-7 | Result returned in the same call, and persisted | Simple for a caller; the row makes the convenience non-essential and leaves the path to fully asynchronous grading open without a client change. |
+| AD-8 | Integrity enforced by database constraints | An invalid result becomes unstorable, so a grading defect surfaces as a rejected write instead of a wrong band shown to a learner. |
+| AD-9 | Score columns revoked from the learner role | RLS makes the row theirs, which would otherwise permit setting their own band. |
+| AD-10 | Sign-in required | Simple ownership, per-user rate limiting, and a history that always has an owner. |
+
+---
+
+## 19. Assumptions
+
+- Word-count minimums follow standard IELTS convention: 150 for Task 1, 250 for Task 2.
+- Band arithmetic follows the inherited implementation — clamp to 1–9, round to the nearest half
+  with halfway values going up. Ordinary rounding is wrong here and must not be used.
+- Submissions are typed or pasted text in English.
+- The learner supplies the prompt when they have one; results produced without a prompt carry
+  reduced certainty on the first criterion, and say so.
+- Bands are estimates for practice and are labelled as such; they are not official IELTS results.
+- The learner is signed in before submitting.
+- Comments explain in Vietnamese because the audience is Vietnamese learners, while IELTS
+  terminology stays in English so learners recognise it in official materials.
+
+---
+
+## 20. Dependencies
+
+- **The Supabase platform feature** owns authentication, the tables defined in §13, the access
+  rules of FR-025 and FR-026, and the retention schedule for raw model responses.
+- **The evaluation workbench** (`eval/`) owns the benchmark dataset, prompt and rubric text, and
+  the versioned pipeline configuration that FR-024 records and SC-002 measures against.
+- **Constitution TP-1** suspended the explanation requirement during the platform migration. This
+  feature produces per-criterion explanations, which meets that provision's exit condition except
+  for machine-verified quotation. See the checklist for the amendment this implies.
