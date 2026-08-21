@@ -1,5 +1,10 @@
 # Phase 0 Research: IELTS Writing Score Assessment & Explainability
 
+> **STALE — 2026-08-21.** Written against the retired FastAPI backend and the four-call
+> criterion-by-criterion pipeline. `spec.md` was rewritten for the mock-test grader; this
+> file has not been regenerated yet. Run `/speckit-plan` and `/speckit-tasks` to replace it.
+> See [../README.md](../README.md).
+
 All Technical Context unknowns are resolved by decisions below; none required external
 survey-of-the-art research since the constitution fixes the stack and a working reference
 pipeline (IE AI Evaluator) already exists to evaluate and adapt.

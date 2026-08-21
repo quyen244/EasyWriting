@@ -1,3 +1,5 @@
+# STALE 2026-08-21 — describes the retired FastAPI endpoints. The mock-test
+# grader's result shape is defined in ../spec.md under 'Result Contract'.
 openapi: 3.0.3
 info:
   title: IELTS Writing Score Assessment API

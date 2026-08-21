@@ -1,4 +1,9 @@
 ---
+
+> **STALE — 2026-08-21.** Written against the retired FastAPI backend and the four-call
+> criterion-by-criterion pipeline. `spec.md` was rewritten for the mock-test grader; this
+> file has not been regenerated yet. Run `/speckit-plan` and `/speckit-tasks` to replace it.
+> See [../README.md](../README.md).
 description: "Task list for feature implementation"
 ---
 

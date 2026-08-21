@@ -1,5 +1,10 @@
 # Phase 1 Data Model: IELTS Writing Score Assessment & Explainability
 
+> **STALE — 2026-08-21.** Written against the retired FastAPI backend and the four-call
+> criterion-by-criterion pipeline. `spec.md` was rewritten for the mock-test grader; this
+> file has not been regenerated yet. Run `/speckit-plan` and `/speckit-tasks` to replace it.
+> See [../README.md](../README.md).
+
 Entities below map directly to the spec's Key Entities section. Per [research.md](./research.md)
 decision 4, the four per-assessment criterion scores are stored as a JSONB array, not a separate
 table.

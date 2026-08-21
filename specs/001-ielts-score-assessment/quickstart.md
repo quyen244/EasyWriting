@@ -1,5 +1,10 @@
 # Quickstart: IELTS Writing Score Assessment & Explainability
 
+> **STALE — 2026-08-21.** Written against the retired FastAPI backend and the four-call
+> criterion-by-criterion pipeline. `spec.md` was rewritten for the mock-test grader; this
+> file has not been regenerated yet. Run `/speckit-plan` and `/speckit-tasks` to replace it.
+> See [../README.md](../README.md).
+
 Validates the feature end-to-end per [spec.md](./spec.md) User Story 1, against the contract in
 [contracts/assessments-openapi.yaml](./contracts/assessments-openapi.yaml) and the entities in
 [data-model.md](./data-model.md).
