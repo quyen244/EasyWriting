@@ -1,287 +1,306 @@
----
-
-> **STALE — 2026-08-21.** Written against the retired FastAPI backend and the four-call
-> criterion-by-criterion pipeline. `spec.md` was rewritten for the mock-test grader; this
-> file has not been regenerated yet. Run `/speckit-plan` and `/speckit-tasks` to replace it.
-> See [../README.md](../README.md).
-description: "Task list for feature implementation"
----
-
-# Tasks: IELTS Writing Score Assessment & Explainability
+# Tasks: WriteWise Grader — Single-Task IELTS Writing Assessment
 
 **Input**: Design documents from `/specs/001-ielts-score-assessment/`
+**Prerequisites**: [plan.md](./plan.md), [spec.md](./spec.md), [research.md](./research.md), [data-model.md](./data-model.md), [contracts/grade-task-openapi.yaml](./contracts/grade-task-openapi.yaml), [quickstart.md](./quickstart.md)
 
-**Prerequisites**: [plan.md](./plan.md), [spec.md](./spec.md), [research.md](./research.md),
-[data-model.md](./data-model.md), [contracts/assessments-openapi.yaml](./contracts/assessments-openapi.yaml),
-[quickstart.md](./quickstart.md)
+**Tests**: **REQUIRED, not optional.** Constitution Principle III (NON-NEGOTIABLE) mandates
+red-green-refactor, and explicitly requires RLS/column-grant tests proving both "owner CAN" and
+"a different authenticated user CANNOT" for every policy. `plan.md`'s Constitution Check already
+commits to this. Every test task below MUST be completed — and MUST fail — before its paired
+implementation task.
 
-**Tests**: Included — Constitution Principle III (Test-First Development) is NON-NEGOTIABLE for
-this project, so every user story below is test-first.
+**Organization**: Grouped by user story from spec.md (US1–US4), preceded by Setup and Foundational
+phases. Story priorities: US1 (P1, MVP), US2 (P1), US3 (P2), US4 (P2).
 
-**Scope note**: This feature is **backend-only** plus a thin frontend API client. It ships zero
-UI pages or components — `002-core-app-ux` owns the entire workspace UI that calls this API. This
-was corrected by `/speckit-analyze` (finding I1): building a full essay-submission page here would
-have been immediately superseded and discarded once `002`'s real design landed, so that UI work is
-built exactly once, in `002`. Validate this feature end-to-end via [quickstart.md](./quickstart.md)
-(`curl`/API calls), not through a browser.
+**Deploying to the real Supabase project (`supabase login`/`link`/`db push`/`functions deploy`/
+`secrets set`) is explicitly OUT of this task list's automatic scope.** Per the project's
+GitHub-integration setup, pushing schema/function changes to `main` auto-deploys to the live
+project — each such push requires the user's explicit go-ahead at that moment, not a blanket
+approval here. Tasks below build and verify everything against the **local** Supabase stack
+(`supabase start`, Docker) and `deno test`, which touch no live data.
 
-**Organization**: Tasks are grouped by user story (from spec.md) to enable independent
-implementation and testing of each story.
+## Path Conventions
 
----
+Per plan.md's Project Structure — no `backend/`/`frontend/` split for this feature:
 
-## Implementation notes (2026-08-20)
-
-All 48 tasks are complete. Three things were built differently from the literal task text;
-each is a deliberate, user-approved change rather than drift.
-
-**1. Backend package layout.** These tasks were written against the original
-`core/domain/llm/pipeline/evaluation/infrastructure/api` tree. The backend was reorganised
-mid-implementation at the user's request into a flatter, convention-style layout. The mapping:
-
-| Task text | Actual path |
-|---|---|
-| `src/core/schemas.py` | `src/schemas/assessment.py` |
-| `src/core/config.py` | `src/utils/config.py` |
-| `src/infrastructure/database/models.py` | `src/models/essay_submission.py`, `src/models/assessment_result.py` |
-| `src/infrastructure/database/repository.py` | `src/database/repository.py` |
-| `src/api/assessments.py` | `src/routes/assessments.py` |
-| `src/api/deps.py` | `src/auth/deps.py` (built by 003) |
-| `src/llm/`, `src/pipeline/`, `src/evaluation/` | unchanged |
-
-**2. Prompts and rubrics are data, not Python (T014, T015, T037, T043).** Rather than the
-`src/llm/rubrics/*.py` constants the tasks describe, prompt templates and band descriptors live as
-`.txt` files under `backend/prompts/<version>/`, selected by `prompts.version` in
-`backend/pipelines/*.yaml`. Changing the model, its parameters, or the entire prompt+rubric set is
-now a YAML edit plus a directory copy — no code change. This serves Constitution Principle IV
-better than the original plan did, and the swap workflow is covered by
-`tests/unit/test_prompt_loader.py`. See `backend/prompts/README.md`.
-
-Consequently there is one `prompt_version` column rather than separate prompt and rubric versions:
-rubrics live inside the prompt version directory, so the two cannot drift apart.
-
-**3. T044 (golden-dataset baseline) is run but NOT yet a real baseline.** The harness is complete
-and verified end-to-end offline (`python -m src.evaluation.harness --fake`), and the 10-essay
-golden set is migrated and validated. Recording a *meaningful* baseline requires a live
-`OPENROUTER_API_KEY`, which is not configured in this environment — the harness has never called a
-real model. Until it does, there is no baseline to compare a methodology change against, so the
-Principle IV gate is **armed but unexercised**. This is the one piece of 001 that still needs a
-human-supplied secret before it can be called done in substance rather than in mechanism.
-
-## Format: `[ID] [P?] [Story] Description`
-
-- **[P]**: Can run in parallel (different files, no dependencies)
-- **[Story]**: Which user story this task belongs to (US1, US2, US3)
-- File paths are relative to the repository root and match plan.md's Project Structure.
+- `supabase/functions/grade-task/` — the Edge Function (Deno/TypeScript)
+- `supabase/migrations/` — schema
+- `supabase/tests/` — pgTAP
+- `eval/prompts/v2/`, `eval/pipelines/v2.yaml`, `eval/src/pipeline/pipeline.py` — the new
+  benchmarked pipeline version (research.md R2)
 
 ---
 
-## Phase 1: Setup (Shared Infrastructure)
+## Phase 1: Setup
 
-**Purpose**: Project initialization and basic structure per plan.md.
+**Purpose**: Scaffolding and the versioned prompt/pipeline content everything else depends on.
 
-- [X] T001 Create the `backend/` and `frontend/` directory trees exactly as laid out in
-      [plan.md](./plan.md) Project Structure (`backend/src/{core,domain,llm/{prompts,rubrics},pipeline,evaluation,infrastructure/database,api}`,
-      `backend/{pipelines,data/{golden,reports},tests/{contract,integration,unit}}`,
-      `frontend/src/lib`)
-- [X] T002 Initialize the backend Python 3.12 project in `backend/pyproject.toml` /
-      `backend/requirements.txt` with FastAPI, SQLAlchemy 2.x, Alembic, `psycopg[binary]`,
-      pydantic v2 + pydantic-settings, httpx, PyYAML, pytest (research.md decision 1)
-- [X] T003 [P] Initialize the frontend in `frontend/` with Next.js (App Router), TypeScript, and
-      Tailwind CSS — scaffold only, no pages or components. Design tokens are **not** ported here;
-      `002-core-app-ux`'s Foundational phase (its T004) applies the real `academic_editorial`
-      tokens once that design exists (research.md decision 8)
-- [X] T004 [P] Configure backend linting/formatting (ruff + black) in `backend/pyproject.toml`
-- [X] T005 [P] Configure frontend linting/formatting (ESLint + Prettier) in `frontend/.eslintrc.json`
-      and `frontend/.prettierrc`
-- [X] T006 [P] Write `backend/Dockerfile` and `backend/docker-compose.yml` (postgres + backend
-      services) per plan.md Constraints (dockerized services)
-- [X] T007 [P] Write `frontend/Dockerfile` for the Next.js production build
-- [X] T008 [P] Configure environment management: `backend/src/core/config.py`
-      (pydantic-settings reading `OPENROUTER_API_KEY`, `DATABASE_URL`, etc.),
-      `backend/.env.example`, `frontend/.env.example`
+- [ ] T001 Create the directory scaffold: `supabase/functions/grade-task/`,
+      `supabase/functions/grade-task/prompts/`, `supabase/migrations/`, `supabase/tests/`
+- [ ] T002 [P] Initialize `supabase/functions/grade-task/deno.json` (import map, `fmt`/`lint`
+      config) so `deno test`/`deno fmt`/`deno lint` run against the function directory
+- [ ] T003 [P] Author `eval/prompts/v2/system.txt` and `eval/prompts/v2/user.txt` — one
+      consolidated prompt requesting all four criteria and their comments in a single response,
+      adapted from `eval/prompts/v1/criterion_system.txt`, `criterion_user.txt`, and
+      `rubrics/*.txt` (research.md R2). Must include: the task-type-specific rubric block, the
+      instruction NOT to deduct for length (§9's paired instruction), and the bilingual-comment
+      requirement (Vietnamese explanation, English IELTS terminology — FR-015, refined further in
+      T029)
+- [ ] T004 [P] Author `eval/pipelines/v2.yaml` — same `model`/`temperature`/`seed` values as
+      `eval/pipelines/v1.yaml`, `prompts.version: v2`, unchanged length-penalty thresholds
+      (research.md R2)
 
-**Checkpoint**: Repository structure, tooling, and containers are in place.
+**Checkpoint**: Scaffolding exists; the prompt/pipeline content Foundational and Polish phases
+depend on is authored.
 
 ---
 
 ## Phase 2: Foundational (Blocking Prerequisites)
 
-**Purpose**: Core infrastructure that MUST be complete before any user story can be implemented.
+**Purpose**: The database schema and the pure-logic modules every user story's grading flow
+depends on. No user story can be implemented until this phase is complete.
 
-**⚠️ CRITICAL**: No user story work can begin until this phase is complete.
+**⚠️ CRITICAL**: Nothing in Phase 3 onward can be built until this phase is done.
 
-- [X] T009 Set up the Alembic migrations framework in `backend/alembic.ini` and
-      `backend/src/infrastructure/database/migrations/`, pointed at PostgreSQL
-- [X] T010 [P] Create the `Account` (users) SQLAlchemy model in
-      `backend/src/infrastructure/database/models.py` per [data-model.md](./data-model.md)
-      (id, email, created_at) with its migration — named `Account`, not `Learner`, to match the
-      canonical name `003-account-authentication` and `002-core-app-ux` both use
-      (`/speckit-analyze` finding I2)
-- [X] T011 [P] Implement the `LLMClient` Protocol and `LLMResponse` in `backend/src/llm/base.py`
-      (research.md decision 2)
-- [X] T012 [P] Implement the OpenRouter adapter (async httpx, OpenAI-compatible) in
-      `backend/src/llm/openrouter_client.py` (research.md decision 2)
-- [X] T013 [P] Implement a `FakeClient` test double implementing `LLMClient` in
-      `backend/tests/fakes/fake_llm_client.py` for offline, deterministic tests
-- [X] T014 Implement the pipeline YAML config loader and schema (prompt id/version, model,
-      params) in `backend/src/pipeline/config.py`, reading `backend/pipelines/*.yaml`
-      (research.md decision 5, Constitution Principle IV)
-- [X] T015 [P] Author versioned IELTS band-descriptor reference text for both tasks and all four
-      criteria in `backend/src/llm/rubrics/` (Constitution Principle I)
-- [X] T016 Implement the bearer-token → learner auth dependency in `backend/src/api/deps.py`
-      (FR-008, plan.md "auth dependency" note — assumes tokens are issued by the external auth
-      prerequisite; validates and resolves them here)
-- [X] T017 Configure structured logging and a shared error-handling exception mapper in
-      `backend/src/api/` (Constitution Principle VII)
-- [X] T018 Migrate the golden dataset essays (`data/exams/task1/*.json`, `data/exams/task2/*.json`)
-      from the IE AI Evaluator project into `backend/data/golden/` (research.md decision 6)
-- [X] T019 [P] Set up the frontend API client scaffold (bearer token header, base URL) in
-      `frontend/src/lib/apiClient.ts` — this is the only frontend artifact this feature produces;
-      `002-core-app-ux` imports it, no page consumes it here
+### Database layer (test-first — Principle III, research.md R5)
 
-**Checkpoint**: Foundation ready — user story implementation can now begin.
+- [ ] T005 [P] Write `supabase/tests/grader_results_rls.sql` (pgTAP) asserting, against a schema
+      that does not yet exist: an owner can `SELECT`/`INSERT` their own `grader_results` row; a
+      *different* authenticated user's `SELECT` of that row returns zero rows; the `authenticated`
+      role cannot `UPDATE` `overall_band`, `criteria`, `status`, `error_code`, `length_penalty`,
+      `pipeline_version`, `prompt_version`, or `model_id` on a row it owns (data-model.md Access
+      control). Run `supabase test db` and confirm it fails (red) — the schema doesn't exist yet.
+- [ ] T006 Create `supabase/migrations/<timestamp>_grader_results.sql`: the `grader_results` and
+      `llm_calls` tables per data-model.md, including the band-grid check on `overall_band`, the
+      `length_penalty IN (0, 0.5, 1.0)` check, and the `scored_rows_are_complete` check constraint
+      (AD-8 — an incomplete result must be unstorable, not just discouraged)
+- [ ] T007 In the same migration, add: RLS enabled on both tables, the "read own"/"insert own"
+      policies scoped to `auth.uid()` on `grader_results`, the column-level `REVOKE UPDATE` on the
+      score-bearing columns from `authenticated`, and no policy at all on `llm_calls` (service-role
+      only by omission — data-model.md)
+- [ ] T008 In the same migration, add the partial unique index
+      `one_active_submission_per_user on grader_results (user_id) where status in ('queued',
+      'scoring')` (research.md R4, FR-029)
+- [ ] T009 Run `supabase start` then `supabase test db` locally and confirm every assertion from
+      T005 now passes (green) — depends on T006, T007, T008
+
+### Shared pure-logic modules (test-first per module — research.md R6)
+
+- [ ] T010 [P] Write `supabase/functions/grade-task/gate.test.ts` covering: empty/whitespace-only
+      input → `EMPTY_SUBMISSION`; below the 20-word absolute floor → `TOO_SHORT`; non-English
+      (Latin-script ratio) input → `NOT_ENGLISH`; over the accepted maximum → `TOO_LONG`; valid
+      input → passes. Run `deno test` and confirm it fails (red) — `gate.ts` doesn't exist yet.
+- [ ] T011 [P] Implement `supabase/functions/grade-task/gate.ts` — port
+      `eval/src/pipeline/preprocess.py`'s scoreability heuristics (`ABSOLUTE_MIN_WORDS = 20`,
+      Latin-script ratio check) to TypeScript (research.md R7) — makes T010 pass
+- [ ] T012 [P] Write `supabase/functions/grade-task/extract.test.ts` covering word count,
+      sentence/paragraph counts, cohesive-device detection, and repeated-content-word detection
+      against known text fixtures. Confirm it fails (red).
+- [ ] T013 [P] Implement `supabase/functions/grade-task/extract.ts` — port
+      `eval/src/pipeline/preprocess.py`'s feature extraction and `eval/src/pipeline/lexicon.py`'s
+      word lists to TypeScript — makes T012 pass
+- [ ] T014 [P] Write `supabase/functions/grade-task/aggregate.test.ts` covering: `round_to_half`'s
+      upward-halfway rule (6.25→6.5, 6.75→7.0 — NOT JavaScript's default rounding); `clamp` to
+      `[1,9]`; `snap_band`'s coercion flag when input is off-grid or out of range; `length_penalty`
+      at the 15%/40% thresholds (FR-009, FR-010); `aggregate_overall`'s determinism — the same four
+      inputs MUST always produce the same output (FR-007, SC-007). Confirm it fails (red).
+- [ ] T015 [P] Implement `supabase/functions/grade-task/aggregate.ts` — port
+      `eval/src/pipeline/aggregate.py`'s logic verbatim to TypeScript (AD-1: the model never
+      calculates; AD-3: deduct then aggregate) — makes T014 pass
+- [ ] T016 [P] Write `supabase/functions/grade-task/openrouter.test.ts` using a fake LLM client
+      (mirroring `eval/tests/fakes/fake_llm_client.py`'s role) covering: a valid four-criteria
+      response parses correctly; a response missing one criterion triggers exactly one repair
+      retry; a retry that still fails surfaces as a typed, catchable error (§11, research.md R8).
+      Confirm it fails (red).
+- [ ] T017 Implement `supabase/functions/grade-task/openrouter.ts` — one model call plus one
+      repair-retry on invalid output, mirroring `eval/src/llm/openrouter_client.py`'s
+      `REPAIR_TEMPLATE` pattern, reading model/temperature/params from the copied pipeline config
+      (research.md R8) — makes T016 pass
+
+### Deploy-time content
+
+- [ ] T018 [P] Copy `eval/prompts/v2/` into `supabase/functions/grade-task/prompts/` (research.md
+      R3 — a manual, documented copy, not a build step) — depends on T003
+
+**Checkpoint**: Schema exists and its RLS/grants are proven by pgTAP, not just declared. Every pure
+module (gate, extract, aggregate, openrouter) is unit-tested in isolation. User story work can now
+begin — it is mostly orchestration and prompt-shaping on top of this foundation.
 
 ---
 
-## Phase 3: User Story 1 - Get an explained band score for an essay (Priority: P1) 🎯 MVP
+## Phase 3: User Story 1 - Grade one piece of writing (Priority: P1) 🎯 MVP
 
-**Goal**: A learner submits an essay and receives an overall band plus four criterion bands,
-each with a rubric-grounded explanation, within 60 seconds.
+**Goal**: A signed-in learner submits one task and receives four correctly-labelled criterion
+bands and a deterministic overall band.
 
-**Independent Test**: Submit a sample essay via `POST /api/v1/assessments` and verify the
-response contains an overall band, four criterion-level bands, and a non-empty explanation for
-each (quickstart.md Scenario 1) — validated directly against the API, no UI involved.
+**Independent Test**: Submit a Task 2 essay of adequate length; verify the response contains four
+criteria in the fixed order, an `overall_band` reproducible from them, and that switching to Task 1
+relabels position 1 from "Task Response" to "Task Achievement".
 
-### Tests for User Story 1 ⚠️
+### Tests for User Story 1 ⚠️ Write first, confirm they fail
 
-> Write these tests FIRST; confirm they FAIL before implementation (Constitution Principle III).
-
-- [X] T020 [P] [US1] Contract test for `POST /api/v1/assessments` success path (201) in
-      `backend/tests/contract/test_assessments_post.py`, per
-      [contracts/assessments-openapi.yaml](./contracts/assessments-openapi.yaml)
-- [X] T021 [P] [US1] Contract test for `GET /api/v1/assessments/{submissionId}` in
-      `backend/tests/contract/test_assessments_get.py`
-- [X] T022 [P] [US1] Integration test: submit a valid Task 2 essay through the full pipeline
-      (using `FakeClient`) and assert a complete result (overall + 4 criteria + explanations) in
-      `backend/tests/integration/test_score_assessment_flow.py`
-- [X] T023 [P] [US1] Unit tests for deterministic aggregation (band rounding, length penalty) in
-      `backend/tests/unit/test_aggregate.py`
+- [ ] T019 [P] [US1] Contract test in `supabase/functions/grade-task/grade-task.test.ts`: POST a
+      valid `TASK_2` submission and assert the response matches `GraderResult` in
+      contracts/grade-task-openapi.yaml — four `criteria`, an `overall_band`, `provisional: true`
+- [ ] T020 [P] [US1] Integration test in `grade-task.test.ts`: submit once with `task_type:
+      "TASK_1"` and once with `"TASK_2"`; assert position 1's `code`/`label` is
+      `TASK_ACHIEVEMENT`/"Task Achievement" for the former and `TASK_RESPONSE`/"Task Response" for
+      the latter (FR-032, quickstart.md US1 scenario 2)
+- [ ] T021 [P] [US1] Integration test in `grade-task.test.ts`: assert `overall_band` in the
+      response equals `round_half_up(mean(criteria[*].band))` computed independently in the test
+      (FR-004, FR-007, quickstart.md US1 "Also check" scenario 4)
 
 ### Implementation for User Story 1
 
-- [X] T024 [P] [US1] Create the `EssaySubmission` SQLAlchemy model + migration in
-      `backend/src/infrastructure/database/models.py` per data-model.md
-- [X] T025 [P] [US1] Create the `AssessmentResult` SQLAlchemy model (JSONB `criteria` column) +
-      migration in `backend/src/infrastructure/database/models.py` per data-model.md decision 4
-- [X] T026 [P] [US1] Define Pydantic schemas `AssessmentRequest`, `AssessmentResult`,
-      `CriterionScore` in `backend/src/core/schemas.py` matching
-      contracts/assessments-openapi.yaml
-- [X] T027 [US1] Implement the preprocess step (word count, basic English/essay-shape check) in
-      `backend/src/pipeline/preprocess.py` (depends on: T024)
-- [X] T028 [US1] Implement the 4 concurrent criterion-evaluator prompts and calls
-      (`asyncio.gather`) in `backend/src/pipeline/pipeline.py` (research.md decisions 3, 9;
-      depends on: T011, T012, T015)
-- [X] T029 [US1] Implement deterministic overall-band aggregation from the 4 criterion bands in
-      `backend/src/pipeline/aggregate.py` (depends on: T028)
-- [X] T030 [US1] Implement quote-fidelity verification (each `evidence_quotes` entry must appear
-      verbatim in `essay_text`) in `backend/src/pipeline/verify.py` (depends on: T028)
-- [X] T031 [US1] Implement the repository layer for `EssaySubmission`/`AssessmentResult` in
-      `backend/src/infrastructure/database/repository.py` (depends on: T024, T025)
-- [X] T032 [US1] Implement `POST /api/v1/assessments` in `backend/src/api/assessments.py`,
-      wiring preprocess → pipeline → aggregate → verify → persist (depends on: T014, T016,
-      T027, T029, T030, T031)
-- [X] T033 [US1] Implement `GET /api/v1/assessments/{submissionId}` in
-      `backend/src/api/assessments.py` (depends on: T016, T031)
-- [X] T034 [US1] Add error handling mapping pipeline/LLM failures to `503 SCORING_FAILED` in
-      `backend/src/api/assessments.py` (depends on: T017, T032)
-- [X] T035 [US1] Add structured logging across the submission/scoring lifecycle in
-      `backend/src/pipeline/pipeline.py` and `backend/src/api/assessments.py` (depends on: T017, T032)
+- [ ] T022 [US1] Implement `supabase/functions/grade-task/prompt.ts` — builds the single
+      consolidated prompt from `prompts/system.txt`/`user.txt` (T018), injecting the
+      `task_type`-specific rubric section, T013's extracted features as ground truth, and the
+      "do not deduct for length" instruction — depends on T013, T018
+- [ ] T023 [US1] Implement `supabase/functions/grade-task/index.ts` — orchestrate spec.md §6's 8
+      steps for the success path: gate (T011) → insert row `status='queued'`→`'scoring'` → extract
+      (T013) → build prompt (T022) → call model (T017) → snap bands (T015) → apply length penalty
+      (T015) → aggregate overall (T015) → update row `status='scored'` → insert the `llm_calls` row
+      → return the result — depends on T011, T013, T015, T017, T022, T007
+- [ ] T024 [US1] In `index.ts`, wire the fixed code→label mapping table from spec.md §7
+      (position 1 depends on `task_type`; positions 2–4 fixed) into the response's `criteria`
+      construction (FR-032) — depends on T023
+- [ ] T025 [US1] Run `supabase start` + `supabase functions serve grade-task` locally and confirm
+      T019–T021 now pass (green) — depends on T024
 
-**Checkpoint**: User Story 1 is fully functional and independently testable at the API level —
-this is the MVP. No frontend page exists yet for it; `002-core-app-ux` builds the workspace UI
-that calls this API.
+**Checkpoint**: User Story 1 is fully functional and independently testable — the MVP.
 
 ---
 
-## Phase 4: User Story 2 - Understand exactly where points were lost (Priority: P2)
+## Phase 4: User Story 2 - Understand why the band was given (Priority: P1)
 
-**Goal**: Each criterion's explanation quotes the specific passage(s) in the learner's own essay
-that support the score.
+**Goal**: Every criterion band arrives with a bilingual, essay-specific comment; length
+deductions are shown explicitly rather than silently folded in.
 
-**Independent Test**: Submit an essay with a deliberate off-topic paragraph and a grammar error;
-verify the relevant criterion explanations quote those specific spans, via the API response
-(quickstart.md Scenario 2).
+**Independent Test**: Grade an essay with a deliberate mix of strengths/weaknesses; verify each
+comment is non-empty, references that essay's actual content, is in Vietnamese with English IELTS
+terminology retained, and that an under-length submission's deduction is visible and correctly
+sized.
 
-### Tests for User Story 2 ⚠️
+### Tests for User Story 2 ⚠️ Write first, confirm they fail
 
-- [X] T036 [P] [US2] Integration test: off-topic paragraph reduces Task Response score with a
-      matching quote, and a grammar error is quoted under Grammatical Range & Accuracy, in
-      `backend/tests/integration/test_evidence_anchoring.py`
+- [ ] T026 [P] [US2] Integration test in `grade-task.test.ts`: grade a fixture essay with a known
+      weak sentence and a known strong sentence; assert each of the four `comment`s is non-empty
+      and references identifiable characteristics of that specific essay rather than generic text
+      (FR-013, FR-014)
+- [ ] T027 [P] [US2] Integration test in `grade-task.test.ts`: assert every `comment` contains
+      Vietnamese-script characters while `label` values and any quoted descriptor language remain
+      in English (FR-015)
+- [ ] T028 [P] [US2] Integration test in `grade-task.test.ts`: submit an essay more than 40% under
+      the task minimum; assert `length_penalty === 1.0` and that the first criterion's `band` is
+      exactly 1.0 lower than the corresponding `llm_calls.raw_response` band before the deduction
+      (FR-009, FR-012, SC-014)
 
 ### Implementation for User Story 2
 
-- [X] T037 [US2] Extend criterion-evaluator prompts to require verbatim evidence quotes per
-      criterion in `backend/src/llm/prompts/builders.py` (depends on: T028)
-- [X] T038 [US2] Strengthen `verify.py` to reject/flag any criterion result whose quotes cannot
-      be verified against `essay_text` before persistence in `backend/src/pipeline/verify.py`
-      (depends on: T030, T037)
+- [ ] T029 [US2] Refine `eval/prompts/v2/user.txt` (and `supabase/functions/grade-task/prompts/`
+      via T018's copy step) with explicit bilingual-comment instructions — Vietnamese explanation,
+      English IELTS terminology retained (FR-015) — depends on T003; re-run T018's copy after
+      editing
+- [ ] T030 [US2] Add comment-non-empty validation to `openrouter.ts`'s response parser — a parsed
+      response with any empty `comment` is treated the same as a missing criterion and triggers
+      the retry path (FR-013, FR-016) — depends on T017
+- [ ] T031 [US2] Confirm `index.ts`'s response surfaces `length_penalty` explicitly (already
+      populated by T015/T023) and that the pre-penalty band remains auditable via the linked
+      `llm_calls.raw_response` row (FR-012) — depends on T023
+- [ ] T032 [US2] Set `provisional: true` on every `index.ts` response, per constitution TP-1's
+      remaining scope (machine-verified evidence anchoring is not yet implemented) — depends on
+      T023
 
-**Checkpoint**: User Stories 1 AND 2 both work independently. Displaying evidence quotes inline
-is `002-core-app-ux`'s `AssessmentResult.tsx` component's job — the API already returns them by
-the end of this phase.
-
----
-
-## Phase 5: User Story 3 - Retry after fixing a submission error (Priority: P3)
-
-**Goal**: Rejected or failed submissions return a clear, actionable error from the API.
-
-**Independent Test**: Submit an essay under the minimum word count, confirm a clear rejection
-response; simulate a scoring failure and confirm a same-text resubmission succeeds
-(quickstart.md Scenarios 3–4) — validated via the API, no client-side state involved.
-
-### Tests for User Story 3 ⚠️
-
-- [X] T039 [P] [US3] Contract test for `400 BELOW_MIN_WORDS` and `400 UNSCOREABLE` responses in
-      `backend/tests/contract/test_assessments_rejection.py`
-- [X] T040 [P] [US3] Integration test: a failed scoring attempt followed by a same-text
-      resubmission succeeds, in `backend/tests/integration/test_retry_after_failure.py`
-
-### Implementation for User Story 3
-
-- [X] T041 [US3] Implement minimum-word-count and unscoreable-content validation, setting
-      `status = REJECTED` and returning 400, in `backend/src/api/assessments.py` (depends on:
-      T027, T032)
-
-**Checkpoint**: All three user stories are independently functional at the API level. Preserving
-the learner's typed text across a failed submission and displaying the rejection/failure message
-are `002-core-app-ux`'s responsibilities (its `WorkspaceViewState` already specifies this) — the
-API's job, done as of this phase, is to never discard data server-side and to return a clear
-error code/message.
+**Checkpoint**: US1 + US2 together deliver the full "graded and explained" experience.
 
 ---
 
-## Phase 6: Polish & Cross-Cutting Concerns
+## Phase 5: User Story 3 - Revisit past submissions (Priority: P2)
 
-**Purpose**: Constitution-mandated evaluation methodology, deployment hardening, and final
-validation, spanning all user stories.
+**Goal**: A learner's past submissions are stable and readable only by them.
 
-- [X] T042 [P] Implement the golden-dataset benchmark harness and metrics (MAE, RMSE, Spearman
-      vs. gold labels) in `backend/src/evaluation/harness.py` and `backend/src/evaluation/metrics.py`
-      (Constitution Principle IV)
-- [X] T043 [P] Author the initial pipeline config `backend/pipelines/v1.yaml` (prompt
-      version, model id, params) per research.md decision 5
-- [X] T044 Run the golden-dataset regression harness against `backend/data/golden/` using
-      `backend/pipelines/v1.yaml` and record the baseline run under `backend/data/reports/`
-      (depends on: T018, T042, T043)
-- [X] T045 [P] Harden `backend/Dockerfile`/`frontend/Dockerfile` for production and add
-      `docker-compose.prod.yml` (Constitution Principle VII)
-- [X] T046 [P] Wire contract, unit, and integration test suites into CI
-- [X] T047 Execute quickstart.md validation Scenarios 1–4 end-to-end (via `curl`/API calls) and
-      record results
-- [X] T048 [P] Security review: confirm no secrets are committed, essay text is never logged in
-      plaintext, and both endpoints reject unauthenticated requests (Constitution Principle VII)
+**Independent Test**: Grade two submissions; read both back via `supabase-js` directly (no
+Edge Function involved, per contracts/grade-task-openapi.yaml's GET note) and confirm identical
+bands; confirm a different learner cannot read them.
+
+### Tests for User Story 3 ⚠️ Write first, confirm they fail
+
+- [ ] T033 [P] [US3] Extend `supabase/tests/grader_results_rls.sql` with an explicit two-learner
+      isolation assertion if not already fully covered by T005: learner B's `SELECT` of a specific
+      `grader_result_id` owned by learner A returns zero rows (FR-025, quickstart.md US3
+      "Ownership check")
+
+### Implementation / Validation for User Story 3
+
+> No new Edge Function code — this story is delivered by Phase 2's RLS policies. Remaining work
+> is validation that those policies actually behave this way end-to-end.
+
+- [ ] T034 [US3] Following quickstart.md's User Story 3 section: as one learner, grade two
+      submissions, then query `grader_results` via `supabase-js` ordered by `created_at`; confirm
+      both appear with the exact `overall_band`/`criteria` first returned (FR-023) — depends on
+      T025 (US1 must be working to produce submissions to read)
+
+**Checkpoint**: History is provably isolated per learner and stable across reads.
+
+---
+
+## Phase 6: User Story 4 - Recover from a failed grading (Priority: P2)
+
+**Goal**: A failed or blocked submission never looks like a low score, never loses the learner's
+writing, and can be retried.
+
+**Independent Test**: Force a model failure; verify the writing survives, the failure is
+unmistakable, and retrying succeeds. Fire a duplicate request; verify the second is rejected
+rather than double-charged.
+
+### Tests for User Story 4 ⚠️ Write first, confirm they fail
+
+- [ ] T035 [P] [US4] Integration test in `grade-task.test.ts`: configure the fake LLM client
+      (T016) to always fail; assert the row ends with `status='failed'`, the response matches
+      `GraderFailure`, and `essay_text`/`prompt_text` on the row are byte-identical to what was
+      submitted (FR-019, FR-020)
+- [ ] T036 [P] [US4] Integration test in `grade-task.test.ts`: configure the fake client to return
+      only three of four criteria once, then a valid four on the second call; assert exactly one
+      retry occurs and the submission ends `scored`. Then configure it to fail both times; assert
+      it ends `failed`, never partially scored (FR-018, §11)
+- [ ] T037 [P] [US4] Integration test in `grade-task.test.ts`: fire the same submission twice in
+      quick succession; assert the second receives `429` with `error_code:
+      "SUBMISSION_ALREADY_ACTIVE"` (research.md R4, FR-029)
+
+### Implementation for User Story 4
+
+- [ ] T038 [US4] In `index.ts`, implement the gate-level rate-limit check (count query over the
+      last rolling hour, default threshold 20/learner/hour, research.md R4) and handle the
+      partial-unique-index insert conflict from T008, returning the correct `429` `error_code` for
+      each case (FR-028, FR-029) — depends on T007, T008, T023
+- [ ] T039 [US4] In `index.ts`/`openrouter.ts`, implement the failure-path response construction
+      (`GraderFailure` shape with `error_code` and `retryable`) and ensure the row transitions to
+      `status='failed'` with `error_code` set — never left in `scoring` (FR-020, §12) — depends on
+      T017, T023
+- [ ] T040 [US4] Confirm every model-call attempt — including a failed retry — is recorded as its
+      own `llm_calls` row (FR-027; data-model.md: "a retry produces a SECOND `llm_calls` row, not
+      an update to the first") — depends on T017
+
+**Checkpoint**: All four user stories are independently functional and testable.
+
+---
+
+## Phase 7: Polish & Cross-Cutting Concerns
+
+**Purpose**: The Principle IV methodology gate, plus a full regression pass.
+
+- [ ] T041 [P] Add a single-call orchestration mode to `eval/src/pipeline/pipeline.py` so the
+      golden-set harness can benchmark `pipeline-v2.0` (it currently only runs the four-call `v1`
+      orchestration) — research.md R2. This is required for T042, not optional polish.
+- [ ] T042 Run the Principle IV hypothesis test: `python -m src.evaluation.harness
+      --pipeline-config pipelines/v1.yaml` and `--pipeline-config pipelines/v2.yaml` from `eval/`
+      against `eval/data/golden/`; compare the two `metrics.json` artifacts and confirm SC-002
+      (≥90% of `v2` overall bands within 0.5 of the human rater's band) holds before treating `v2`
+      as production's methodology of record — depends on T003, T004, T041
+- [ ] T043 [P] Run `supabase test db` and `deno test` together as a full local regression pass —
+      depends on all of Phase 2–6
+- [ ] T044 Run quickstart.md end-to-end against the local `supabase start` stack and confirm every
+      Acceptance Scenario in spec.md §4 passes — depends on T043
 
 ---
 
@@ -290,80 +309,89 @@ validation, spanning all user stories.
 ### Phase Dependencies
 
 - **Setup (Phase 1)**: No dependencies — start immediately.
-- **Foundational (Phase 2)**: Depends on Setup completion — BLOCKS all user stories.
-- **User Stories (Phase 3–5)**: All depend on Foundational completion.
-  - US1 (P1) has no dependency on US2/US3.
-  - US2 (P2) extends US1's pipeline (T037 depends on T028) — implement after US1 for
-    practicality, though its own test (T036) can be written any time after T018.
-  - US3 (P3) extends US1's endpoint (T041 depends on T032) — same note.
-- **Polish (Phase 6)**: Depends on all desired user stories being complete; T044 additionally
-  needs T018/T042/T043.
+- **Foundational (Phase 2)**: Depends on Setup (T003/T004 feed T018/T022). **Blocks all user
+  stories.**
+- **User Stories (Phase 3–6)**: All depend on Foundational completion (T009, T011, T013, T015,
+  T017, T018).
+  - US1 (Phase 3) has no dependency on US2/US3/US4.
+  - US2 (Phase 4) reuses US1's `index.ts`/`prompt.ts` (T022, T023) — build US1 first in practice,
+    though US2's own tests (T026–T028) can be written as soon as Foundational is done.
+  - US3 (Phase 5) depends only on Foundational's RLS (T007) for its policy assertions; T034's
+    validation needs a working submission flow, i.e., US1.
+  - US4 (Phase 6) depends on Foundational (T007, T008, T017) and reuses US1's `index.ts` (T023).
+- **Polish (Phase 7)**: Depends on all four user stories being complete.
 
-### Within Each User Story
+### Within Each Phase
 
-- Tests (T020–T023, T036, T039–T040) are written and confirmed failing before their
-  corresponding implementation tasks (Constitution Principle III).
-- Models before pipeline logic before endpoints.
-- Story complete and independently checkpointed before moving to the next priority.
+- Tests MUST be written and confirmed failing before their paired implementation task (Principle
+  III) — every phase above is ordered that way already.
+- Database layer (T005–T009) and the four pure-logic module lanes (T010–T017) have no
+  dependencies on each other and can proceed in parallel.
+- `index.ts` (T023) is the integration point — it cannot be built until every module it
+  orchestrates (T011, T013, T015, T017) exists.
 
 ### Parallel Opportunities
 
-- All Setup tasks marked [P] (T003–T008) can run in parallel once T001–T002 land.
-- Foundational tasks marked [P] (T010–T013, T015, T019) can run in parallel once T009 lands.
-- All US1 test tasks (T020–T023) can run in parallel with each other.
-- US1 model/schema tasks (T024–T026) can run in parallel with each other.
-- Once Foundational is done, US1, US2, and US3 test-writing can start in parallel across
-  developers, though US2/US3 implementation tasks have the specific dependencies noted above.
+- **Setup**: T002, T003, T004 — different files, no dependencies.
+- **Foundational**: T005 (pgTAP file) and the four `*.test.ts` files (T010, T012, T014, T016) are
+  five independent lanes — all can be written in parallel. Once each lane's test fails as
+  expected, that lane's implementation (T006–T008 as one lane, T011, T013, T015, T017) can proceed
+  independently of the other lanes. T018 is independent of all of them.
+- **US1 tests**: T019, T020, T021 — same file, but independent test cases; write together, run
+  together.
+- **US2 tests**: T026, T027, T028 — same, independent cases.
+- **US4 tests**: T035, T036, T037 — same, independent cases.
+- **Polish**: T041 and T043 have no dependency on each other (different concerns: eval harness vs.
+  Supabase/Deno regression).
 
 ---
 
-## Parallel Example: User Story 1
+## Parallel Example: Foundational Phase
 
 ```bash
-# Tests together:
-Task: "Contract test for POST /api/v1/assessments in backend/tests/contract/test_assessments_post.py"
-Task: "Contract test for GET /api/v1/assessments/{submissionId} in backend/tests/contract/test_assessments_get.py"
-Task: "Integration test for full scoring flow in backend/tests/integration/test_score_assessment_flow.py"
-Task: "Unit tests for aggregation in backend/tests/unit/test_aggregate.py"
+# Five independent lanes, all startable together once Setup (Phase 1) is done:
+Task: "Write supabase/tests/grader_results_rls.sql (pgTAP) — T005"
+Task: "Write supabase/functions/grade-task/gate.test.ts — T010"
+Task: "Write supabase/functions/grade-task/extract.test.ts — T012"
+Task: "Write supabase/functions/grade-task/aggregate.test.ts — T014"
+Task: "Write supabase/functions/grade-task/openrouter.test.ts — T016"
 
-# Models/schemas together:
-Task: "Create EssaySubmission model in backend/src/infrastructure/database/models.py"
-Task: "Create AssessmentResult model in backend/src/infrastructure/database/models.py"
-Task: "Define Pydantic schemas in backend/src/core/schemas.py"
+# Each lane's implementation follows once its own test fails as expected:
+Task: "Implement supabase/functions/grade-task/gate.ts — T011 (after T010 fails)"
+Task: "Implement supabase/functions/grade-task/aggregate.ts — T015 (after T014 fails)"
 ```
 
 ---
 
 ## Implementation Strategy
 
-### MVP First (User Story 1 Only)
+### MVP First (User Story 1 only)
 
-1. Complete Phase 1: Setup
-2. Complete Phase 2: Foundational (CRITICAL — blocks all stories)
-3. Complete Phase 3: User Story 1
-4. **STOP and VALIDATE**: run quickstart.md Scenario 1 independently (via `curl`/API calls)
-5. Move on to `002-core-app-ux` to build the workspace UI against this now-stable API, or
-   continue to User Stories 2–3 first — either order is valid since this feature has no UI of its
-   own to demo
+1. Complete Phase 1 (Setup) and Phase 2 (Foundational) — the schema, RLS proof, and every pure
+   module are non-negotiable prerequisites regardless of which story ships first.
+2. Complete Phase 3 (US1).
+3. **STOP and VALIDATE**: run T019–T021 and quickstart.md's User Story 1 section against the
+   local `supabase start` stack.
+4. This is a demonstrable, gradeable submission flow — the MVP — even before US2's bilingual
+   comment refinement or US4's failure-path polish exist.
 
 ### Incremental Delivery
 
-1. Setup + Foundational → foundation ready
-2. User Story 1 → validate via API → API is ready for `002` to consume (MVP)
-3. User Story 2 → validate → deploy (raises explanation credibility)
-4. User Story 3 → validate → deploy (reliability/UX polish, at the API level)
-5. Phase 6 Polish → golden-dataset baseline, hardened deployment, final quickstart pass
+1. Setup + Foundational → foundation ready, RLS proven, pure logic proven.
+2. US1 → grading works end-to-end → demo-able MVP.
+3. US2 → comments are explanatory and bilingual → the "why" half of the product is real.
+4. US3 → history is provably safe and stable → validate before trusting it in front of a learner.
+5. US4 → failures are safe and duplicates are blocked → validate before exposing this to real
+   traffic and real cost.
+6. Polish → the Principle IV hypothesis test is the gate before calling `pipeline-v2.0` the
+   production methodology of record, not an afterthought.
 
-## Notes
+### What is deliberately NOT in this task list
 
-- [P] tasks touch different files with no unmet dependencies.
-- Constitution Principle III (Test-First) is non-negotiable — do not skip the test tasks.
-- Constitution Principle IV requires the golden-dataset regression (T044) before any pipeline
-  change ships past this initial baseline.
-- This feature builds **zero** frontend pages or components (see Scope note at the top) — do not
-  add any `frontend/src/app/` or `frontend/src/components/` tasks here; that work belongs entirely
-  to `002-core-app-ux`, which builds the workspace UI exactly once against this feature's stable
-  API and its already-specified `WorkspaceViewState` (empty/submitting/result/error, including
-  preserving essay text on error and displaying evidence quotes inline).
-- Commit after each task or logical group; stop at any checkpoint to validate a story
-  independently before continuing.
+Deploying any of this to the live Supabase project. Every task above is buildable and testable
+against the local `supabase start` Docker stack with `OPENROUTER_API_KEY` set as a local secret for
+integration tests that need a real model call (most tests here use the fake client from T016 and
+need no real key at all). The actual `supabase login` / `link` / `db push` / `functions deploy` /
+`secrets set` sequence against the real project — the one already wired to auto-deploy from
+`main` — happens only with the user's explicit go-ahead at that time, per the standing agreement
+for this feature.
