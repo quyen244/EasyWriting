@@ -1,3 +1,4 @@
+import SectionLabel from "@/components/ui/SectionLabel";
 import { FAQ_TEASER_ITEMS } from "@/lib/faqTeaser";
 
 /**
@@ -18,6 +19,9 @@ export default function FaqTeaser() {
     <section id="faq" className="bg-surface-container-lowest py-24">
       <div className="mx-auto max-w-4xl px-margin-mobile">
         <div className="mb-16 text-center">
+          <SectionLabel index={7} align="center" className="mb-4">
+            Questions
+          </SectionLabel>
           <h2 className="font-display text-display-lg-mobile text-on-surface md:text-display-lg">
             Questions? <em className="italic">We&rsquo;ve Got Answers.</em>
           </h2>

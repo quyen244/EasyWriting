@@ -91,6 +91,15 @@ const config: Config = {
         accent: ["var(--font-caveat)", "Caveat", "cursive"],
       },
       fontSize: {
+        // The hero headline is three words, so it can carry far more weight than the
+        // section headings. Fluid rather than stepped: at 9vw it stays optically the
+        // same size relative to the column across the whole breakpoint range.
+        "display-hero": [
+          "clamp(2.75rem, 6.4vw, 6.5rem)",
+          { lineHeight: "0.92", letterSpacing: "-0.04em", fontWeight: "700" },
+        ],
+        eyebrow: ["12px", { lineHeight: "16px", letterSpacing: "1.6px", fontWeight: "600" }],
+        "mono-caps": ["11px", { lineHeight: "16px", letterSpacing: "2px", fontWeight: "600" }],
         "display-xl": ["72px", { lineHeight: "72px", letterSpacing: "-1.8px", fontWeight: "700" }],
         "display-xl-mobile": ["44px", { lineHeight: "1.08", letterSpacing: "-1px", fontWeight: "700" }],
         "display-lg": ["48px", { lineHeight: "48px", fontWeight: "700" }],
@@ -149,19 +158,34 @@ const config: Config = {
       },
       rotate: {
         "1.5": "1.5deg",
+        "2.5": "2.5deg",
+      },
+      zIndex: {
+        // A named scale, so nothing has to invent a number. Previously the page mixed
+        // z-50 / z-20 / -z-10 with no stated order between them.
+        base: "0",
+        raised: "10",
+        sticky: "40",
+        nav: "50",
+        overlay: "60",
       },
       keyframes: {
-        floatUp: {
-          "0%": { transform: "translateY(100px) rotate(0deg)", opacity: "0" },
-          "10%, 90%": { opacity: "1" },
-          "100%": { transform: "translateY(-400px) rotate(360deg)", opacity: "0" },
+        // The `floatUp` keyframes and the four `float-*` utilities that used to live
+        // here were referenced by nothing in src/ and are gone.
+        caretBlink: {
+          "0%, 49%": { opacity: "1" },
+          "50%, 100%": { opacity: "0" },
+        },
+        grainShift: {
+          "0%, 100%": { transform: "translate(0, 0)" },
+          "25%": { transform: "translate(-2%, 1%)" },
+          "50%": { transform: "translate(1%, -2%)" },
+          "75%": { transform: "translate(2%, 2%)" },
         },
       },
       animation: {
-        "float-1": "floatUp 12s linear infinite",
-        "float-2": "floatUp 15s linear infinite 2s",
-        "float-3": "floatUp 10s linear infinite 4s",
-        "float-5": "floatUp 18s linear infinite 5s",
+        caret: "caretBlink 1.05s step-end infinite",
+        grain: "grainShift 8s steps(4) infinite",
       },
     },
   },

@@ -12,6 +12,8 @@
  * feedback, not a promise of automatic rewriting.
  */
 
+import SectionLabel from "@/components/ui/SectionLabel";
+
 const TRADITIONAL = [
   "Takes 2-5 days for feedback",
   "Expensive ($20-$50 per essay)",
@@ -32,6 +34,9 @@ export default function ComparisonTable() {
     <section className="bg-surface-variant py-section-y">
       <div className="mx-auto max-w-container px-margin-mobile">
         <div className="flex flex-col items-center gap-6 text-center">
+          <SectionLabel index={4} align="center">
+            The comparison
+          </SectionLabel>
           <h2 className="font-display text-display-xl-mobile text-on-surface md:text-display-xl">
             WriteWise <em className="italic">vs.</em> Traditional Methods
           </h2>

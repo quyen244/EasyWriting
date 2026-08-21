@@ -127,3 +127,23 @@ export function StepPath({ className }: IconProps) {
     </svg>
   );
 }
+
+/** Padlock — the "Absolute security" proof point. */
+export function LockIcon({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <path d="M8 11V7a4 4 0 118 0v4" />
+      <rect x="5" y="11" width="14" height="10" rx="2" />
+    </Svg>
+  );
+}
+
+/** Globe — the "International standard" proof point. */
+export function GlobeIcon({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M3 12h18M12 3a15 15 0 010 18a15 15 0 010-18z" />
+    </Svg>
+  );
+}

@@ -1,4 +1,5 @@
 import { SketchArrow } from "@/components/ui/Icon";
+import SectionLabel from "@/components/ui/SectionLabel";
 import { Dot, Star } from "@/components/ui/Sticker";
 import { TESTIMONIALS, type Testimonial } from "@/lib/testimonials";
 
@@ -133,6 +134,9 @@ export function TestimonialsSection() {
     <section className="relative overflow-hidden bg-surface py-24">
       <div className="mx-auto max-w-container px-margin-mobile">
         <div className="mb-16 text-center">
+          <SectionLabel index={6} align="center" className="mb-4">
+            Learners
+          </SectionLabel>
           <h2 className="mb-4 font-display text-display-lg-mobile text-on-surface md:text-display-lg">
             What <em className="italic">Students</em> Think
           </h2>

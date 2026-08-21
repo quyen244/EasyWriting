@@ -19,11 +19,11 @@ test.describe("Landing page", () => {
   test("states the pitch above the fold (SC-001)", async ({ page }) => {
     const heading = page.getByRole("heading", { level: 1 });
     await expect(heading).toBeVisible();
-    await expect(heading).toContainText(/Master your IELTS Writing/i);
+    await expect(heading).toContainText(/Grade IELTS free/i);
   });
 
   test("offers sign-up at the top and again at the bottom (SC-002)", async ({ page }) => {
-    await expect(page.getByRole("link", { name: /get started for free/i })).toBeVisible();
+    await expect(page.getByRole("link", { name: /grade writing/i })).toBeVisible();
     await expect(page.getByRole("link", { name: /start scoring for free/i })).toBeVisible();
   });
 
@@ -62,9 +62,21 @@ test.describe("Landing page", () => {
     // Every anchor must point at a route this app serves. Anything unbuilt has to
     // render through the disabled treatment instead of as a plausible link.
     const routes = ["/", "/faq", "/signin", "/signup", "/workspace", "/profile"];
+
+    // The product menus render their links only while open, so the audit has to open
+    // each one — otherwise it silently checks nothing but the header's flat links.
+    for (const menu of ["Grader", "Mock Test", "Practice"]) {
+      await page.getByRole("button", { name: menu, exact: true }).click();
+      await expect(page.getByRole("button", { name: menu, exact: true })).toHaveAttribute(
+        "aria-expanded",
+        "true",
+      );
+    }
+
     const hrefs = await page.locator("header a, footer a").evaluateAll((els) =>
       els.map((el) => el.getAttribute("href") ?? ""),
     );
+    expect(hrefs.length).toBeGreaterThan(0);
 
     for (const href of hrefs) {
       const path = href.split("#")[0] || "/";
@@ -78,7 +90,11 @@ test.describe("Landing page", () => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.reload();
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-    await expect(page.getByRole("link", { name: /get started for free/i })).toBeVisible();
+    await expect(page.getByRole("link", { name: /grade writing/i })).toBeVisible();
     await expect(page.locator("#pricing")).toBeVisible();
+
+    // The demo panel never starts its loop, so the frame left on screen is the one
+    // that makes sense standing still rather than a half-typed essay.
+    await expect(page.getByText(/provisional estimate/i)).toBeVisible();
   });
 });

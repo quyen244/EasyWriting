@@ -1,18 +1,3 @@
-/**
- * Navigation content for the persistent header and footer (002 T009, data-model.md).
- *
- * Every entry carries `available`, so "coming soon" is one code path (`DisabledLink`,
- * research.md R5) rather than a judgement made separately in each section.
- *
- * On General Training: the `writewise` design links it from both the nav and the footer,
- * but 001-ielts-score-assessment scopes it out — General Training Task 1 uses different
- * band descriptors and the grader cannot score it. Per spec.md's flagged decision and
- * the product owner's confirmation (2026-08-21, "không cần GT"), those entries stay in
- * the content — marked unavailable — rather than being deleted. Deleting them would
- * erase the fact that the question was ever asked; suppressing them keeps the answer
- * visible and the reversal cheap.
- */
-
 export interface NavLink {
   label: string;
   /** Absent when the destination does not exist yet. */
@@ -20,16 +5,17 @@ export interface NavLink {
   available: boolean;
 }
 
+/** A header dropdown: one product area, three task-level entries beneath it. */
+export interface NavMenu {
+  label: string;
+  items: NavLink[];
+}
+
 export interface FooterColumn {
   title: "Product" | "Resources" | "Company";
   links: NavLink[];
 }
 
-/**
- * Every route this app actually serves. The navigation unit test audits `href`s against
- * this list, which turns SC-005's "zero silent dead ends" from a manual pass someone has
- * to remember into something that fails the build.
- */
 export const APP_ROUTES = [
   "/",
   "/faq",
@@ -39,16 +25,72 @@ export const APP_ROUTES = [
   "/profile",
 ] as const;
 
-/** Where the Writing/Academic experience lives — 001's grader entry point. */
+/** Where the Writing experience lives — 001's grader entry point. */
 export const GRADER_HREF = "/workspace";
 
-export const PRIMARY_NAV: NavLink[] = [
-  { label: "Academic", href: GRADER_HREF, available: true },
-  { label: "General Training", available: false },
+/**
+ * The three product menus.
+ *
+ * Only Writing Task 1 and Task 2 resolve: they are the two things 001's grader can
+ * actually score, and both land on the same workspace because it handles either task.
+ * Everything else — Speaking, and the whole Mock Test and Practice areas — is marked
+ * unavailable and renders through `DisabledLink` as a non-clickable "Coming soon" row.
+ *
+ * Keeping the unbuilt entries visible rather than deleting them is the point: the menu
+ * shows the shape of the product without pretending any of it is ready. A live link to
+ * an unbuilt route is the silent dead end SC-005 forbids.
+ *
+ * Both Writing hrefs are bare `/workspace`, not `/workspace?task=1`. The SC-005 audit
+ * splits an href on `#` only, so a query string reads as a route the app does not serve
+ * and fails the build.
+ */
+export const NAV_MENUS: NavMenu[] = [
+  {
+    label: "Grader",
+    items: [
+      { label: "IELTS Writing Task 1", href: GRADER_HREF, available: true },
+      { label: "IELTS Writing Task 2", href: GRADER_HREF, available: true },
+      { label: "IELTS Speaking", available: false },
+    ],
+  },
+  {
+    label: "Mock Test",
+    items: [
+      { label: "Mock IELTS Writing Task 1", available: false },
+      { label: "Mock IELTS Writing Task 2", available: false },
+      { label: "Mock IELTS Speaking", available: false },
+    ],
+  },
+  {
+    label: "Practice",
+    items: [
+      { label: "Practice IELTS Writing Task 1", available: false },
+      { label: "Practice IELTS Writing Task 2", available: false },
+      { label: "Practice IELTS Speaking", available: false },
+    ],
+  },
+];
+
+/**
+ * Flat header links, shown beside the menus.
+ *
+ * FAQ is here even though it is not a product area: `/faq` is a real route, and leaving
+ * it out of the header orphans the page behind a single footer link.
+ */
+export const NAV_LINKS: NavLink[] = [
   { label: "Pricing", href: "/#pricing", available: true },
-  // The design's "Resources" nav item is realised as the FAQ link: it is the only
-  // resource page that exists, and a live link to a real page beats a disabled label.
   { label: "FAQ", href: "/faq", available: true },
+];
+
+/**
+ * Every primary-nav destination as one flat list.
+ *
+ * This is what the SC-005 link audit walks. Derived rather than hand-maintained so a
+ * menu entry cannot be added without the audit seeing it.
+ */
+export const PRIMARY_NAV: NavLink[] = [
+  ...NAV_MENUS.flatMap((menu) => menu.items),
+  ...NAV_LINKS,
 ];
 
 export const FOOTER_COLUMNS: FooterColumn[] = [

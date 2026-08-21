@@ -1,3 +1,4 @@
+import SectionLabel from "@/components/ui/SectionLabel";
 import { Dot, Star } from "@/components/ui/Sticker";
 import { WHY_WRITEWISE_STATS, type StatCard } from "@/lib/whyWriteWise";
 
@@ -40,6 +41,9 @@ export default function WhyWriteWiseStats() {
               Examiner Grade
             </span>
 
+            <SectionLabel index={3} className="mb-5">
+              Why WriteWise
+            </SectionLabel>
             <h2 className="mb-6 font-display text-display-lg-mobile leading-tight text-on-surface md:text-display-lg">
               <span className="text-primary">Why</span> choose
               <br />

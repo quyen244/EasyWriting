@@ -28,16 +28,19 @@ const BADGE_TONE: Record<NonNullable<PricingPlan["badgeTone"]>, string> = {
   orange: "bg-primary-container text-on-primary-container",
 };
 
-/** Reference layout: cards alternate tilt across the row. */
-const TILT = ["-rotate-1", "rotate-1", "-rotate-1", "rotate-1"];
+/*
+ * The alternating tilt that used to live here moved to the `RevealItem` wrapper in
+ * `app/page.tsx`. Motion owns `transform` once a card animates in, so a Tailwind
+ * `rotate-*` class on this element would simply be overwritten as the card lands —
+ * the resting angle has to be the animation's target instead.
+ */
 
 export default function PricingCard({ plan, index = 0 }: { plan: PricingPlan; index?: number }) {
   const recommended = Boolean(plan.recommended);
 
   return (
     <div
-      data-tilt
-      className={`relative flex h-full flex-col rounded-xl p-8 ${TILT[index % TILT.length]} ${
+      className={`relative flex h-full flex-col rounded-xl p-8 ${
         recommended
           ? "border-2 border-primary bg-surface-container-low shadow-card"
           : "border border-ink bg-surface-container-lowest shadow-hairline"

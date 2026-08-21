@@ -1,4 +1,5 @@
 import { AnalyzeIcon, CriteriaIcon, ScoreIcon, StepPath } from "@/components/ui/Icon";
+import SectionLabel from "@/components/ui/SectionLabel";
 import { Marker } from "@/components/ui/Sticker";
 
 /**
@@ -88,6 +89,9 @@ export function HowItWorksSection() {
     >
       <div className="mx-auto max-w-container px-margin-mobile">
         <div className="relative z-10 mb-20 flex flex-col items-center text-center">
+          <SectionLabel index={2} align="center" className="mb-4">
+            How it works
+          </SectionLabel>
           <Marker className="mb-2 text-primary">Simple process</Marker>
           <h2 className="font-display text-display-lg-mobile text-on-surface md:text-display-lg">
             How <em className="italic text-primary">WriteWise</em> works

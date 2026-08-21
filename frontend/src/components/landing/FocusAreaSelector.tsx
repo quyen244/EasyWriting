@@ -1,6 +1,8 @@
 import Link from "next/link";
 
 import { MicIcon, PencilIcon } from "@/components/ui/Icon";
+import Reveal from "@/components/motion/Reveal";
+import SectionLabel from "@/components/ui/SectionLabel";
 import { Marker } from "@/components/ui/Sticker";
 import { GRADER_HREF } from "@/lib/navigation";
 
@@ -19,14 +21,17 @@ import { GRADER_HREF } from "@/lib/navigation";
 export default function FocusAreaSelector() {
   return (
     <section id="focus-area" className="mx-auto max-w-container px-margin-mobile py-16">
-      <div className="mb-16 flex flex-col items-center gap-4 text-center">
+      <Reveal variant="cut" className="mb-16 flex flex-col items-center gap-4 text-center">
+        <SectionLabel index={1} align="center">
+          Choose a skill
+        </SectionLabel>
         <h2 className="font-display text-display-lg-mobile text-on-surface md:text-display-lg">
           Choose your <em className="italic">focus area</em>
         </h2>
         <p className="max-w-xl font-body text-body-lg text-on-surface-variant">
           Select the skill you want to improve today with targeted AI feedback.
         </p>
-      </div>
+      </Reveal>
 
       <div className="mx-auto flex max-w-4xl flex-col items-center justify-center gap-12 md:flex-row md:items-stretch">
         {/* Writing — available today */}
