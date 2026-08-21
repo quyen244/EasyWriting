@@ -1,0 +1,228 @@
+openapi: 3.0.3
+info:
+  title: WriteWise Grader — grade-task
+  version: "2.0.0"
+  description: >
+    A single Supabase Edge Function, invoked by the frontend via `supabase.functions.invoke()`
+    (which is itself an HTTPS POST — this contract describes that wire shape). One task per
+    request; task_type is supplied by the caller. Covers spec.md §8 (Request schema), §11 (LLM
+    output contract — internal, not part of this wire contract), and §12 (Result schema).
+
+    Per constitution Principle VIII, this Edge Function is the ONLY compute endpoint the frontend
+    calls for grading — it is part of the Supabase platform the frontend already addresses, not a
+    separate service with its own CORS/secret surface.
+
+servers:
+  - url: https://{project-ref}.supabase.co/functions/v1
+    variables:
+      project-ref:
+        default: your-project-ref
+
+paths:
+  /grade-task:
+    post:
+      summary: Grade one task (Task 1 or Task 2) and persist the result (FR-001..FR-034)
+      security:
+        - supabaseAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GradeTaskRequest'
+            examples:
+              withPrompt:
+                value:
+                  task_type: TASK_2
+                  prompt_text: >-
+                    Some people think that university students should study whatever
+                    they want. Others believe they should only be allowed to study
+                    subjects that will be useful in the future. Discuss both views
+                    and give your own opinion.
+                  essay_text: "In recent years, ..."
+              withoutPrompt:
+                value:
+                  task_type: TASK_1
+                  essay_text: "The chart illustrates ..."
+      responses:
+        '200':
+          description: >
+            The task was gated, graded, and persisted successfully. Returned as soon as the
+            single model call completes (AD-7) — the same row is also durably stored, so a lost
+            connection after this point does not lose the result (§14).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GraderResult'
+        '422':
+          description: >
+            Rejected at the gate before any model call (FR-021) — empty submission, below the
+            absolute floor, not recognizably English, or over the maximum accepted length. Zero
+            cost incurred (SC-008).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GraderFailure'
+        '429':
+          description: >
+            Rate limit (FR-028) or an already-active submission for this learner (FR-029,
+            research.md R4) — retry after the stated active submission completes, or after the
+            rate-limit window passes.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GraderFailure'
+        '500':
+          description: >
+            The model call failed after one retry (§11), or returned output that could not be
+            validated into four criteria. The learner's writing is NOT lost — it was never sent
+            anywhere except this request (§14 — the row is written before the model call).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GraderFailure'
+    get:
+      summary: Not exposed here
+      description: >
+        Reading past submissions (User Story 3) is done by the frontend querying
+        `grader_results` directly via `supabase-js` and RLS (FR-025), not through this function.
+        There is no separate read endpoint for this feature.
+      responses:
+        '404':
+          description: Not implemented — see description.
+
+components:
+  securitySchemes:
+    supabaseAuth:
+      type: http
+      scheme: bearer
+      description: >
+        The learner's Supabase session JWT, attached automatically by `supabase-js`'s
+        `functions.invoke()`. The function reads the caller's identity from this token — never
+        from the request body (§8).
+
+  schemas:
+    GradeTaskRequest:
+      type: object
+      required: [task_type, essay_text]
+      properties:
+        task_type:
+          type: string
+          enum: [TASK_1, TASK_2]
+        essay_text:
+          type: string
+          minLength: 1
+        prompt_text:
+          type: string
+          nullable: true
+          description: Optional — the grader page marks this field "Không bắt buộc" (§8).
+
+    CriterionResult:
+      type: object
+      required: [code, label, band, comment]
+      properties:
+        code:
+          type: string
+          enum:
+            - TASK_ACHIEVEMENT
+            - TASK_RESPONSE
+            - COHERENCE_COHESION
+            - LEXICAL_RESOURCE
+            - GRAMMATICAL_RANGE_ACCURACY
+        label:
+          type: string
+        band:
+          type: number
+          minimum: 1
+          maximum: 9
+          multipleOf: 0.5
+        comment:
+          type: string
+          minLength: 1
+          description: Bilingual — Vietnamese explanation, English IELTS terminology (FR-015).
+
+    GraderResult:
+      type: object
+      required:
+        - id
+        - task_type
+        - status
+        - overall_band
+        - criteria
+        - word_count
+        - min_words
+        - length_penalty
+        - provisional
+        - pipeline_version
+        - model_id
+        - created_at
+        - scored_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        task_type:
+          type: string
+          enum: [TASK_1, TASK_2]
+        status:
+          type: string
+          enum: [scored]
+        overall_band:
+          type: number
+          minimum: 1
+          maximum: 9
+          multipleOf: 0.5
+        criteria:
+          type: array
+          minItems: 4
+          maxItems: 4
+          items:
+            $ref: '#/components/schemas/CriterionResult'
+          description: Always in the fixed order of spec.md §7 (FR-032) — never sorted.
+        word_count:
+          type: integer
+        min_words:
+          type: integer
+        length_penalty:
+          type: number
+          enum: [0, 0.5, 1.0]
+        provisional:
+          type: boolean
+          description: >
+            True per constitution TP-1's remaining scope (comments are not machine-verified as
+            exact quotations yet) — see the v3.1.0 amendment.
+        pipeline_version:
+          type: string
+          example: pipeline-v2.0
+        model_id:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        scored_at:
+          type: string
+          format: date-time
+
+    GraderFailure:
+      type: object
+      required: [status, error_code, message, retryable]
+      properties:
+        status:
+          type: string
+          enum: [failed, rejected]
+        error_code:
+          type: string
+          enum:
+            - RATE_LIMITED
+            - SUBMISSION_ALREADY_ACTIVE
+            - EMPTY_SUBMISSION
+            - TOO_SHORT
+            - NOT_ENGLISH
+            - TOO_LONG
+            - LLM_TIMEOUT
+            - LLM_INVALID_OUTPUT
+        message:
+          type: string
+          description: Learner-facing reason, per §12's Failure result.
+        retryable:
+          type: boolean

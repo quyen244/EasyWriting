@@ -1,94 +1,87 @@
-# Implementation Plan: IELTS Writing Score Assessment & Explainability
+# Implementation Plan: WriteWise Grader — Single-Task IELTS Writing Assessment
 
-> **STALE — 2026-08-21.** Written against the retired FastAPI backend and the four-call
-> criterion-by-criterion pipeline. `spec.md` was rewritten for the mock-test grader; this
-> file has not been regenerated yet. Run `/speckit-plan` and `/speckit-tasks` to replace it.
-> See [../README.md](../README.md).
-
-**Branch**: `001-ielts-score-assessment` | **Date**: 2026-08-19 | **Spec**: [spec.md](./spec.md)
+**Branch**: `001-ielts-score-assessment` | **Date**: 2026-08-21 | **Spec**: [spec.md](./spec.md)
 
 **Input**: Feature specification from `/specs/001-ielts-score-assessment/spec.md`
 
 ## Summary
 
-A learner submits an IELTS Writing essay (Task 1 or Task 2) and receives, within 60 seconds, an
-overall band score plus a band score and rubric-grounded, evidence-quoting explanation for each
-of the four IELTS criteria. Technical approach: a FastAPI backend runs a trimmed, concurrent
-version of the existing IE AI Evaluator scoring pipeline (4 criterion-evaluator LLM calls via
-OpenRouter, down from its original 6) against PostgreSQL-persisted submissions. Scoring
-methodology (prompts/model/params) is captured in versioned YAML and benchmarked against a
-migrated golden dataset per Constitution Principle IV before any change ships.
+A signed-in learner submits one piece of IELTS Writing (Task 1 or Task 2, with an optional exam
+prompt) and receives, within about a minute, a band and a bilingual comment for each of the four
+official criteria plus an overall band — with every result traceable to the exact prompt and model
+that produced it. The primary technical move is consolidating the inherited four-call-per-criterion
+pipeline into a single model call whose only job is judgement (four bands, four comments); every
+other number in the result — the overall band, the length-under deduction, the display labels — is
+derived deterministically in code, never asked of the model (spec.md AD-1).
 
-**This feature is backend-only.** It ships the assessments API plus a thin
-`frontend/src/lib/apiClient.ts` for `002-core-app-ux` to consume — no pages or UI components are
-built here. `/speckit-analyze` flagged (finding I1) that building a full essay-submission page
-against the old placeholder mockup would have been discarded the moment `002`'s real,
-Stitch-generated design landed; the workspace UI is now built exactly once, entirely within
-`002`, against this feature's stable, independently-tested API.
+This is graded as a **new, versioned pipeline methodology** (`pipeline-v2.0`, research.md R2) rather
+than an edit to the existing `pipeline-v1.0`, so the mandatory before/after golden-set comparison
+(constitution Principle IV) has something concrete to compare against. The grading function is a
+Supabase Edge Function — Tier 1 per the constitution's compute model — so the frontend's only server
+dependency remains Supabase (Principle VIII), leaving the roadmap's planned ASR/Speaking feature as
+a second consumer of the same architecture rather than a new integration surface.
 
 ## Technical Context
 
-**Language/Version**: Backend: Python 3.12. Frontend: TypeScript 5.x on Node.js 20 LTS (Next.js).
+**Language/Version**: TypeScript on Deno (Supabase Edge Functions runtime) for the grading
+function; SQL for schema/policies; Python 3 (existing `eval/` toolchain, unchanged) for the golden-
+set benchmark harness.
 
-**Primary Dependencies**: Backend: FastAPI, SQLAlchemy 2.x, Alembic, psycopg (PostgreSQL driver),
-Pydantic v2 + pydantic-settings, httpx (OpenRouter REST calls, OpenAI-compatible), PyYAML
-(pipeline config), pytest. Frontend: Next.js (App Router), React, Tailwind CSS, TypeScript — this
-feature only scaffolds the frontend project and its API client; it adds no pages or components.
+**Primary Dependencies**: `supabase-js` (frontend, to invoke the function and to read
+`grader_results` directly); no new runtime dependency inside the Edge Function itself — the
+OpenRouter call is a plain `fetch`, matching the constitution's "model-agnostic interface... via
+OpenRouter" without adding an SDK for a single HTTP call.
 
-**Storage**: PostgreSQL for submissions, assessment results, and users. Local, version-controlled
-filesystem (not DB) for the golden dataset, YAML pipeline configs, and JSON benchmark run reports
-— these are audit/methodology artifacts per Constitution Principle IV, not application data.
+**Storage**: Supabase Postgres — `grader_results`, `llm_calls` (data-model.md).
 
-**Testing**: Backend: pytest — unit tests for deterministic aggregation/verification logic,
-contract tests for the assessments API, and a `FakeClient` LLM test double (reusing the IE AI
-Evaluator pattern) for deterministic offline pipeline tests. Golden-dataset regression harness for
-any scoring-methodology change (Constitution Principle IV). This feature ships no frontend UI, so
-no Vitest/Playwright suite is introduced here — validated instead via `curl`/API calls per
-[quickstart.md](./quickstart.md); `002-core-app-ux` owns the frontend test suite for the pages
-that consume this API.
+**Testing**: `deno test` for the function's pure logic (gate, feature extraction, band snapping,
+length penalty, aggregation) and a fake-LLM-client integration path (research.md R6); pgTAP via
+`supabase test db` for RLS policies and column grants (research.md R5); the existing `eval/`
+`pytest` suite, extended to benchmark `pipeline-v2.0` against the golden set (research.md R2).
 
-**Target Platform**: Backend: Docker container run on a local machine, exposed publicly via
-Cloudflare Tunnel (`cloudflared`) on `rexsantech.com`. Frontend: Vercel.
+**Target Platform**: Supabase Edge Functions (Deno, globally distributed, serverless) + Supabase
+Postgres. No servers to provision; no Docker for this feature (Tier 1 workload).
 
-**Project Type**: Web application (frontend + backend).
+**Project Type**: Backend-as-a-Service extension — a single Supabase Edge Function plus a schema
+migration. Not the template's "web application" split; there is no new `backend/` directory, and no
+UI is built in this feature (spec.md §3 — the grader page's visual design is an explicit non-goal).
 
-**Performance Goals**: Full scored result (overall + 4 criteria + explanations) returned within
-60 seconds for at least 95% of submissions (SC-001).
+**Performance Goals**: SC-001 — a complete result within 60 seconds for at least 95% of
+submissions. One model call per submission is itself the primary lever for staying inside that
+budget (a quarter of the inherited pipeline's calls).
 
-**Constraints**: At most 4 LLM calls per assessment (Constitution Principle V — down from the
-reused pipeline's original 6). All services dockerized (Constitution Principle VII). No learner
-essay data shared beyond what the OpenRouter scoring call requires.
+**Constraints**: Exactly one LLM call per graded submission (FR-006, constitution Principle V); the
+model never performs counting or arithmetic (AD-1); the length-deduction/prompt-instruction pairing
+must move together or every under-length learner is penalised twice (§9's warning, tested per
+research.md R6).
 
-**Scale/Scope**: Solo-maintained SaaS in early validation; single local backend instance behind
-one Cloudflare Tunnel. Low tens of concurrent learners expected initially — no horizontal-scale
-design needed yet.
-
-**Note — auth dependency**: This feature requires an authenticated learner (FR-008) but account
-creation/sign-in itself is out of scope for this spec (see spec Assumptions). This plan assumes a
-session/JWT-issuing auth mechanism is available as a shared prerequisite for the essay-submission
-endpoint; if it does not yet exist elsewhere in the project, standing up minimal auth is a
-blocking dependency tracked outside this feature.
+**Scale/Scope**: Same solo-maintained SaaS scale as the rest of this project — low submission
+volume initially, cost-bounded by FR-028's rate limit (default: 20/hour/learner, research.md R4)
+rather than by infrastructure capacity.
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-checked after Phase 1 design — see below.*
+*GATE: Must pass before Phase 0 research. Re-checked after Phase 1 design below.*
 
 | Principle | Gate | Status |
 |---|---|---|
-| I. Rubric-Grounded, Explainable Scoring | Every score ships with a criterion-level explanation citing descriptor language (FR-004, FR-012); no bare scores | PASS |
-| II. Teach-to-Improve Guidance | N/A — this feature is scoring/explanation only; rewriting guidance is explicitly out of scope (spec Assumptions) | N/A (deferred to a future feature) |
-| III. Test-First Development | Contract + unit tests written before implementation; offline `FakeClient` enables red-green cycles without live LLM calls | PASS |
-| IV. Evaluation-Driven Methodology Changes | Golden dataset (migrated from IE AI Evaluator) + versioned YAML pipeline config + JSON result artifacts required before any prompt/model change ships | PASS |
-| V. Cost-Conscious LLM Usage | Trimmed from 6 to 4 LLM calls per assessment; model is an OpenRouter config value, never hardcoded | PASS |
-| VI. Simplicity & Reusable Design | Reuses existing `LLMClient` Protocol and pipeline stages as-is; criterion scores stored as JSONB, not a new normalized table, since nothing in scope queries them independently; builds zero frontend UI to avoid duplicate work with `002-core-app-ux` (`/speckit-analyze` finding I1) | PASS |
-| VII. Observability, Error Handling & Security | Structured logging + error handling on the assessments endpoint; backend-owned auth gate; dockerized services; essay data scoped to evaluation use only | PASS |
+| I. Rubric-Grounded, Explainable Scoring | Every band ships with a descriptor-grounded comment (FR-013..FR-016) | **PASS** — satisfied in full for this feature; see TP-1 note below |
+| II. Teach-to-Improve Guidance | N/A — explicit non-goal (spec.md §3) | **N/A** |
+| III. Test-First Development | RLS policies and column grants have owner-can/other-cannot tests (research.md R5); pure aggregation/gate logic is unit-tested before the handler is built around it (research.md R6) | **PASS** |
+| IV. Evaluation-Driven Methodology Changes | The four-call → one-call change ships as a new versioned pipeline (`v2`) benchmarked against `v1` on the golden set before being treated as production's methodology of record (research.md R2, quickstart.md) | **PASS** |
+| V. Cost-Conscious LLM Usage | One call per submission (FR-006); model/params from versioned config, not hardcoded; per-user rate limit (FR-028, research.md R4); every call's cost recorded (FR-027) | **PASS** |
+| VI. Simplicity & Reusable Design | No new compute tier introduced (stays Tier 1); no shared cross-runtime prompt package built preemptively (research.md R3); rate limiting uses a plain count query, not a new subsystem (research.md R4) | **PASS** |
+| VII. Observability, Error Handling & Security by Default | RLS + column-level revokes enforce authorization in the database (data-model.md); `llm_calls` records every call's cost/latency/outcome/raw response; `raw_response` has a stated purge posture (data-model.md Retention) | **PASS** |
+| VIII. Database-Mediated Compute | The frontend's only server dependency is Supabase; the grading function is invoked via `supabase.functions.invoke()`, and the row it writes is what a future asynchronous dispatch or a Tier 2 worker would consume without changing this table's shape | **PASS** |
 
-No violations — Complexity Tracking table omitted.
+**TP-1 note**: constitution v3.1.0 narrowed TP-1 specifically because this feature closes Principle
+I in full for the grader (bilingual, descriptor-grounded, per-criterion comments). What TP-1 still
+covers — project-wide, not blocking this feature — is machine-verified evidence anchoring (comments
+are not programmatically checked as exact quotations from the essay) and the not-yet-specified
+mock-test feature. Neither is a gap in *this* feature's compliance; both are named explicitly so
+they aren't forgotten.
 
-**Post-Phase-1 re-check**: data-model.md's JSONB-embedded `CriterionScore` (no new table) and
-the added `pipelines/*.yaml` convention were the only structural decisions made during design;
-both were justified in [research.md](./research.md) (decisions 4 and 5) directly against
-Principles VI and IV respectively. No new violations introduced — all rows above still PASS/N/A.
+No unjustified violations. **Complexity Tracking is empty** — nothing here required a deviation.
 
 ## Project Structure
 
@@ -96,66 +89,75 @@ Principles VI and IV respectively. No new violations introduced — all rows abo
 
 ```text
 specs/001-ielts-score-assessment/
-├── plan.md              # This file (/speckit-plan command output)
-├── research.md          # Phase 0 output (/speckit-plan command)
-├── data-model.md         # Phase 1 output (/speckit-plan command)
-├── quickstart.md         # Phase 1 output (/speckit-plan command)
-├── contracts/            # Phase 1 output (/speckit-plan command)
-│   └── assessments-openapi.yaml
-└── tasks.md              # Phase 2 output (/speckit-tasks command - NOT created by /speckit-plan)
+├── plan.md                        # This file
+├── research.md                    # Phase 0 — R1..R8
+├── data-model.md                  # Phase 1 — grader_results, llm_calls, state machine
+├── contracts/
+│   └── grade-task-openapi.yaml    # Phase 1 — the grade-task wire contract
+├── quickstart.md                  # Phase 1 — validation guide per user story
+└── tasks.md                       # Phase 2 output (/speckit-tasks — not created here)
 ```
 
 ### Source Code (repository root)
 
 ```text
-backend/
-├── src/
-│   ├── core/                    # config.py (pydantic-settings), schemas.py (Pydantic models)
-│   ├── domain/                  # entities, interfaces, exceptions
-│   ├── llm/
-│   │   ├── base.py              # LLMClient Protocol + LLMResponse
-│   │   ├── openrouter_client.py # sole LLM adapter for this feature (Constitution V)
-│   │   ├── prompts/             # prompt builders per criterion
-│   │   └── rubrics/             # versioned IELTS band-descriptor text (Constitution I)
-│   ├── pipeline/
-│   │   ├── pipeline.py          # trimmed EvaluationPipeline: preprocess → 4 concurrent criterion
-│   │   │                        # evaluators → deterministic aggregate/verify
-│   │   ├── aggregate.py         # band rounding, length penalty (code, not LLM judgement)
-│   │   ├── preprocess.py
-│   │   └── verify.py            # quote-fidelity check against the source essay
-│   ├── evaluation/
-│   │   ├── dataset.py           # golden dataset load/write
-│   │   ├── harness.py           # benchmark runner (Constitution IV)
-│   │   └── metrics.py           # MAE/RMSE/Spearman vs. gold labels
-│   ├── infrastructure/database/ # SQLAlchemy models, Alembic migrations, repository
-│   └── api/                     # FastAPI routers (assessments, health)
-├── pipelines/                   # versioned YAML pipeline configs (prompt/model/params)
-├── data/
-│   ├── golden/                  # golden dataset essays + gold labels (migrated from IE AI Evaluator)
-│   └── reports/<run_id>/        # raw_results.json, metrics.json per benchmark run
-├── tests/
-│   ├── contract/
-│   ├── integration/
-│   └── unit/
-└── Dockerfile
+supabase/
+├── functions/
+│   └── grade-task/
+│       ├── index.ts               # request handler — orchestrates the 8 steps of spec.md §6
+│       ├── gate.ts                # scoreability gate (§9) — ported from eval/src/pipeline/preprocess.py
+│       ├── extract.ts             # feature extraction (§9) — word/sentence/paragraph counts, devices
+│       ├── aggregate.ts           # band snapping, length penalty, overall aggregation (AD-1, AD-3)
+│       │                          #   — ported from eval/src/pipeline/aggregate.py
+│       ├── prompt.ts              # builds the single consolidated prompt from prompts/v2/*
+│       ├── openrouter.ts          # the one model call + one retry (research.md R8)
+│       ├── prompts/               # deployed copy of eval/prompts/v2/ (research.md R3)
+│       └── grade-task.test.ts     # deno test — exercises gate.ts/aggregate.ts/extract.ts directly
+│
+├── migrations/
+│   └── <timestamp>_grader_results.sql   # tables, RLS, column revokes, unique index, check constraints
+│
+└── tests/
+    └── grader_results_rls.sql     # pgTAP — research.md R5
 
-frontend/
-├── src/
-│   └── lib/                     # apiClient.ts — API client for the assessments endpoint.
-│                                  # This feature adds no app/ pages or components/ — the
-│                                  # workspace UI that calls this client is built entirely by
-│                                  # 002-core-app-ux (see Summary and Constitution Check VI).
-└── Dockerfile
+eval/
+├── prompts/
+│   └── v2/                        # NEW — canonical single-call prompt (research.md R2, R3)
+│       ├── system.txt
+│       └── user.txt               # requests all 4 criteria + comments in one response
+├── pipelines/
+│   └── v2.yaml                    # NEW — same model config as v1.yaml, prompts.version: v2
+└── src/pipeline/
+    └── pipeline.py                # MODIFIED — gains a single-call orchestration mode to benchmark v2
 ```
 
-**Structure Decision**: Web application split (frontend/ + backend/), per Constitution's fixed
-stack (Next.js/Vercel frontend, FastAPI/Postgres backend). Backend layout carries over the
-layered structure (`core/domain/llm/pipeline/evaluation/infrastructure/api`) proven in the IE AI
-Evaluator project, trimmed to what this feature needs; a `pipelines/` YAML directory is new, added
-to satisfy Constitution Principle IV, which the prior project did not have. The frontend side of
-this split is intentionally minimal — a scaffold and an API client only — because this feature's
-job is to prove the scoring API works, not to build the UI that will consume it.
+**Structure Decision**: No `backend/` directory is created or reused — the constitution retired the
+self-hosted backend, and this feature's compute is entirely Tier 1 (Supabase Edge Functions). The
+existing `frontend/` tree is untouched by this plan: this feature's contract (§8/§12,
+contracts/grade-task-openapi.yaml) is what a future grader-UI feature will consume, but building
+that UI is explicitly out of scope (spec.md §3). `eval/` gains a new pipeline version rather than a
+modified one, per research.md R2, so the methodology change required by Principle IV has a real
+before/after artifact instead of an in-place edit with nothing to compare against.
 
 ## Complexity Tracking
 
-*No Constitution Check violations — table intentionally omitted.*
+*No entries — Constitution Check above passed without requiring a deviation.*
+
+---
+
+## Post-Design Constitution Re-Check
+
+Re-evaluated after Phase 1 (data-model.md, contracts/, quickstart.md):
+
+- **III (Test-First)**: data-model.md's completeness check constraint and column revokes are
+  concrete, testable objects now (not just a stated intent) — pgTAP tests in research.md R5 assert
+  against them directly. **Still PASS.**
+- **IV (Evaluation-Driven)**: quickstart.md's hypothesis-test section makes the `v1` vs `v2`
+  comparison a concrete, runnable step, not just a plan-level intention. **Still PASS.**
+- **VII (Observability)**: data-model.md's Retention section commits to a purge posture for
+  `raw_response` rather than leaving retention unstated. **Still PASS.**
+- **VIII (Database-Mediated Compute)**: contracts/grade-task-openapi.yaml confirms the only
+  endpoint this feature exposes is the Supabase Edge Function itself — no second compute surface
+  was introduced during design. **Still PASS.**
+
+No new violations surfaced during design. Ready for `/speckit-tasks`.
