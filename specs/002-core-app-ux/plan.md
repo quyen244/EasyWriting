@@ -1,102 +1,84 @@
-# Implementation Plan: Core App UX — Landing, FAQ, Workspace & Profile
+# Implementation Plan: WriteWise Landing Page
 
-> **STALE — 2026-08-21.** Written against the retired FastAPI backend, the retired
-> `003-account-authentication` HTTP contract, and the old four-surface scope (landing + FAQ +
-> workspace + profile) built against the `stitch_writewise_ielts_editorial_saas` mockups.
-> `spec.md` was rewritten and narrowed to the landing page alone, grounded in the real
-> `writewise` Figma design. This file has not been regenerated yet — run `/speckit-plan` and
-> `/speckit-tasks` to replace it. See [../README.md](../README.md).
-
-
-**Branch**: `002-core-app-ux` | **Date**: 2026-08-20 (regenerated against the WriteWise/Stitch-design spec revision) | **Spec**: [spec.md](./spec.md)
+**Branch**: `002-core-app-ux` | **Date**: 2026-08-21 | **Spec**: [spec.md](./spec.md)
 
 **Input**: Feature specification from `/specs/002-core-app-ux/spec.md`
 
 ## Summary
 
-A visitor lands on a marketing page (hero, problem/comparison, honest four-step how-it-works,
-testimonials, pricing) that funnels into sign-up; a separate, searchable FAQ page handles
-pre-purchase objections and carries the mandatory "not an official score" disclaimer; a signed-in
-learner runs an essay assessment from a workspace that visualizes the result in place, in either
-light or dark theme; and a profile page shows account details with sign-out.
+An unauthenticated visitor reaches `/`, understands what WriteWise does, sees which of its two
+skills (Writing, Speaking) is usable today, is given honest reasons to trust and pay for the
+scoring, compares four pricing tiers, and can reach sign-up from anywhere on the page without a
+dead end. The primary technical move is a **content and structure rewrite** of the existing
+`frontend/src/components/landing/` tree (built against a retired spec and mockup set) against the
+real `writewise` Figma design, adding the sections that design introduced (focus-area selector,
+Why-WriteWise stats, FAQ teaser) and retiring the one that has no equivalent in it
+(`ProblemSection`).
 
-Technical approach is unchanged from the prior planning pass in its core shape: this is a
-**frontend-only** feature — no new backend endpoints, no new persisted data, no scoring logic. It
-is the Next.js page layer composing `001-ielts-score-assessment`'s assessments API and
-`003-account-authentication`'s auth API/client, now built against the approved
-`stitch_writewise_ielts_editorial_saas` designs (product name **WriteWise**) instead of the
-earlier `stitch_ielts_writing_diagnostic` mockup. Two things are new versus the prior plan: (1) a
-dedicated `/faq` page and a display-only pricing section are in scope, and (2) the workspace must
-support a light/dark theme toggle. The one non-obvious technical finding carried over unchanged:
-because `003`'s refresh-token cookie is scoped to the backend's cross-origin domain
-(`rexsantech.com`), Next.js edge middleware on Vercel cannot read it — route protection for
-`/workspace` and `/profile` must be a client-side guard, not server-side middleware.
+This feature owns no backend, no database, and no API — every entity is static, in-code content
+(research.md, data-model.md). Its only real dependencies are on features that are Planned or
+already Active but not yet deployed: the Supabase-platform auth feature (`/signup`/`/signin`'s
+actual wiring) and `001-ielts-score-assessment` (the grader this page's copy must stay truthful
+to). Neither dependency is implemented by this plan; both are named explicitly so "done" for this
+feature doesn't quietly drift into claiming more than it delivers.
+
+One product-scope question — whether General Training is in scope at all — is deliberately left
+open by spec.md, with a named default this plan builds against (research.md R2). It is not this
+plan's place to resolve it.
 
 ## Technical Context
 
-**Language/Version**: TypeScript on the same Next.js (App Router) app established by `001`'s and
-`003`'s plans — no new frontend project, and no backend code at all in this feature.
+**Language/Version**: TypeScript, React (Next.js 16 App Router) — the existing `frontend/` stack,
+unchanged.
 
-**Primary Dependencies**: Reused as-is: Next.js, React, Tailwind CSS (`001` research.md decision
-8), `003`'s `frontend/src/lib/auth.ts` and `useAuth` hook, `001`'s `frontend/src/lib/apiClient.ts`.
-New for this revision: Tailwind's `darkMode: "class"` strategy (already present, unused, in the
-Stitch mockups' Tailwind config) plus a small client-side theme-persistence utility — no new
-runtime dependency, `localStorage` + a `<html class="dark">` toggle is sufficient (see research.md
-decision 5).
+**Primary Dependencies**: None new. No `@supabase/supabase-js` call from this page (confirmed —
+research.md R4); no new npm package.
 
-**Storage**: N/A — this feature persists nothing of its own; it renders data owned by `001`
-(`EssaySubmission`/`AssessmentResult`) and `003` (`Account`). Theme preference persists only to
-the browser's `localStorage`, not the backend.
+**Storage**: None. All content is static TypeScript modules under `frontend/src/lib/`
+(data-model.md).
 
-**Testing**: Frontend only — component tests (Vitest) for the landing sections, FAQ search/filter
-behavior, workspace states (empty/in-progress/result/error) in both themes, and profile view;
-Playwright end-to-end tests for the full flows named in each user story (land → sign up →
-workspace → submit → result; FAQ search; sign out; direct navigation to a protected route while
-signed out; theme toggle persists across reload).
+**Testing**: Vitest + Testing Library (existing) for component-level tests; Playwright (existing)
+for page-level flow, per research.md R7.
 
-**Target Platform**: Vercel (this feature has no backend deployment surface).
+**Target Platform**: Web, deployed on Vercel — unchanged from the existing frontend.
 
-**Project Type**: Web application — frontend-only slice of the existing `frontend/` + `backend/`
-split.
+**Project Type**: Frontend-only content/UI feature within the existing `frontend/` app. No new
+top-level directory.
 
-**Performance Goals**: Landing and FAQ page content visible quickly on first load (standard web
-expectation — no feature-specific number beyond spec SC-001/SC-006's usability checks). Workspace
-round-trip latency is bounded by `001`'s own SC-001 (60s budget); this feature adds no additional
-processing time. Theme toggle must apply instantly (no visible flash/repaint delay perceptible to
-a user).
+**Performance Goals**: Not a new concern this feature introduces — standard Next.js
+static/SSR page performance. No new data fetching is added (everything is compiled-in content).
 
-**Constraints**: Route protection for `/workspace` and `/profile` MUST be a client-side guard
-(check `useAuth` state / call `GET /api/v1/auth/me` on mount, redirect if unauthenticated) rather
-than Next.js middleware (research.md decision 1) — unchanged from the prior plan. New constraint
-this revision: every workspace surface (editor, result panel, feedback tags, empty state) MUST
-carry `dark:` variants — a component with only light-mode styling is not just visually incomplete,
-it fails FR-018/SC-007 directly.
+**Constraints**: Every factual/marketing claim on the page must remain true against
+`001-ielts-score-assessment`'s actual shipped behavior (FR-008, FR-009, FR-011) and against
+constitution TP-1's current scope (FR-009, FR-015, User Story 6 scenario 4) — this is a content
+discipline constraint, not a technical one, but it is load-bearing enough to gate several tasks
+(research.md R6's FAQ-answer rewrite; the stat-card wording review).
 
-**Scale/Scope**: Same solo-maintained SaaS scale as `001`/`003` — no feature-specific scale
-concerns; this is UI composition, not new infrastructure.
+**Scale/Scope**: One route, ~10 rewritten/new components, three new content modules
+(`navigation.ts`, `testimonials.ts`, `faqTeaser.ts`, `whyWriteWise.ts`), one rewritten
+(`pricing.ts`). Same solo-maintained-SaaS scale as the rest of this project.
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-checked after Phase 1 design — see below.*
+*GATE: Must pass before Phase 0 research. Re-checked after Phase 1 design below.*
 
 | Principle | Gate | Status |
 |---|---|---|
-| I. Rubric-Grounded, Explainable Scoring | N/A — this feature renders `001`'s already-grounded results, it does not produce scores | N/A |
-| II. Teach-to-Improve Guidance | N/A | N/A |
-| III. Test-First Development | Component and E2E tests written before implementation | PASS |
-| IV. Evaluation-Driven Methodology Changes | N/A — no scoring methodology touched | N/A |
-| V. Cost-Conscious LLM Usage | N/A — no LLM calls originate from this feature | N/A |
-| VI. Simplicity & Reusable Design | No new backend surface; reuses `001`'s API client and `003`'s auth client/hook; FAQ search/filter and theme toggle are pure client-side UI state, no new abstraction layer | PASS |
-| VII. Observability, Error Handling & Security by Default | Client-side auth guard prevents protected content from rendering before a session is confirmed; workspace surfaces `001`'s error states (rejection/failure) rather than swallowing them | PASS |
+| I. Rubric-Grounded, Explainable Scoring | This page describes scoring, it doesn't perform it — FR-008/FR-011 require the description to stay accurate to `001`'s actual explainability, which is what keeps this page from independently violating Principle I by advertising more than the grader delivers | **PASS** |
+| III. Test-First Development | Component tests exist per rewritten/new component (research.md R7); the `Plan`/`NavLink`/`Testimonial` validation rules in data-model.md are each stated as a testable, falsifiable proposition (exactly one recommended plan; no unavailable link renders as live; no General-Training testimonial while the flag is unresolved) | **PASS** |
+| IV. Evaluation-Driven Methodology Changes | N/A — this feature makes no scoring-methodology change | **N/A** |
+| V. Cost-Conscious LLM Usage | N/A — no LLM call from this page | **N/A** |
+| VI. Simplicity & Reusable Design | Reuses existing component shape/Tailwind tokens where the design still fits them (research.md R1); one shared disabled-link pattern instead of four ad hoc ones (research.md R5); explicitly rejects building a throwaway auth stub or new visual-regression tooling this feature doesn't need (research.md R4, R7) | **PASS** |
+| VII. Observability, Error Handling & Security by Default | No new data handling, no new auth/authz surface — this page reads and stores nothing. The one honesty-relevant control (FR-011, no overclaiming) is enforced by content review + the FaqTeaserItem unit test (data-model.md), not by RLS, because there is no database here to enforce it in | **PASS** |
+| VIII. Database-Mediated Compute | This page calls no compute endpoint at all — it links toward `001`'s grader and the future Supabase-platform auth by page reference only, exactly the pattern Principle VIII requires of a page that isn't itself a compute client | **PASS** |
 
-No violations — Complexity Tracking table omitted.
+**Flagged, not a gate failure**: the General Training scope question (spec.md callout,
+research.md R2) is a product decision explicitly deferred by the spec itself, with a stated
+default this plan builds against. It is not an unjustified deviation from any principle — nothing
+above requires resolving it before planning, and the default chosen (mark as "coming soon") is the
+smaller, safer commitment either way the product owner ultimately decides.
 
-**Post-Phase-1 re-check**: The client-side route-guard decision (research.md decision 1), the
-FAQ page being a standalone route rather than a landing-page anchor (research.md decision 6), and
-the `localStorage`-only theme persistence (research.md decision 5) are the structural decisions
-from this design pass. All are consistent with Principle VI (no new backend surface, no
-speculative abstraction) and Principle VII (guard before render, no data leakage). No new
-violations — all rows above still PASS/N/A.
+No unjustified violations. **Complexity Tracking is empty.**
 
 ## Project Structure
 
@@ -104,63 +86,87 @@ violations — all rows above still PASS/N/A.
 
 ```text
 specs/002-core-app-ux/
-├── plan.md              # This file (/speckit-plan command output)
-├── research.md          # Phase 0 output (/speckit-plan command)
-├── data-model.md         # Phase 1 output (/speckit-plan command)
-├── quickstart.md         # Phase 1 output (/speckit-plan command)
-├── contracts/            # Phase 1 output (/speckit-plan command)
-│   └── page-routes.md
-└── tasks.md              # Phase 2 output (/speckit-tasks command - NOT created by /speckit-plan)
+├── plan.md                  # This file
+├── research.md              # Phase 0 — R1..R7
+├── data-model.md            # Phase 1 — content shapes (no schema, no DB)
+├── contracts/
+│   └── page-routes.md       # Phase 1 — this feature's route + outbound dependencies
+├── quickstart.md            # Phase 1 — validation guide per user story
+└── tasks.md                 # Phase 2 output (/speckit-tasks — not created here)
 ```
 
 ### Source Code (repository root)
 
-Frontend-only additions to the existing `frontend/` tree from `001`/`003`; no `backend/` changes.
-
 ```text
 frontend/src/
 ├── app/
-│   ├── page.tsx                  # NEW — landing page (hero, problem/comparison,
-│   │                              # 4-step how-it-works, product-experience preview,
-│   │                              # expert + learner testimonials, pricing display,
-│   │                              # final CTA, footer), from marketing_landing_page_fresh_refresh
-│   ├── faq/page.tsx              # NEW — dedicated FAQ page (search + 3 categorized,
-│   │                              # single-open accordions), from frequently_asked_questions
-│   ├── signup/page.tsx           # NEW — sign-up form, calls 003's signUp()
-│   ├── signin/page.tsx           # NEW — sign-in form, calls 003's signIn()
-│   ├── workspace/page.tsx        # NEW — 001 ships no UI of its own (backend-only, see its
-│   │                              # plan.md); this is the only workspace page ever built,
-│   │                              # ported from learner_workspace, theme-aware
-│   └── profile/page.tsx          # NEW — view-only account details + sign-out
+│   └── page.tsx                          # REWRITTEN — new section order/composition
 ├── components/
-│   ├── landing/                  # NEW — Hero, ProblemSection, ComparisonTable,
-│   │                              # HowItWorksStep, ExpertReviewCard, LearnerReviewCard,
-│   │                              # PricingCard, FinalCta
-│   ├── faq/
-│   │   ├── FaqSearch.tsx         # NEW — search input, filters visible questions (FR-014)
-│   │   └── FaqAccordionCategory.tsx # NEW — single-open-per-category accordion (FR-016)
-│   ├── workspace/
-│   │   ├── EssayForm.tsx         # NEW — prompt/response inputs, task-type toggle, submit button
-│   │   ├── EmptyState.tsx        # NEW — first-time guidance (FR-007)
-│   │   ├── AssessmentResult.tsx  # NEW — band badge, 2×2 criteria grid with proportion
-│   │   │                          # indicators, expandable line-by-line feedback (FR-005)
-│   │   └── ThemeToggle.tsx       # NEW — light/dark switch scoped to the workspace (FR-018)
-│   └── ProtectedRoute.tsx        # NEW — client-side auth guard wrapper (research.md decision 1)
-├── lib/
-│   └── theme.ts                  # NEW — read/write theme preference to localStorage,
-│                                  # apply/remove `dark` class on <html> (research.md decision 5)
-└── tests/
-    ├── unit/                     # component tests
-    └── e2e/                      # Playwright flows
+│   ├── SiteHeader.tsx                     # REWRITTEN — General Training link, disabled-link pattern
+│   ├── SiteFooter.tsx                     # REWRITTEN — real footer columns, disabled-link pattern
+│   ├── ui/
+│   │   └── DisabledLink.tsx               # NEW — shared "coming soon" treatment (research.md R5)
+│   └── landing/
+│       ├── Hero.tsx                       # REWRITTEN — real headline/CTA copy
+│       ├── FocusAreaSelector.tsx          # NEW — Writing/Speaking cards (FR-004..FR-006)
+│       ├── HowItWorksStep.tsx             # REWRITTEN — Analyze/Evaluate Criteria/Score & Improve
+│       ├── WhyWriteWiseStats.tsx          # NEW — 4 stat cards (FR-009)
+│       ├── ComparisonTable.tsx            # REWRITTEN — 3-column real comparison (FR-010)
+│       ├── PricingCard.tsx                # REWRITTEN — reads the new Plan shape
+│       ├── TestimonialCard.tsx            # NEW — replaces ExpertReviewCard + LearnerReviewCard
+│       ├── FaqTeaser.tsx                  # NEW — 3-item inline accordion (FR-020)
+│       └── FinalCta.tsx                   # REWRITTEN — real copy
+│       # ProblemSection.tsx and ExpertReviewCard.tsx/LearnerReviewCard.tsx REMOVED (research.md R1)
+└── lib/
+    ├── pricing.ts                         # REWRITTEN — 4 real tiers, speakingIncluded flag
+    ├── navigation.ts                      # NEW — NavLink/FooterLink shape (data-model.md)
+    ├── testimonials.ts                    # NEW
+    ├── faqTeaser.ts                       # NEW — adapted from faqData.ts per research.md R6
+    ├── whyWriteWise.ts                    # NEW
+    └── faqData.ts                         # UNCHANGED — backs the separate, out-of-scope /faq page
+
+frontend/tests/
+├── unit/landing/
+│   ├── Hero.test.tsx                      # REWRITTEN
+│   ├── FocusAreaSelector.test.tsx         # NEW
+│   ├── HowItWorksStep.test.tsx            # REWRITTEN
+│   ├── WhyWriteWiseStats.test.tsx         # NEW
+│   ├── ComparisonTable.test.tsx           # REWRITTEN
+│   ├── PricingCard.test.tsx               # REWRITTEN
+│   ├── TestimonialCard.test.tsx           # NEW
+│   └── FaqTeaser.test.tsx                 # NEW
+└── e2e/
+    ├── how-it-works.spec.ts               # REWRITTEN — new copy/structure
+    └── landing-page.spec.ts               # NEW — full-page flow per quickstart.md
+    # discover-and-signup.spec.ts, profile-signout.spec.ts UNCHANGED (research.md R4/R7)
 ```
 
-**Structure Decision**: Purely additive to the existing frontend tree. The FAQ page is a first
--class route (`/faq`), not a landing-page section, matching the approved
-`frequently_asked_questions` design being a standalone page rather than the prior spec revision's
-in-page anchor. Pricing is a landing-page section only (no new route). Theme state lives in a
-small `lib/theme.ts` utility rather than a state-management library, since it is a single boolean
-persisted to `localStorage` — introducing a store for that would violate Principle VI.
+**Structure Decision**: No new top-level directory — this feature lives entirely inside the
+existing `frontend/` app, per constitution's fixed frontend stack. The dividing line between
+"rewritten" and "new" follows research.md R1: keep a file where the new design still has an
+equivalent section/shape, add a new one where it doesn't, and remove the one component
+(`ProblemSection.tsx`) with no equivalent left after the redesign. `lib/faqData.ts` is explicitly
+left unchanged — it backs a different page (`/faq`) that this feature does not own.
 
 ## Complexity Tracking
 
-*No Constitution Check violations — table intentionally omitted.*
+*No entries — Constitution Check above passed without requiring a deviation.*
+
+---
+
+## Post-Design Constitution Re-Check
+
+Re-evaluated after Phase 1 (data-model.md, contracts/, quickstart.md):
+
+- **III (Test-First)**: data-model.md's validation rules (exactly one recommended plan, no
+  unavailable link rendered live, no unresolved-track testimonial, no verbatim-quote overclaim in
+  the FAQ teaser) are each concrete enough now to write a failing test against directly. **Still
+  PASS.**
+- **VI (Simplicity)**: contracts/page-routes.md confirms this feature still introduces zero new
+  compute surface and zero new dependency — the disabled-link pattern (research.md R5) remains
+  the only shared abstraction this design required. **Still PASS.**
+- **VIII (Database-Mediated Compute)**: contracts/page-routes.md's "What this feature does NOT
+  expose" section confirms no API route, server action, or database access was introduced during
+  design. **Still PASS.**
+
+No new violations surfaced during design. Ready for `/speckit-tasks`.

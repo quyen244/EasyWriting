@@ -1,84 +1,109 @@
-# Quickstart: Core App UX (WriteWise revision)
+# Quickstart: Validating the WriteWise Landing Page
 
-> **STALE — 2026-08-21.** Written against the retired FastAPI backend, the retired
-> `003-account-authentication` HTTP contract, and the old four-surface scope (landing + FAQ +
-> workspace + profile) built against the `stitch_writewise_ielts_editorial_saas` mockups.
-> `spec.md` was rewritten and narrowed to the landing page alone, grounded in the real
-> `writewise` Figma design. This file has not been regenerated yet — run `/speckit-plan` and
-> `/speckit-tasks` to replace it. See [../README.md](../README.md).
-
-
-Validates this feature end-to-end per [spec.md](./spec.md), against
-[contracts/page-routes.md](./contracts/page-routes.md). Requires `001` and `003`'s backends
-running (see their own quickstart.md prerequisites).
+Validation guide for [spec.md](./spec.md)'s acceptance scenarios. Content shapes are in
+[data-model.md](./data-model.md), outbound dependencies in
+[contracts/page-routes.md](./contracts/page-routes.md). This is a run guide — implementation
+belongs to `/speckit-tasks` and the components themselves.
 
 ## Prerequisites
 
-- Backend running locally behind `cloudflared` with `001` and `003` both implemented
-- Frontend dev server running (`npm run dev` in `frontend/`)
+- `frontend/` installed (`npm install`), no new dependency required for this feature (research.md
+  confirms no Supabase/backend call happens on this page).
+- Local dev server: `npm run dev` (from `frontend/`), page at `http://localhost:3000/`.
 
-## Validation Scenario 1 — Discover and sign up (User Story 1)
+## Known limitation to keep in mind while validating (research.md R4)
 
-1. Visit `/` as a fresh browser session (no cookies).
-2. **Expected**: the hero section states the product's purpose; a sign-up CTA and a sign-in CTA
-   are both visible and distinguishable; the problem/comparison section and pricing section
-   (four plans, exactly one marked recommended) are present (FR-002, FR-017).
-3. Select sign-up, complete the form.
-4. **Expected**: redirected to `/workspace`, now authenticated.
+Clicking "Get started"/"Login" takes you to real `/signup`/`/signin` pages that will error on
+submit — their Supabase wiring doesn't exist yet. **This is expected and out of scope for this
+feature.** Validate that the link is reachable and correctly labelled; do not treat a submit
+failure on those pages as a bug in this feature.
 
-## Validation Scenario 2 — Run and visualize an assessment, in both themes (User Story 2)
+## Validating each user story
 
-1. As a signed-in learner with no prior submissions, visit `/workspace`.
-2. **Expected**: the empty state guides you to submit your first essay (FR-007).
-3. Submit a valid essay.
-4. **Expected**: an in-progress indicator appears (FR-006), then the result renders in the same
-   view: an overall band, a 2×2 grid of the four criteria (each with a band and a visual
-   proportion indicator), and expandable line-by-line feedback showing quoted excerpt, category
-   tag, and correction/praise (FR-005), within `001`'s 60-second budget.
-5. Submit an essay below the minimum word count.
-6. **Expected**: a clear rejection message appears and the essay text remains in the input
-   (User Story 2 acceptance scenario 3).
-7. Toggle the workspace theme to dark.
-8. **Expected**: editor, result panel, and feedback tags all remain legible and correctly styled
-   (FR-018); toggling mid-submission (start a new submission, switch theme while it's in
-   progress) does not interrupt or reset the in-flight submission.
-9. Reload the page.
-10. **Expected**: the theme preference persists (research.md decision 5).
-11. Open `/workspace` directly in a fresh, signed-out browser session.
-12. **Expected**: redirected to `/signin` (FR-004), not a blank or broken page.
+### User Story 1 — Understand the pitch and start for free
 
-## Validation Scenario 3 — Manage profile and sign out (User Story 3)
+1. Load `/` without scrolling. **Expected**: the headline and supporting line are fully visible;
+   read them aloud — can you state what WriteWise does? (SC-001)
+2. Without scrolling further, locate "Get started for free" and "How it works". **Expected**: both
+   visible in the hero (FR-002).
+3. Click "How it works". **Expected**: smooth-scrolls to the How-It-Works section; URL gains
+   `#how-it-works`; no full navigation/reload.
+4. Scroll to the very bottom, before the footer. **Expected**: a final CTA band repeats the
+   sign-up action (FR-021).
+5. At any scroll position, check the persistent nav. **Expected**: WriteWise mark, primary links,
+   "Login" and "Join now" both present and equally prominent (FR-003, US1 scenario 4).
 
-1. As a signed-in learner, visit `/profile`.
-2. **Expected**: display name and email are shown (FR-008); no edit controls (FR-012).
-3. Select sign out.
-4. **Expected**: redirected to `/`; a subsequent visit to `/workspace` or `/profile` redirects to
-   `/signin` (FR-009, FR-010).
+### User Story 2 — Focus-area selection is honest about Speaking
 
-## Validation Scenario 4 — Find answers on the FAQ page (User Story 4)
+1. Scroll to "Choose your focus area". **Expected**: exactly two cards, Writing and Speaking
+   (FR-004).
+2. Inspect the Speaking card. **Expected**: a visible "Coming soon" marker; its action (if any)
+   does not read as "start" or "try" — at most a waitlist/notify action (FR-006).
+3. Click the Writing card's action. **Expected**: leads toward the grading experience described by
+   `001-ielts-score-assessment`, not a placeholder (FR-005).
+4. Confirm in `data-model.md`'s `NavLink`/focus-area content: Speaking's `available` flag is
+   `false` — this is what the disabled-treatment component (research.md R5) keys off.
 
-1. Visit `/faq` without signing in.
-2. **Expected**: questions are grouped into Getting Started, Account & Login, and Essay Scoring
-   categories, one open per category at a time (FR-013, FR-016).
-3. Type a search term (e.g. "payment") into the search field.
-4. **Expected**: matching questions surface across categories (FR-014).
-5. Search for a term with no matches.
-6. **Expected**: an explicit no-results state is shown, not an empty page (Edge Cases).
-7. Read the Essay Scoring category.
-8. **Expected**: an explicit statement that the band score is an AI-generated practice estimate,
-   not an official IELTS result, is present (FR-015).
-9. From `/`, locate the FAQ link in main navigation.
-10. **Expected**: it navigates to `/faq` (User Story 4, acceptance scenario 4).
+### User Story 3 — Credibility sections stay truthful to 001
 
-## Validation Scenario 5 — Learn how scoring works before trusting it (User Story 5)
+1. Scroll to "How WriteWise works". **Expected**: exactly 3 steps — Analyze, Evaluate Criteria,
+   Score & Improve (FR-007); the Evaluate Criteria step names Task Response/Achievement, Coherence
+   & Cohesion, Lexical Resource, Grammatical Range & Accuracy verbatim — cross-check against
+   [../001-ielts-score-assessment/spec.md](../001-ielts-score-assessment/spec.md) §7's criterion
+   table (FR-008).
+2. Scroll to "Why choose WriteWise?". **Expected**: four stat cards; read each caption — none
+   reads as a guaranteed individual outcome ("you will gain +1.5 bands") rather than an
+   illustrative aggregate (FR-009).
+3. Scroll to the Comparison section. **Expected**: three columns (Traditional Teacher, Other AI
+   Tools, WriteWise), WriteWise visibly marked as the recommended choice; every claim listed under
+   WriteWise is checked against what 001 actually ships — no explanation-quality claim beyond
+   FR-013..FR-016 of 001's spec (FR-011).
 
-1. On `/`, scroll to the "barrier to a Band 7+" section.
-2. **Expected**: three specific frictions with traditional preparation are named (slow feedback,
-   vague comments, cost).
-3. Continue to the comparison section.
-4. **Expected**: WriteWise is compared against traditional tutors on turnaround time, feedback
-   detail, cost, and availability (FR-002).
-5. Continue to the "how it works" section.
-6. **Expected**: all four steps (Submit, Get Scored, Learn the Fix, Track Trend) are shown, with
-   the not-yet-built steps honestly marked as future capability rather than implied as available
-   today (FR-003).
+### User Story 4 — Pricing is complete and honest about Speaking's gating
+
+1. Scroll to "Choose your plan". **Expected**: exactly four cards — Free, Monthly, Yearly,
+   Lifetime — exactly one carries a featured/recommended badge (FR-012, FR-013).
+2. Read the Free plan's feature list. **Expected**: describes an actual scored submission (bounded
+   by a daily limit), not a locked preview (FR-014).
+3. Read the Yearly and Lifetime feature lists. **Expected**: "Speaking assessment" (or "all future
+   features") is qualified as not-yet-usable, not presented as an immediate perk (FR-015).
+4. Click any paid plan's CTA. **Expected**: lands on `/signup` with that plan's identity carried
+   forward (e.g. `?plan=yearly` — FR-016); inspect the query string or equivalent mechanism.
+5. Cross-check the displayed Yearly/Lifetime prices (`$49.9`, `$149.9` as designed) against
+   whatever the product owner has since confirmed — flag a mismatch as a content issue, not a
+   defect in this feature's logic (Edge Cases).
+
+### User Story 5 — Testimonials
+
+1. Scroll to "What Students Think". **Expected**: at least three testimonials, each naming a
+   specific improvement (grammar repetition, vocabulary, coherence & cohesion — not generic praise
+   — FR-017).
+2. Check each testimonial's track. **Expected**: no `"General Training"` testimonial renders
+   unless the flagged decision (spec.md callout) has resolved in favour of supporting that track
+   (FR-018, `data-model.md`'s `Testimonial` validation rule).
+
+### User Story 6 — FAQ teaser
+
+1. Scroll to "Questions? We've Got Answers.". **Expected**: exactly three questions (FR-020).
+2. Expand each one independently; confirm the other two remain collapsed and unaffected — no
+   navigation occurs.
+3. Read the second answer (task-type coverage). **Expected**: states both Task 1 and Task 2 are
+   supported, one at a time per submission — not a full timed mock test (User Story 6 scenario 3).
+4. Read the third answer (explainability). **Expected**: describes a band plus a written
+   justification per criterion; does **not** claim machine-verified verbatim quoting from the
+   essay (research.md R6 — this is the exact overclaim already found once in `faqData.ts` and
+   deliberately not repeated here).
+
+## Cross-cutting checks
+
+- **Link audit** (SC-005): enumerate every nav/footer link; every one either resolves to a real
+  route in the app or renders with `available: false`'s disabled treatment. Zero silent dead ends.
+- **Reduced motion** (Edge Cases): with OS-level reduced-motion enabled, reload `/` — the hero's
+  emphasis-word treatment and any scroll reveals must not block the page's core content from being
+  fully readable immediately.
+- **Component tests**: `npm test` (Vitest) — one test file per rewritten/new component under
+  `frontend/tests/unit/landing/`, per research.md R7.
+- **E2E**: `npm run test:e2e` (Playwright) — `how-it-works.spec.ts` (existing, updated for new
+  copy) and a new `landing-page.spec.ts` covering the sections this rewrite adds. Leave
+  `discover-and-signup.spec.ts`/`profile-signout.spec.ts` as-is per research.md R4/R7 — their
+  auth-contract stubs are the Supabase-platform feature's concern, not this one's.
