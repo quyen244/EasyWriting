@@ -15,5 +15,7 @@ import { MotionConfig } from "motion/react";
  * markup on the server than on the client and desyncs hydration.
  */
 export default function MotionProvider({ children }: { children: React.ReactNode }) {
-  return <MotionConfig reducedMotion="user">{children}</MotionConfig>;
+  // Default to ignoring the OS reduced-motion preference so animations run by default.
+  // Users who need reduced motion can still opt-in via an app-level setting in future.
+  return <MotionConfig reducedMotion="never">{children}</MotionConfig>;
 }

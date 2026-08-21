@@ -15,11 +15,7 @@
  */
 
 const MARKS = [
-  "Official IELTS band descriptors",
-  "Task Achievement",
-  "Coherence & Cohesion",
-  "Lexical Resource",
-  "Grammatical Range & Accuracy",
+""
 ];
 
 export default function TrustStrip() {

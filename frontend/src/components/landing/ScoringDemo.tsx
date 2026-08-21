@@ -110,7 +110,7 @@ export default function ScoringDemo() {
   const [pageVisible, setPageVisible] = useState(true);
   const typedRef = useRef(DEMO_ESSAY.length);
 
-  const active = inView && pageVisible && !reduced;
+const active = inView && pageVisible; // sửa gốc : const active = inView && pageVisible && !reduced;
 
   useEffect(() => {
     const onVisibility = () => setPageVisible(!document.hidden);
@@ -122,17 +122,6 @@ export default function ScoringDemo() {
   // resolving to true a tick after mount: the panel snaps back to the finished state
   // rather than freezing halfway through an essay it will never finish typing.
   useIsomorphicLayoutEffect(() => {
-    if (reduced) {
-      typedRef.current = DEMO_ESSAY.length;
-      setTyped(DEMO_ESSAY.length);
-      setActiveAnalysisStep(null);
-      setCompletedSteps(DEMO_STEPS.length);
-      setDisplayedScore(DEMO_OVERALL);
-      setCriteriaProgress(DEMO_CRITERIA.map((criterion) => criterion.band / 9));
-      setIsComplete(true);
-      setPhase("revealed");
-      return;
-    }
     typedRef.current = 0;
     setTyped(0);
     setActiveAnalysisStep(null);
