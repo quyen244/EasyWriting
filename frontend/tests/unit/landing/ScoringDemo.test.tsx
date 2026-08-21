@@ -76,6 +76,14 @@ describe("ScoringDemo", () => {
     }
   });
 
+  it("renders the complete score without starting an animation for reduced motion", () => {
+    preferReducedMotion();
+    render(<ScoringDemo />);
+
+    expect(screen.getByText("7.5", { selector: "p" })).toBeInTheDocument();
+    expect(screen.getByText(/complete/i)).toBeInTheDocument();
+  });
+
   it("scores against the four official criteria", () => {
     // Not three, and not a fifth invented one: the panel depicts the same rubric the
     // grader actually applies.

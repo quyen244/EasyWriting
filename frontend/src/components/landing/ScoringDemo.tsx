@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion, useInView, useReducedMotion } from "motion/react";
+import { AnimatePresence, animate, motion, useInView, useReducedMotion } from "motion/react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import {
@@ -101,6 +101,7 @@ export default function ScoringDemo() {
   const [phase, setPhase] = useState<Phase>("revealed");
   const [typed, setTyped] = useState(DEMO_ESSAY.length);
   const [step, setStep] = useState<number>(DEMO_STEPS.length);
+  const [displayedScore, setDisplayedScore] = useState(DEMO_OVERALL);
   const [pageVisible, setPageVisible] = useState(true);
   const typedRef = useRef(DEMO_ESSAY.length);
 
@@ -120,12 +121,14 @@ export default function ScoringDemo() {
       typedRef.current = DEMO_ESSAY.length;
       setTyped(DEMO_ESSAY.length);
       setStep(DEMO_STEPS.length);
+      setDisplayedScore(DEMO_OVERALL);
       setPhase("revealed");
       return;
     }
     typedRef.current = 0;
     setTyped(0);
     setStep(0);
+    setDisplayedScore(0);
     setPhase("typing");
   }, [reduced]);
 
@@ -156,6 +159,21 @@ export default function ScoringDemo() {
       if (handoff) clearTimeout(handoff);
     };
   }, [active, phase]);
+
+  // Count the band up again every time the revealed phase starts.
+  useEffect(() => {
+    if (phase !== "revealed") return;
+
+    if (!active || reduced) return;
+
+    const controls = animate(0, DEMO_OVERALL, {
+      duration: 1.2,
+      ease: EASE_EDITORIAL,
+      onUpdate: (value) => setDisplayedScore(value),
+    });
+
+    return () => controls.stop();
+  }, [active, phase, reduced]);
 
   // Phase 2 — run the three steps in order.
   useEffect(() => {
@@ -291,9 +309,9 @@ export default function ScoringDemo() {
             {phase === "typing" && (
               <motion.div
                 key="typing"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0, transition: { duration: 0.15 } }}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12, transition: { duration: 0.15 } }}
               >
                 <p className="mb-3 rounded-md border-l-2 border-primary bg-surface-container-low px-3 py-2 font-body text-body-sm italic text-on-surface-variant">
                   {DEMO_PROMPT}
@@ -308,9 +326,9 @@ export default function ScoringDemo() {
             {phase === "scoring" && (
               <motion.div
                 key="scoring"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0, transition: { duration: 0.15 } }}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12, transition: { duration: 0.15 } }}
                 className="flex flex-col justify-center gap-1 py-6"
               >
                 {DEMO_STEPS.map((label, i) => {
@@ -318,7 +336,9 @@ export default function ScoringDemo() {
                   return (
                     <motion.div
                       key={label}
-                      className="flex items-center gap-3 rounded-md px-2 py-3"
+                      className={`flex items-center gap-3 rounded-md px-2 py-3 transition-colors ${
+                        state === "active" ? "bg-accent-yellow-soft" : ""
+                      }`}
                       animate={{
                         opacity: state === "pending" ? 0.45 : 1,
                         x: state === "active" ? 4 : 0,
@@ -352,9 +372,9 @@ export default function ScoringDemo() {
             {phase === "revealed" && (
               <motion.div
                 key="revealed"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0, transition: { duration: 0.15 } }}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12, transition: { duration: 0.15 } }}
               >
                 <div className="mb-5 flex items-end gap-4">
                   <motion.p
@@ -363,7 +383,7 @@ export default function ScoringDemo() {
                     transition={{ ...EDITORIAL_SPRING, delay: 0.05 }}
                     className="font-display text-[64px] font-bold leading-none tabular-nums text-on-surface"
                   >
-                    {DEMO_OVERALL.toFixed(1)}
+                    {displayedScore.toFixed(1)}
                   </motion.p>
                   <div className="pb-2">
                     <p className="font-body text-body-sm font-bold text-on-surface">Overall band</p>
