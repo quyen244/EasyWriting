@@ -4,7 +4,10 @@
 > triển khai. Nó ghi lại: điều gì đã được xác minh, điều gì bạn đã quyết, điều gì còn mở, và
 > **mỗi hạng mục cần được đặc tả chi tiết đến mức nào**.
 >
-> Trạng thái: 🟡 **Đã hỏi 3 vòng — đang chờ review + vòng 4** · Cập nhật: 2026-08-23
+> Trạng thái: ✅ **Đã duyệt toàn bộ 2026-08-23** — trừ hai mục hoãn có chủ đích (S-8, S-9).
+> Tài liệu chốt sinh ra từ đây: [docs/data-model.md](./docs/data-model.md) ·
+> [docs/system-architecture.md](./docs/system-architecture.md) · [TODO.md](./TODO.md) ·
+> [supabase/migrations/](./supabase/migrations/)
 
 ---
 
@@ -244,13 +247,13 @@ Không phải "chạy được", mà là những mệnh đề kiểm chứng đ�
 
 | # | Câu hỏi | Vì sao quan trọng | Mặc định tôi đề xuất | Mức | TT |
 |---|---|---|---|---|---|
-| A-4 | Row `profiles` sinh bằng **trigger** trên `auth.users` hay client tự `INSERT` sau khi đăng ký? | Client insert sẽ hụt row nếu tab bị đóng giữa chừng — sinh ra user không có profile | **Trigger** `AFTER INSERT ON auth.users`. Không thể quên, chạy cả khi đăng ký từ dashboard | 🟡 Med | 💭 |
-| A-5 | DB đang là `full_name`, frontend đang là `display_name`. Đổi bên nào? | Lệch tên field sẽ rải mapping khắp nơi | Giữ `full_name` ở DB (chuẩn Supabase), map một chỗ duy nhất trong `lib/auth.ts` | 🟢 Low | 💭 |
-| A-6 | `full_name` lúc sign up **bắt buộc** hay không? | Đổi validation và layout form | Không bắt buộc. Trống thì lấy phần trước `@` của email | 🟢 Low | 💭 |
-| A-7 | Đăng nhập Google có trong đợt này không? | Thêm `/auth/callback` + cấu hình OAuth provider | **Không.** Ghi vào TODO cho đợt sau | 🟢 Low | 💭 |
-| A-8 | Quên mật khẩu / đổi mật khẩu có trong đợt này không? | Thêm 2 màn hình + luồng deep-link qua email — mà A-1 vừa tắt email đi | **Không.** Vào TODO. Lưu ý: bật lại tính năng này buộc phải bật lại email | 🟡 Med | 💭 |
-| A-9 | Tự xoá tài khoản (GDPR) có trong scope? | Quyết định `ON DELETE CASCADE` cho toàn bộ bảng | Chưa làm UI, nhưng **schema phải cascade sẵn** để sau này xoá là sạch | 🟡 Med | 💭 |
-| A-10 | Có giữ tài khoản demo `learner@writewise.app` để review không? | Ảnh hưởng seed migration | Có — một user seed + dữ liệu lịch sử, chỉ nạp ở môi trường dev | 🟢 Low | 💭 |
+| A-4 | Row `profiles` sinh bằng **trigger** trên `auth.users` hay client tự `INSERT` sau khi đăng ký? | Client insert sẽ hụt row nếu tab bị đóng giữa chừng — sinh ra user không có profile | **Trigger** `AFTER INSERT ON auth.users`. Không thể quên, chạy cả khi đăng ký từ dashboard | 🟡 Med | ✅ |
+| A-5 | DB đang là `full_name`, frontend đang là `display_name`. Đổi bên nào? | Lệch tên field sẽ rải mapping khắp nơi | Giữ `full_name` ở DB (chuẩn Supabase), map một chỗ duy nhất trong `lib/auth.ts` | 🟢 Low | ✅ |
+| A-6 | `full_name` lúc sign up **bắt buộc** hay không? | Đổi validation và layout form | Không bắt buộc. Trống thì lấy phần trước `@` của email | 🟢 Low | ✅ |
+| A-7 | Đăng nhập Google có trong đợt này không? | Thêm `/auth/callback` + cấu hình OAuth provider | **Không.** Ghi vào TODO cho đợt sau | 🟢 Low | ✅ |
+| A-8 | Quên mật khẩu / đổi mật khẩu có trong đợt này không? | Thêm 2 màn hình + luồng deep-link qua email — mà A-1 vừa tắt email đi | **Không.** Vào TODO. Lưu ý: bật lại tính năng này buộc phải bật lại email | 🟡 Med | ✅ |
+| A-9 | Tự xoá tài khoản (GDPR) có trong scope? | Quyết định `ON DELETE CASCADE` cho toàn bộ bảng | Chưa làm UI, nhưng **schema phải cascade sẵn** để sau này xoá là sạch | 🟡 Med | ✅ |
+| A-10 | Có giữ tài khoản demo `learner@writewise.app` để review không? | Ảnh hưởng seed migration | Có — một user seed + dữ liệu lịch sử, chỉ nạp ở môi trường dev | 🟢 Low | ✅ |
 ---
 
 # Task 2 — Data modeling
@@ -455,19 +458,19 @@ một trạng thái lưu được.
 
 | # | Câu hỏi | Vì sao quan trọng | Mặc định tôi đề xuất | Mức | TT |
 |---|---|---|---|---|---|
-| D-1 | Grader và mock test dùng **chung** `writing_attempts`, phân biệt bằng `source`? | Tách bảng sẽ phải nhân đôi pipeline chấm và nhân đôi màn hình kết quả | **Chung.** Bài Task 2 chấm giống hệt nhau dù đến từ đâu | 🔴 High | 💭 |
-| D-2 | Task 1 lưu **3 cột riêng** intro/overview/body, hay 1 `essay_text` + jsonb? | Frontend đang soạn 3 ô riêng và đếm từ riêng từng phần | 3 cột riêng **và** `essay_text` là bản nối — đọc lịch sử không phải nối lại | 🟡 Med | 💭 |
-| D-3 | `criteria` để **jsonb** hay tách bảng con 4 row? | jsonb đọc nhanh, một lần ghi là xong; bảng con truy vấn thống kê tiện hơn | **jsonb** (đúng spec 001). Thống kê theo tiêu chí xử lý bằng `jsonb_array_elements` trong hàm progress | 🟡 Med | 💭 |
+| D-1 | Grader và mock test dùng **chung** `writing_attempts`, phân biệt bằng `source`? | Tách bảng sẽ phải nhân đôi pipeline chấm và nhân đôi màn hình kết quả | **Chung.** Bài Task 2 chấm giống hệt nhau dù đến từ đâu | 🔴 High | ✅ |
+| D-2 | Task 1 lưu **3 cột riêng** intro/overview/body, hay 1 `essay_text` + jsonb? | Frontend đang soạn 3 ô riêng và đếm từ riêng từng phần | 3 cột riêng **và** `essay_text` là bản nối — đọc lịch sử không phải nối lại | 🟡 Med | ✅ |
+| D-3 | `criteria` để **jsonb** hay tách bảng con 4 row? | jsonb đọc nhanh, một lần ghi là xong; bảng con truy vấn thống kê tiện hơn | **jsonb** (đúng spec 001). Thống kê theo tiêu chí xử lý bằng `jsonb_array_elements` trong hàm progress | 🟡 Med | ✅ |
 | D-4 | Ảnh biểu đồ có **gửi cho model vision** để chấm không? | Đổi hẳn model, chi phí, và prompt | ✅ **Chỉ lưu để xem lại.** Chấm dựa trên `chart_description` học viên gõ. Bucket `chart-images` vẫn làm, nhưng model không đọc ảnh. Hệ quả phải chấp nhận: học viên mô tả sai số liệu thì model không phát hiện được — mà đó chính là nội dung của Task Achievement. Ghi vào TODO như một giới hạn đã biết | 🔴 High | ✅ |
-| D-5 | Ngôn ngữ + dark mode có lưu vào `profiles` không? | Hiện đang ở `localStorage`. Lưu DB thì đổi máy vẫn giữ, nhưng thêm một lần ghi mỗi lần bật tắt | Thêm cột `locale`, **không** lưu theme (theme nên theo thiết bị) | 🟢 Low | 💭 |
-| D-6 | `practice_progress` là **view** hay **bảng**? | Bảng có thể lệch với `practice_attempts` | **View** — cùng lý do như progress ở 2.1 | 🟡 Med | 💭 |
-| D-7 | Có lưu **câu trả lời practice** của học viên không? | 36 exercise × nhiều lần làm; hữu ích để xem lại nhưng phình dữ liệu | **Có.** Không xem lại được thì practice mất một nửa giá trị | 🟢 Low | 💭 |
-| D-8 | Bảng `llm_calls` làm **ngay đợt này** hay để sau? | Constitution Principle V/VII bắt buộc mọi lần gọi trả phí phải được ghi | Tạo bảng **ngay**, dù đợt này chưa gọi model. Thêm sau nghĩa là mất dữ liệu chi phí giai đoạn đầu | 🟡 Med | 💭 |
-| D-9 | Activity feed là **view union** hay bảng riêng? | Bảng riêng lại là bản sao thứ hai | **View** union 3 nguồn | 🟢 Low | 💭 |
-| D-10 | Xoá bài: xoá hẳn hay `deleted_at`? | Soft delete phải nhớ lọc ở **mọi** truy vấn, quên một chỗ là lộ dữ liệu đã xoá | **Xoá hẳn.** Frontend hiện chưa có nút xoá bài | 🟢 Low | 💭 |
-| D-11 | Nội dung song ngữ của bảng nội dung: `jsonb {en,vi}` hay 2 cột `title_en`/`title_vi`? | Thêm ngôn ngữ thứ ba sau này | **jsonb** — thêm tiếng nữa không cần `ALTER` | 🟢 Low | 💭 |
-| D-12 | Có lưu **mục tiêu band** của học viên không? | Frontend chưa có, nhưng dashboard progress sẽ đẹp hơn nhiều nếu có đường mục tiêu | Thêm `target_band` vào `profiles`, nullable, UI làm sau | 🟢 Low | 💭 |
-| D-13 | Giữ tên `writing_attempts` hay đổi thành `attempts`? | Đã có cột `skill` chừa cho Speaking, tên `writing_` sẽ sai nghĩa | Giữ `writing_attempts` cho đợt này; Speaking sau này dùng bảng riêng vì input là audio | 🟢 Low | 💭 |
+| D-5 | Ngôn ngữ + dark mode có lưu vào `profiles` không? | Hiện đang ở `localStorage`. Lưu DB thì đổi máy vẫn giữ, nhưng thêm một lần ghi mỗi lần bật tắt | Thêm cột `locale`, **không** lưu theme (theme nên theo thiết bị) | 🟢 Low | ✅ |
+| D-6 | `practice_progress` là **view** hay **bảng**? | Bảng có thể lệch với `practice_attempts` | **View** — cùng lý do như progress ở 2.1 | 🟡 Med | ✅ |
+| D-7 | Có lưu **câu trả lời practice** của học viên không? | 36 exercise × nhiều lần làm; hữu ích để xem lại nhưng phình dữ liệu | **Có.** Không xem lại được thì practice mất một nửa giá trị | 🟢 Low | ✅ |
+| D-8 | Bảng `llm_calls` làm **ngay đợt này** hay để sau? | Constitution Principle V/VII bắt buộc mọi lần gọi trả phí phải được ghi | Tạo bảng **ngay**, dù đợt này chưa gọi model. Thêm sau nghĩa là mất dữ liệu chi phí giai đoạn đầu | 🟡 Med | ✅ |
+| D-9 | Activity feed là **view union** hay bảng riêng? | Bảng riêng lại là bản sao thứ hai | **View** union 3 nguồn | 🟢 Low | ✅ |
+| D-10 | Xoá bài: xoá hẳn hay `deleted_at`? | Soft delete phải nhớ lọc ở **mọi** truy vấn, quên một chỗ là lộ dữ liệu đã xoá | **Xoá hẳn.** Frontend hiện chưa có nút xoá bài | 🟢 Low | ✅ |
+| D-11 | Nội dung song ngữ của bảng nội dung: `jsonb {en,vi}` hay 2 cột `title_en`/`title_vi`? | Thêm ngôn ngữ thứ ba sau này | **jsonb** — thêm tiếng nữa không cần `ALTER` | 🟢 Low | ✅ |
+| D-12 | Có lưu **mục tiêu band** của học viên không? | Frontend chưa có, nhưng dashboard progress sẽ đẹp hơn nhiều nếu có đường mục tiêu | Thêm `target_band` vào `profiles`, nullable, UI làm sau | 🟢 Low | ✅ |
+| D-13 | Giữ tên `writing_attempts` hay đổi thành `attempts`? | Đã có cột `skill` chừa cho Speaking, tên `writing_` sẽ sai nghĩa | Giữ `writing_attempts` cho đợt này; Speaking sau này dùng bảng riêng vì input là audio | 🟢 Low | ✅ |
 ---
 
 # Task 3 — System architecture
@@ -664,10 +667,10 @@ sequenceDiagram
 | S-1 | **Dispatch bằng cách nào?** | Mắt xích giữa "ghi row" và "chạy việc" | ✅ **Trigger `AFTER INSERT` + `pg_net.http_post`.** Kèm theo: `pg_net` là bắn-rồi-quên, nên **bắt buộc** có thêm một cron dọn row kẹt ở `queued` quá 5 phút — nếu không, mất một lần gọi là bài treo vĩnh viễn | 🔴 High | ✅ |
 | S-2 | **Môi trường** dev/prod | Quyết định có được DROP bảng đang chạy không | ✅ **`tmwozpzntzyupxrmgsro` là project nháp** — được DROP thoải mái. Migration sẽ `DROP TABLE … CASCADE` rồi tạo lại. Trước khi chạy tôi vẫn dump 2 bảng ra file để bạn còn đường lùi | 🔴 High | ✅ |
 | S-3 | Model nào trên OpenRouter? | Chi phí, độ trễ, chất lượng nhận xét | ✅ **`nvidia/nemotron-3-super-120b-a12b:free`** — đúng model đã benchmark trong repo. Xem mục 3.9 về ba cái bẫy đi kèm | 🔴 High | ✅ |
-| S-4 | Theo dõi kết quả bằng **Realtime** hay **polling**? | Realtime cần bật replication + kiểm RLS kỹ | Realtime, có polling 2 giây làm phương án dự phòng | 🟡 Med | 💭 |
-| S-5 | Timeout và số lần thử lại? | Ảnh hưởng chi phí và trải nghiệm chờ | 60 giây, đúng 1 lần thử lại (theo spec 001) | 🟢 Low | 💭 |
-| S-6 | Giới hạn số lần chấm mỗi user? | Constitution Principle V bắt buộc rate limit mọi endpoint trả phí | 20 lần / giờ / user, chặn ở Edge Function | 🟡 Med | 💭 |
-| S-7 | Frontend đã deploy Vercel chưa? | Ảnh hưởng cấu hình redirect URL của Auth và biến môi trường | Giả định **chưa** — chỉ chạy local đợt này | 🟢 Low | 💭 |
+| S-4 | Theo dõi kết quả bằng **Realtime** hay **polling**? | Realtime cần bật replication + kiểm RLS kỹ | Realtime, có polling 2 giây làm phương án dự phòng | 🟡 Med | ✅ |
+| S-5 | Timeout và số lần thử lại? | Ảnh hưởng chi phí và trải nghiệm chờ | 60 giây, đúng 1 lần thử lại (theo spec 001) | 🟢 Low | ✅ |
+| S-6 | Giới hạn số lần chấm mỗi user? | Constitution Principle V bắt buộc rate limit mọi endpoint trả phí | 20 lần / giờ / user, chặn ở Edge Function | 🟡 Med | ✅ |
+| S-7 | Frontend đã deploy Vercel chưa? | Ảnh hưởng cấu hình redirect URL của Auth và biến môi trường | Giả định **chưa** — chỉ chạy local đợt này | 🟢 Low | ✅ |
 
 ## 3.9 Đã phát hiện, **hoãn bàn** — pipeline chấm điểm Python có sẵn trong `eval/`
 
@@ -711,7 +714,7 @@ model của đợt này. Xem D-14 dưới đây.
 
 | # | Câu hỏi | Vì sao quan trọng | Mặc định tôi đề xuất | Mức | TT |
 |---|---|---|---|---|---|
-| D-14 | Chuẩn hoá tên tiêu chí: `GRAMMATICAL_RANGE` (frontend) hay `GRAMMATICAL_RANGE_ACCURACY` (eval + spec 001)? | Tên này đi thẳng vào `criteria` jsonb. Đổi sau = backfill dữ liệu | Theo **eval + spec 001**, vì đó là tên chuẩn IELTS và là tên bộ đề chuẩn đang dùng. Đổi ở frontend rẻ hơn đổi ở prompt | 🟡 Med | 💭 |
+| D-14 | Chuẩn hoá tên tiêu chí: `GRAMMATICAL_RANGE` (frontend) hay `GRAMMATICAL_RANGE_ACCURACY` (eval + spec 001)? | Tên này đi thẳng vào `criteria` jsonb. Đổi sau = backfill dữ liệu | Theo **eval + spec 001**, vì đó là tên chuẩn IELTS và là tên bộ đề chuẩn đang dùng. Đổi ở frontend rẻ hơn đổi ở prompt | 🟡 Med | ✅ |
 | S-8 | Logic chấm chạy ở đâu — Deno Edge Function hay worker Python? | Câu hỏi kiến trúc lớn nhất còn lại | ❄️ **Hoãn** — bàn riêng cùng feature chấm điểm | 🔴 High | ❄️ |
 | S-9 | Giữ 4 lần gọi mỗi bài hay gộp còn 1? | Chi phí và độ trễ | ❄️ **Hoãn** | 🔴 High | ❄️ |
 
@@ -751,11 +754,11 @@ Trạng thái dùng đúng 5 giá trị: `✅ Xong` · `🔨 Đang làm` · `�
 
 | # | Câu hỏi | Mặc định tôi đề xuất | Mức | TT |
 |---|---|---|---|---|
-| T-1 | Đặt ở gốc repo hay trong `docs/`? | **Gốc repo** | 🟢 Low | 💭 |
-| T-2 | Chia theo **layer** (frontend/backend/system) hay theo **feature**? | Layer — đúng câu bạn viết | 🟢 Low | 💭 |
-| T-3 | Tôi có tự cập nhật TODO.md sau mỗi commit lớn không? | **Có** — cùng lúc với auto commit + push mà `CLAUDE.md` yêu cầu | 🟢 Low | 💭 |
-| T-4 | Có ghi ngày và người phụ trách không? | Chỉ ghi ngày ở mục "Đang làm". Dự án một người, cột phụ trách là nhiễu | 🟢 Low | 💭 |
-| T-5 | Nợ kỹ thuật đang có (e2e Playwright hỏng, 7 test Hero fail) có đưa vào không? | **Có.** Không ghi thì nó biến mất khỏi tầm nhìn | 🟢 Low | 💭 |
+| T-1 | Đặt ở gốc repo hay trong `docs/`? | **Gốc repo** | 🟢 Low | ✅ |
+| T-2 | Chia theo **layer** (frontend/backend/system) hay theo **feature**? | Layer — đúng câu bạn viết | 🟢 Low | ✅ |
+| T-3 | Tôi có tự cập nhật TODO.md sau mỗi commit lớn không? | **Có** — cùng lúc với auto commit + push mà `CLAUDE.md` yêu cầu | 🟢 Low | ✅ |
+| T-4 | Có ghi ngày và người phụ trách không? | Chỉ ghi ngày ở mục "Đang làm". Dự án một người, cột phụ trách là nhiễu | 🟢 Low | ✅ |
+| T-5 | Nợ kỹ thuật đang có (e2e Playwright hỏng, 7 test Hero fail) có đưa vào không? | **Có.** Không ghi thì nó biến mất khỏi tầm nhìn | 🟢 Low | ✅ |
 
 ---
 
@@ -788,10 +791,10 @@ Bảng để bạn liếc một cái là biết chỗ nào phải đọc kỹ.
 
 | Ưu tiên | Việc |
 |---|---|
-| ✅ Đã chốt | 12 quyết định qua 3 vòng hỏi — auth, môi trường, dispatch, model, song ngữ, nội dung tĩnh, practice, ảnh |
-| 🟡 Cần bạn gật | 21 mục đánh 💭. Nói "ok hết" là xong, hoặc chỉ ra chỗ khác ý |
+| ✅ Đã chốt | 12 quyết định qua 3 vòng hỏi + 21 mục mặc định được duyệt ngày 2026-08-23 |
 | ❄️ Hoãn có chủ đích | S-8, S-9 — kiến trúc pipeline chấm điểm, bàn riêng cùng feature đó |
-| ⬜ Sau khi duyệt | `docs/system-architecture.md`, `docs/data-model.md`, `TODO.md`, `supabase/migrations/` |
+| ✅ Đã sinh ra | `docs/data-model.md`, `docs/system-architecture.md`, `TODO.md`, 7 migration + seed |
+| 🚧 Còn chặn | Chạy thử migrations trên Postgres thật — Docker Desktop chưa bật |
 
 ## Nhật ký làm rõ
 
