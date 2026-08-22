@@ -3,6 +3,8 @@ import "@testing-library/jest-dom/vitest";
 import { cleanup } from "@testing-library/react";
 import { afterEach, beforeEach } from "vitest";
 
+import { resetLocaleCache } from "@/lib/i18n";
+
 afterEach(() => {
   cleanup();
 });
@@ -12,6 +14,9 @@ beforeEach(() => {
   // this reset a test that toggles to dark leaks into the next test's assertions.
   localStorage.clear();
   document.documentElement.classList.remove("dark");
+  // The locale store caches its value for the lifetime of the module, exactly as the
+  // theme does, so a test that switches to Vietnamese would otherwise leak into the next.
+  resetLocaleCache();
 });
 
 /**
@@ -60,4 +65,18 @@ if (!window.matchMedia) {
     removeListener: () => {},
     dispatchEvent: () => false,
   })) as unknown as typeof window.matchMedia;
+}
+
+/**
+ * jsdom implements neither half of the object-URL API.
+ *
+ * The Task 1 chart upload previews the learner's file by creating an object URL and
+ * revoking it on replace. Without these stubs the preview effect throws, and the failure
+ * surfaces as a missing image rather than as the missing browser API it actually is.
+ */
+if (!URL.createObjectURL) {
+  URL.createObjectURL = (() => "blob:writewise/preview") as typeof URL.createObjectURL;
+}
+if (!URL.revokeObjectURL) {
+  URL.revokeObjectURL = (() => {}) as typeof URL.revokeObjectURL;
 }

@@ -13,7 +13,7 @@
  */
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import AppIcon, { ChevronIcon, LogOutIcon } from "@/components/app/AppIcon";
 import PreferenceControls from "@/components/app/PreferenceControls";
@@ -46,14 +46,23 @@ export default function Sidebar({
 }: Props) {
   const { t } = useLocale();
   const activeId = activeNavId(pathname);
-  const [openGroup, setOpenGroup] = useState<string | null>(() => groupContaining(activeId));
+  const routeGroup = groupContaining(activeId);
 
-  // Route changes open the group the learner has just entered. Deliberately additive:
-  // it never closes a group the learner opened by hand.
-  useEffect(() => {
-    const group = groupContaining(activeNavId(pathname));
-    if (group) setOpenGroup(group);
-  }, [pathname]);
+  const [openGroup, setOpenGroup] = useState<string | null>(routeGroup);
+  const [lastRouteGroup, setLastRouteGroup] = useState<string | null>(routeGroup);
+
+  /*
+   * Navigating into a group opens it — adjusted during render rather than in an effect,
+   * which is React's documented pattern for "derive from a prop change" and avoids the
+   * extra render pass an effect would cost on every navigation.
+   *
+   * Deliberately additive: it opens the group the learner just entered and never closes
+   * one they opened by hand.
+   */
+  if (routeGroup !== lastRouteGroup) {
+    setLastRouteGroup(routeGroup);
+    if (routeGroup) setOpenGroup(routeGroup);
+  }
 
   return (
     <div className="flex h-full flex-col gap-6">

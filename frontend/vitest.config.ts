@@ -17,6 +17,10 @@ export default defineConfig({
     // the runner, and collecting them here yields confusing "test.describe is not a
     // function" errors rather than an obvious misconfiguration.
     include: ["tests/unit/**/*.test.{ts,tsx}"],
+    // The mock transport sleeps to make loading states real in the browser. In tests
+    // that latency buys nothing and costs seconds per grading, so it is switched off
+    // here rather than stubbed per file.
+    env: { NEXT_PUBLIC_MOCK_LATENCY_MS: "0" },
   },
   resolve: {
     alias: { "@": path.resolve(__dirname, "./src") },

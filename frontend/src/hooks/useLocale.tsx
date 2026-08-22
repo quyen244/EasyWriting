@@ -11,31 +11,32 @@
  * inline script because a theme is one class on `<html>`; a locale is the text itself,
  * and there is no equivalent trick short of moving the locale into the URL.
  *
- * So: render the default, then adopt the stored locale in an effect. A Vietnamese
- * visitor sees English for one frame. That is the honest cost of not locale-routing, and
- * it is paid once per page load rather than on every switch.
+ * So: the server renders the default and the client corrects it. That is exactly what
+ * `useSyncExternalStore` exists for, and it is why the preference is held in a module
+ * store rather than in component state — the same shape `lib/theme.ts` uses for the
+ * theme, for the same reason.
  */
 
 import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
-  useState,
+  useSyncExternalStore,
   type ReactNode,
 } from "react";
 
 import {
-  DEFAULT_LOCALE,
   LOCALE_TAGS,
   formatBand,
   formatDate,
   formatDateTime,
   formatNumber,
-  readStoredLocale,
+  getLocaleSnapshot,
+  getServerLocaleSnapshot,
+  setStoredLocale,
+  subscribeToLocale,
   translate,
-  writeStoredLocale,
   type Interpolations,
   type Locale,
   type MessageKey,
@@ -55,30 +56,20 @@ interface LocaleContextValue {
 const LocaleContext = createContext<LocaleContextValue | undefined>(undefined);
 
 export function LocaleProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>(DEFAULT_LOCALE);
-
-  useEffect(() => {
-    const stored = readStoredLocale();
-    if (stored !== DEFAULT_LOCALE) setLocaleState(stored);
-  }, []);
-
-  // Assistive technology pronounces the interface using this attribute, so it has to
-  // follow the choice rather than staying at the document's authored language.
-  useEffect(() => {
-    document.documentElement.lang = LOCALE_TAGS[locale];
-  }, [locale]);
+  const locale = useSyncExternalStore(
+    subscribeToLocale,
+    getLocaleSnapshot,
+    getServerLocaleSnapshot,
+  );
 
   const setLocale = useCallback((next: Locale) => {
-    setLocaleState(next);
-    writeStoredLocale(next);
+    // The store also writes `<html lang>`, so assistive technology follows the choice
+    // rather than staying at the document's authored language.
+    setStoredLocale(next);
   }, []);
 
   const toggleLocale = useCallback(() => {
-    setLocaleState((current) => {
-      const next: Locale = current === "en" ? "vi" : "en";
-      writeStoredLocale(next);
-      return next;
-    });
+    setStoredLocale(getLocaleSnapshot() === "en" ? "vi" : "en");
   }, []);
 
   const value = useMemo<LocaleContextValue>(
@@ -110,3 +101,5 @@ export function useLocale(): LocaleContextValue {
 export function useT(): LocaleContextValue["t"] {
   return useLocale().t;
 }
+
+export { LOCALE_TAGS };

@@ -50,7 +50,6 @@ function PracticeWriting() {
 
   useEffect(() => {
     let active = true;
-    setModules(null);
     void listModules(taskType, locale).then((loaded) => {
       if (active) setModules(loaded);
     });
@@ -107,7 +106,13 @@ function PracticeWriting() {
         name="practice_task"
         label={t("grader.taskType")}
         value={taskType}
-        onChange={setTaskType}
+        onChange={(next) => {
+          // Clearing here rather than in the effect: the empty state belongs to the
+          // click that caused it, and setting state inside an effect body costs an
+          // extra render pass on every load.
+          setModules(null);
+          setTaskType(next);
+        }}
         options={[
           { value: "TASK_1", label: t("grader.task1") },
           { value: "TASK_2", label: t("grader.task2") },

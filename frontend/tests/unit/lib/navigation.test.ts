@@ -1,9 +1,12 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  APP_NAV,
+  APP_NAV_LINKS,
   APP_ROUTES,
   FOOTER_COLUMNS,
   PRIMARY_NAV,
+  activeNavId,
   type NavLink,
 } from "@/lib/navigation";
 
@@ -50,7 +53,6 @@ describe("navigation content", () => {
   it("marks every stub destination unavailable rather than linking it (FR-019)", () => {
     const stubs = [
       "Blog",
-      "Practice Tests",
       "Band Calculators",
       "About Us",
       "Contact",
@@ -74,5 +76,55 @@ describe("navigation content", () => {
 
   it("keeps at least one reachable destination in the primary nav (FR-003)", () => {
     expect(PRIMARY_NAV.some((l) => l.available)).toBe(true);
+  });
+});
+
+/**
+ * The same audit, applied to the authenticated product's sidebar.
+ *
+ * The sidebar makes a different judgement about Speaking than the marketing nav does,
+ * and that difference is deliberate rather than an oversight: on the public site there
+ * is nothing to sell, so Speaking is unlinked; inside the product the same destination
+ * is a designed "in development" screen that tells a learner what is coming. Information
+ * is not a dead end. What both must satisfy is that every live entry resolves to a route
+ * the app actually serves.
+ */
+describe("authenticated navigation", () => {
+  it("points every sidebar entry at a route this app serves", () => {
+    for (const item of APP_NAV_LINKS) {
+      if (!item.href) continue;
+      const path = item.href.split("#")[0] || "/";
+      expect(APP_ROUTES, `"${item.id}" points at ${item.href}`).toContain(path);
+    }
+  });
+
+  it("gives every leaf entry a destination", () => {
+    for (const item of APP_NAV_LINKS) {
+      if (item.children) continue;
+      expect(item.href, `"${item.id}" is a leaf with nowhere to go`).toBeTruthy();
+    }
+  });
+
+  it("expands Practice and Mock Test rather than linking them directly", () => {
+    // A group row that also navigated would make the chevron a lie: clicking the label
+    // and clicking the chevron would do different things.
+    for (const id of ["practice", "mock"]) {
+      const group = APP_NAV.find((item) => item.id === id);
+      expect(group?.children?.length, `${id} should be a group`).toBeGreaterThan(0);
+      expect(group?.href, `${id} should not navigate`).toBeUndefined();
+    }
+  });
+
+  it("resolves the deepest matching entry as the active one", () => {
+    // A learner inside an exercise is still inside Practice → Writing; falling back to
+    // no highlight would leave them with no sense of where they are.
+    expect(activeNavId("/practice/writing/t2_essay_outline")).toBe("practice-writing");
+    expect(activeNavId("/practice/writing")).toBe("practice-writing");
+    expect(activeNavId("/mock-test/writing")).toBe("mock-writing");
+    expect(activeNavId("/workspace")).toBe("grader");
+  });
+
+  it("does not highlight the sidebar for routes outside the product", () => {
+    expect(activeNavId("/signin")).toBeNull();
   });
 });

@@ -32,19 +32,22 @@ import {
 } from "./types";
 
 function summarise(
-  module: (typeof PRACTICE_MODULES)[number],
+  practiceModule: (typeof PRACTICE_MODULES)[number],
   locale: Locale,
   progress: Record<string, number>,
 ): PracticeModuleSummary {
   return {
-    id: module.id,
-    task_type: module.task_type,
-    title: text(module.title, locale),
-    description: text(module.description, locale),
-    difficulty: module.difficulty,
-    exercise_count: module.exercises.length,
-    completed_count: Math.min(progress[module.id] ?? 0, module.exercises.length),
-    trains: module.trains,
+    id: practiceModule.id,
+    task_type: practiceModule.task_type,
+    title: text(practiceModule.title, locale),
+    description: text(practiceModule.description, locale),
+    difficulty: practiceModule.difficulty,
+    exercise_count: practiceModule.exercises.length,
+    completed_count: Math.min(
+      progress[practiceModule.id] ?? 0,
+      practiceModule.exercises.length,
+    ),
+    trains: practiceModule.trains,
   };
 }
 
@@ -54,8 +57,8 @@ export async function listModules(
 ): Promise<PracticeModuleSummary[]> {
   await delay(LATENCY.read);
   const progress = getModuleProgress();
-  return PRACTICE_MODULES.filter((module) => module.task_type === taskType).map((module) =>
-    summarise(module, locale, progress),
+  return PRACTICE_MODULES.filter((candidate) => candidate.task_type === taskType).map(
+    (candidate) => summarise(candidate, locale, progress),
   );
 }
 
@@ -64,11 +67,11 @@ export async function getModule(
   locale: Locale,
 ): Promise<PracticeModuleDetail> {
   await delay(LATENCY.read);
-  const module = findModule(id);
-  if (!module) throw new ApiError("NOT_FOUND", "That practice module does not exist.");
+  const practiceModule = findModule(id);
+  if (!practiceModule) throw new ApiError("NOT_FOUND", "That practice module does not exist.");
 
   const progress = getModuleProgress();
-  const exercises: PracticeExercise[] = module.exercises.map((exercise) => ({
+  const exercises: PracticeExercise[] = practiceModule.exercises.map((exercise) => ({
     id: exercise.id,
     prompt: text(exercise.prompt, locale),
     source: exercise.source ?? null,
@@ -77,7 +80,11 @@ export async function getModule(
     feedback: text(exercise.feedback, locale),
   }));
 
-  return { ...summarise(module, locale, progress), intro: text(module.intro, locale), exercises };
+  return {
+    ...summarise(practiceModule, locale, progress),
+    intro: text(practiceModule.intro, locale),
+    exercises,
+  };
 }
 
 /** Words worth noticing when a learner claims to have paraphrased something. */
@@ -144,9 +151,9 @@ export async function checkAnswer(
 ): Promise<PracticeFeedback> {
   await delay(LATENCY.write);
 
-  const module = findModule(attempt.module_id);
-  const exercise = module?.exercises.find((item) => item.id === attempt.exercise_id);
-  if (!module || !exercise) {
+  const practiceModule = findModule(attempt.module_id);
+  const exercise = practiceModule?.exercises.find((item) => item.id === attempt.exercise_id);
+  if (!practiceModule || !exercise) {
     throw new ApiError("NOT_FOUND", "That exercise does not exist.");
   }
 
@@ -183,9 +190,9 @@ export function recommendedModuleFor(
   code: CriterionCode,
 ): string | null {
   const candidates = PRACTICE_MODULES.filter(
-    (module) => module.task_type === taskType && module.trains.includes(code),
+    (candidate) => candidate.task_type === taskType && candidate.trains.includes(code),
   );
   if (candidates.length === 0) return null;
-  const focused = candidates.find((module) => module.trains.length === 1);
+  const focused = candidates.find((candidate) => candidate.trains.length === 1);
   return (focused ?? candidates[0]).id;
 }

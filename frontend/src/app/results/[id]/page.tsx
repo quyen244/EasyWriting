@@ -9,7 +9,7 @@
  */
 
 import { useParams, useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import AppShell from "@/components/app/AppShell";
 import {
@@ -38,23 +38,39 @@ function StoredResultView() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      // Re-fetching on locale change is the point, not an accident: feedback prose is
-      // composed at read time, so an old result switches language with the interface.
-      setResult(await getResult(params.id, locale));
-    } catch (caught) {
-      setError(caught instanceof ApiError ? t("result.notFound") : t("common.somethingWentWrong"));
-    } finally {
-      setLoading(false);
-    }
-  }, [params.id, locale, t]);
-
+  /*
+   * Loading lives inside the effect rather than in a callback the effect calls.
+   *
+   * The two are equivalent at runtime, but React's lint rules cannot see through the
+   * indirection and read the callback as "setState synchronously from an effect" — and
+   * the inline version is the one that makes the cancellation flag obvious anyway.
+   *
+   * Re-running on locale change is the point, not an accident: feedback prose is
+   * composed at read time, so an old result switches language with the interface.
+   */
   useEffect(() => {
-    void load();
-  }, [load]);
+    let active = true;
+
+    void getResult(params.id, locale)
+      .then((loaded) => {
+        if (!active) return;
+        setResult(loaded);
+        setError(null);
+      })
+      .catch((caught: unknown) => {
+        if (!active) return;
+        setError(
+          caught instanceof ApiError ? t("result.notFound") : t("common.somethingWentWrong"),
+        );
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [params.id, locale, t]);
 
   const weakest = result ? weakestCriterion(result.criteria) : null;
   const moduleId = result && weakest ? recommendedModuleFor(result.task_type, weakest.code) : null;

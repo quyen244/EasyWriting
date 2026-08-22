@@ -13,7 +13,7 @@
  * handler: the text lives above this component and no error path here can reach it.
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Button, WordCount } from "@/components/app/Primitives";
 import { useLocale } from "@/hooks/useLocale";
@@ -192,6 +192,14 @@ export function Task1Editor({
         </p>
 
         <div className="mt-3 flex flex-wrap items-start gap-4">
+          {/*
+            The input is visually replaced by the button beside it, but it still needs a
+            name of its own: without one it is an unlabelled file control to anything
+            that reads the form rather than looks at it.
+          */}
+          <label htmlFor="chart_image" className="sr-only">
+            {t("grader.chartUpload")}
+          </label>
           <input
             ref={fileInput}
             id="chart_image"
@@ -312,18 +320,24 @@ export function Task1Editor({
  * in a demo, real on a machine where someone tries six charts.
  */
 export function useImagePreview() {
-  const [file, setFile] = useState<File | null>(null);
-  const [url, setUrl] = useState<string | null>(null);
+  // File and URL are one value, created together in the picker's handler. Deriving the
+  // URL in an effect instead would render one frame with a file and no preview, and
+  // cost a second render pass for every pick.
+  const [preview, setPreview] = useState<{ file: File; url: string } | null>(null);
 
+  // Revokes the previous URL whenever the preview changes, and the last one on unmount.
+  // Without it every replaced image leaks for the lifetime of the tab — invisible in a
+  // demo, real on a machine where someone tries six charts.
   useEffect(() => {
-    if (!file) {
-      setUrl(null);
-      return;
-    }
-    const objectUrl = URL.createObjectURL(file);
-    setUrl(objectUrl);
-    return () => URL.revokeObjectURL(objectUrl);
-  }, [file]);
+    if (!preview) return;
+    return () => URL.revokeObjectURL(preview.url);
+  }, [preview]);
 
-  return { file, url, setFile, clear: () => setFile(null) };
+  const setFile = useCallback((file: File) => {
+    setPreview({ file, url: URL.createObjectURL(file) });
+  }, []);
+
+  const clear = useCallback(() => setPreview(null), []);
+
+  return { file: preview?.file ?? null, url: preview?.url ?? null, setFile, clear };
 }

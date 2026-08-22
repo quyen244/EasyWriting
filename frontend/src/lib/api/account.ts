@@ -178,16 +178,19 @@ export async function getActivity(locale: Locale, limit = 12): Promise<ActivityE
     }));
 
   const practice: ActivityEntry[] = allPracticeSessions().map((session) => {
-    const module = findModule(session.module_id);
+    const practiceModule = findModule(session.module_id);
     return {
       id: `act_${session.id}`,
       kind: "practice",
       at: session.at,
       href: `/practice/writing/${session.module_id}`,
       module_id: session.module_id,
-      module_title: module ? text(module.title, locale) : session.module_id,
-      progress: module
-        ? { done: Math.min(session.completed, module.exercises.length), total: module.exercises.length }
+      module_title: practiceModule ? text(practiceModule.title, locale) : session.module_id,
+      progress: practiceModule
+        ? {
+            done: Math.min(session.completed, practiceModule.exercises.length),
+            total: practiceModule.exercises.length,
+          }
         : undefined,
     };
   });

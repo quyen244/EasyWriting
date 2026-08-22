@@ -47,6 +47,48 @@ export function writeStoredLocale(locale: Locale): void {
   }
 }
 
+/* ── External-store interface for `useSyncExternalStore` ────────────────────────────
+ *
+ * The locale is a browser-global preference, not component state: it outlives any one
+ * tree, it is read from storage the client owns, and the server cannot know it. Holding
+ * it here and subscribing from React avoids the cascading render an "adopt the stored
+ * value in an effect" implementation causes, and keeps every consumer on one value.
+ */
+
+let current: Locale | null = null;
+const listeners = new Set<() => void>();
+
+export function getLocaleSnapshot(): Locale {
+  if (current === null) current = readStoredLocale();
+  return current;
+}
+
+/** The server has no visitor to read a preference from; it renders the default. */
+export function getServerLocaleSnapshot(): Locale {
+  return DEFAULT_LOCALE;
+}
+
+export function subscribeToLocale(listener: () => void): () => void {
+  listeners.add(listener);
+  return () => {
+    listeners.delete(listener);
+  };
+}
+
+export function setStoredLocale(locale: Locale): void {
+  current = locale;
+  writeStoredLocale(locale);
+  if (typeof document !== "undefined") {
+    document.documentElement.lang = LOCALE_TAGS[locale];
+  }
+  for (const listener of listeners) listener();
+}
+
+/** Test seam: forget the cached value so a suite can start from storage again. */
+export function resetLocaleCache(): void {
+  current = null;
+}
+
 export function catalogue(locale: Locale): Messages {
   return CATALOGUES[locale] ?? CATALOGUES[DEFAULT_LOCALE];
 }

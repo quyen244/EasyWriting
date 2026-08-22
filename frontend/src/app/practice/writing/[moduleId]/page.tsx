@@ -52,7 +52,6 @@ function ModuleRunner() {
 
   useEffect(() => {
     let active = true;
-    setLoadError(false);
     void getModule(params.moduleId, locale)
       .then((loaded) => {
         if (!active) return;

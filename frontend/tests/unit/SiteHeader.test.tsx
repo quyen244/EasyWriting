@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { render, screen, within } from "./support/render";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
@@ -85,10 +85,18 @@ describe("SiteHeader", () => {
     }
   });
 
-  it("keeps the locale control out of the tab order while i18n does not exist", () => {
-    // There is no second translation of anything yet. A focusable control that silently
-    // does nothing is a worse dead end than one that says it is not ready.
+  it("offers a working locale switch (EN/VI)", () => {
+    // This control used to render disabled, because there was no second translation of
+    // anything. There is now, so it is a real switch — and it is here, on the public
+    // header, so a Vietnamese learner can set the preference before signing up rather
+    // than after.
     render(<SiteHeader />);
-    expect(screen.getByRole("button", { name: /VI/ })).toBeDisabled();
+    const vietnamese = screen.getByRole("button", { name: "VI" });
+    expect(vietnamese).toBeEnabled();
+    expect(vietnamese).toHaveAttribute("aria-pressed", "false");
+    expect(screen.getByRole("button", { name: "EN" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
   });
 });
