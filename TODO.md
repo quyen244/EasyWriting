@@ -16,8 +16,8 @@ Tài liệu nền: [CLARIFICATION.md](./CLARIFICATION.md) ·
 
 | Việc | Từ | Ghi chú |
 |---|---|---|
-| Chạy thử migrations trên Postgres thật | 2026-08-23 | 🚧 Chặn: Docker Desktop chưa bật |
-| Tắt `Confirm email` trên project | 2026-08-23 | 🚧 Chặn: cần bạn bật tắt trong dashboard — publishable key không đổi được |
+| Đẩy migrations lên project cloud | 2026-08-23 | 🚧 Chặn: `supabase link` cần mật khẩu database, tôi không có |
+| Quyết định về "tiêu chí yếu nhất" | 2026-08-23 | Xếp hạng đang so TASK_ACHIEVEMENT (n=1) với TASK_RESPONSE (n=2) — hai tiêu chí loại trừ nhau |
 
 ---
 
@@ -44,10 +44,10 @@ Tài liệu nền: [CLARIFICATION.md](./CLARIFICATION.md) ·
 - [x] ✅ `?redirect=` — đăng nhập xong quay lại đúng trang đã bị chặn, chặn open-redirect ra ngoài site
 - [x] ✅ Thêm mã lỗi `EMAIL_NOT_CONFIRMED` + `UNKNOWN` kèm chuỗi EN/VI
 - [x] ✅ 10/10 test AuthScreen pass, kể cả 2 test mới cho redirect
+- [x] ✅ **Route guard kiểm bằng HTTP thật**: 6 route bảo vệ → 307 kèm `?redirect=`, 4 route công khai → 200
 
 ### Cần làm
 
-- [ ] 🚧 **Chạy thử đăng ký/đăng nhập end-to-end** — chặn bởi hai việc trên (chưa có bảng `profiles` mới, chưa tắt confirm email)
 - [ ] 📋 Đổi mã tiêu chí `GRAMMATICAL_RANGE` → `GRAMMATICAL_RANGE_ACCURACY` cho khớp DB — chạm `types.ts`, i18n, `mockData`, test · [data-model.md](./docs/data-model.md)
 - [ ] 📋 Nối `lib/api/*` vào Supabase, bỏ store in-memory (giữ nguyên chữ ký hàm)
 - [ ] 📋 Upload ảnh Task 1 lên Storage + hiển thị lại bằng signed URL
@@ -74,13 +74,14 @@ Tài liệu nền: [CLARIFICATION.md](./CLARIFICATION.md) ·
 
 ### Cần làm
 
-- [ ] 🚧 **Chạy `supabase db reset` để kiểm chứng migrations thật sự thi hành được** — chặn bởi Docker Desktop
-- [ ] 📋 `supabase db push` lên project nháp `tmwozpzntzyupxrmgsro` (dump 2 bảng cũ trước khi drop)
-- [x] ✅ Ghi quyết định tắt `Confirm email` vào `config.toml` (áp dụng cho local)
-- [ ] 🚧 Tắt `Confirm email` trên **project cloud** — đang bật (`mailer_autoconfirm: false`), cần dashboard hoặc `supabase config push`
-- [ ] 📋 **Test RLS cho từng bảng** — đọc chéo user phải ra rỗng · constitution Principle III
-- [ ] 📋 **Test grants** — `UPDATE writing_attempts SET overall_band = 9` bằng token học viên phải thất bại
-- [ ] 📋 Test trigger `combined_band`: Task 1 ×1 + Task 2 ×2, làm tròn nửa bậc
+- [x] ✅ **Cả 7 migration + seed đã thi hành thật** trên Postgres 17 local (`supabase start`)
+- [x] ✅ Tắt `Confirm email` — `config.toml` (local) và dashboard (cloud, `mailer_autoconfirm: true`)
+- [x] ✅ **[supabase/tests/rls.sql](./supabase/tests/rls.sql) — 30/30 mệnh đề pass** · constitution Principle III
+- [x] ✅ Test grants: học viên **không** đặt được `overall_band = 9.0` hay `status = 'scored'`
+- [x] ✅ Test trigger `combined_band`: (6.0 + 7.0×2)/3 → 6.5
+- [x] ✅ Auth end-to-end trên local: sign up trả session ngay · trigger tạo `profiles` với `full_name` từ metadata · sign in · sai mật khẩu → `invalid_credentials` · logout 204 rồi token cũ → 403
+- [x] ✅ Seed đọc được qua REST bằng token thật: 2 đề, 4 task, 12 module, 36 exercise, song ngữ nguyên vẹn
+- [ ] 🚧 `supabase db push` lên project cloud `tmwozpzntzyupxrmgsro` — cần mật khẩu database để `supabase link`
 - [ ] ❄️ Edge Function `grade-attempt` — hoãn, bàn riêng
 - [ ] ❄️ Trigger `pg_net` dispatch + **cron dọn row kẹt ở `queued`** — hoãn, đi cùng Edge Function
 - [ ] ❄️ Rate limit số lần chấm mỗi user · constitution Principle V
@@ -89,7 +90,7 @@ Tài liệu nền: [CLARIFICATION.md](./CLARIFICATION.md) ·
 
 ## System / hạ tầng
 
-- [ ] 📋 Bật Docker Desktop để dùng được Supabase local
+- [x] ✅ Supabase local chạy được (`npx supabase start`)
 - [x] ✅ `frontend/.env.local` + `.env.example` — `NEXT_PUBLIC_SUPABASE_URL` + `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
 - [ ] ❄️ Tách project Supabase dev / prod (hiện chỉ có một, đang coi là nháp)
 - [ ] ❄️ Deploy frontend lên Vercel + cấu hình redirect URL cho Auth
@@ -106,13 +107,14 @@ Ghi ra để nó không biến mất khỏi tầm nhìn.
 |---|---|---|
 | **6 spec Playwright e2e đã chết** | 🔴 | Chúng chặn request HTTP bằng `stubBackend` — kiến trúc đó không còn, không còn request nào để chặn. `discover-and-signup.spec.ts` còn assert header marketing trên trang signup, thứ đã bỏ theo thiết kế. Chưa cập nhật, chưa chạy |
 | **7 unit test Hero fail** | 🟡 | Có từ trước đợt redesign. Commit `8c00bdb` đổi landing page sang tiếng Việt nhưng không sửa test, test vẫn assert tiếng Anh. Đã xác minh bằng cách stash toàn bộ thay đổi và chạy lại |
-| **Migrations chưa từng thi hành** | 🔴 | Mới kiểm được cú pháp, chưa kiểm được ngữ nghĩa. FK, policy, function body plpgsql chưa chạy lần nào |
+| **Xếp hạng tiêu chí yếu nhất so lệch mẫu** | 🟡 | `get_progress_summary()` xếp cả 5 tiêu chí chung một bảng. Nhưng `TASK_ACHIEVEMENT` chỉ đến từ Task 1 và `TASK_RESPONSE` chỉ đến từ Task 2 — hai thứ loại trừ nhau, lấy từ hai đề khác nhau. Đo được: TASK_ACHIEVEMENT 6.00 (**n=1**) thắng GRAMMATICAL_RANGE_ACCURACY 6.50 (n=3), nên học viên bị bảo điểm yếu nhất là chỗ họ có ít bằng chứng nhất — rồi handoff practice đẩy họ tới đó. Cần quyết: đặt ngưỡng mẫu tối thiểu, hay chỉ xếp hạng 3 tiêu chí dùng chung. Hành vi hiện tại đã bị test khoá lại để nó là cố ý chứ không phải tình cờ |
+| **`middleware.ts` bị Next 16 đánh dấu deprecated** | 🟡 | Vẫn chạy đúng, nhưng Next khuyến nghị đổi sang `proxy.ts`. Có codemod sẵn: `npx @next/codemod@canary middleware-to-proxy .` |
 | **Task 1 chấm không nhìn ảnh** | 🟡 | Ảnh chỉ lưu để xem lại; điểm dựa trên mô tả học viên gõ. Học viên mô tả sai số liệu thì không phát hiện được — mà đó chính là nội dung của Task Achievement · [D-4](./CLARIFICATION.md) |
 | **`eval/` gọi 4 lần model mỗi bài, `specs/001` nói 1 lần** | 🟡 | Chưa chốt. Chi phí gấp 4 và độ trễ khác hẳn nhau |
 | **Prompt `v1` chỉ sinh một thứ tiếng** | 🟡 | Frontend cần song ngữ. Cần bộ `v2` và benchmark với `v1` trước khi dùng · constitution Principle IV |
 | **Chưa có baseline Principle IV** | 🟡 | `docs/live-model-validation.md` §5.2: gate so sánh trước/sau "dựng xong nhưng chưa có số liệu nền". Cần chạy đủ 10 bài |
 | **Chưa xác minh bằng browser** | 🟡 | Redesign mới chỉ được đảm bảo qua build + unit test, chưa mở mắt nhìn |
-| **Auth chưa chạy thật lần nào** | 🔴 | Code xong, typecheck/lint/build/test sạch — nhưng chưa có lần đăng ký thật nào vì project còn bật confirm email và chưa có trigger `on_auth_user_created` |
+| **Auth mới chỉ chạy thật trên local** | 🟡 | Toàn bộ luồng đã kiểm trên stack local. Project cloud đã tắt confirm email nhưng **chưa có schema mới** — chưa có trigger `on_auth_user_created`, nên đăng ký ở đó tạo `auth.users` mà không có `profiles` |
 | **`useAuth` vẫn tự hẹn giờ refresh** | 🟢 | Supabase client đã tự làm việc đó. Lớp hẹn giờ cũ giờ là thừa chứ không sai — dọn khi nào chạm lại file |
 
 ---

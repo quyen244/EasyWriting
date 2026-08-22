@@ -289,10 +289,31 @@ select pg_temp.assert_that(
         where user_id = :'alice' and status = 'scored'),
   'the headline average equals the average of the history rows');
 
+-- Pinning behaviour that is currently a hazard, not a feature.
+--
+-- TASK_ACHIEVEMENT scores 6.00 here off a SINGLE Task 1, while
+-- GRAMMATICAL_RANGE_ACCURACY scores 6.50 across three essays. The lower mean wins, so a
+-- learner is told their weakest area is the one they have the least evidence for — and
+-- the practice hand-off then sends them there.
+--
+-- Worse, TASK_ACHIEVEMENT and TASK_RESPONSE are mutually exclusive: one only ever comes
+-- from Task 1 and the other only from Task 2, so ranking all five against each other
+-- compares criteria drawn from different exams.
+--
+-- Asserted as-is so the behaviour is deliberate and visible rather than discovered later
+-- by a learner. See TODO.md: this needs a product decision (minimum sample size, or rank
+-- only the three shared criteria).
 select pg_temp.assert_that(
-  (select public.get_progress_summary() -> 'weakest' ->> 'code')
-    = 'GRAMMATICAL_RANGE_ACCURACY',
-  'the weakest criterion is the one with the lowest mean');
+  (select public.get_progress_summary() -> 'weakest' ->> 'code') = 'TASK_ACHIEVEMENT',
+  'weakest is the lowest mean, even on a sample of one');
+
+select pg_temp.assert_that(
+  (select (public.get_progress_summary() -> 'weakest' ->> 'sample_size')::int) = 1,
+  'the weakest criterion here rests on one essay — the number the UI must not hide');
+
+select pg_temp.assert_that(
+  (select public.get_progress_summary() -> 'strongest' ->> 'code') = 'TASK_RESPONSE',
+  'strongest is the highest mean');
 
 insert into public.practice_attempts (user_id, exercise_id, module_id, answer)
 values (:'alice', 't1_pi_1', 't1_paraphrase_introduction', 'A first go.'),
