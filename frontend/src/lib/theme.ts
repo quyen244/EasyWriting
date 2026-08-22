@@ -21,14 +21,31 @@ function isTheme(value: unknown): value is Theme {
   return value === "light" || value === "dark";
 }
 
+/**
+ * The stored choice, or the system preference when there is no choice yet.
+ *
+ * Falling back to the system preference rather than to light means a visitor whose OS is
+ * dark is not shown a white page they then have to fix. An explicit choice always wins
+ * over the system, in both directions — that is why `"light"` is stored rather than
+ * treated as "no preference".
+ */
 export function readStoredTheme(): Theme {
   if (typeof window === "undefined") return DEFAULT_THEME;
   try {
     const stored = window.localStorage.getItem(STORAGE_KEY);
-    return isTheme(stored) ? stored : DEFAULT_THEME;
+    if (isTheme(stored)) return stored;
   } catch {
-    return DEFAULT_THEME;
+    // Fall through to the system preference.
   }
+  return prefersDarkScheme() ? "dark" : DEFAULT_THEME;
+}
+
+function prefersDarkScheme(): boolean {
+  return (
+    typeof window !== "undefined" &&
+    typeof window.matchMedia === "function" &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches
+  );
 }
 
 export function applyTheme(theme: Theme): void {
@@ -48,7 +65,9 @@ export function writeTheme(theme: Theme): void {
 
 /** Flip the current preference and return the new one. */
 export function toggleTheme(): Theme {
-  const next: Theme = readStoredTheme() === "dark" ? "light" : "dark";
+  // Reads the DOM, not storage: with a system-preference fallback those two can differ
+  // on a first visit, and toggling must flip what the visitor can actually see.
+  const next: Theme = getThemeSnapshot() === "dark" ? "light" : "dark";
   writeTheme(next);
   notify();
   return next;
@@ -102,6 +121,7 @@ export function getServerThemeSnapshot(): Theme {
 export const THEME_INIT_SCRIPT = `
 try {
   var t = localStorage.getItem(${JSON.stringify(STORAGE_KEY)});
-  if (t === "dark") document.documentElement.classList.add("dark");
+  var system = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  if (t === "dark" || (t !== "light" && system)) document.documentElement.classList.add("dark");
 } catch (e) {}
 `.trim();

@@ -3,6 +3,7 @@ import { Caveat, Inter, Playfair_Display } from "next/font/google";
 
 import MotionProvider from "@/components/motion/MotionProvider";
 import { AuthProvider } from "@/hooks/useAuth";
+import { LocaleProvider } from "@/hooks/useLocale";
 import { THEME_INIT_SCRIPT } from "@/lib/theme";
 
 import "./globals.css";
@@ -84,7 +85,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <span aria-hidden="true" data-decoration className="grain" />
 
         <MotionProvider>
-          <AuthProvider>{children}</AuthProvider>
+          {/*
+            Locale wraps auth rather than the other way round: the auth screens and the
+            session-checking state both render interface text, so the catalogue has to be
+            available above anything that can show a message.
+          */}
+          <LocaleProvider>
+            <AuthProvider>{children}</AuthProvider>
+          </LocaleProvider>
         </MotionProvider>
       </body>
     </html>

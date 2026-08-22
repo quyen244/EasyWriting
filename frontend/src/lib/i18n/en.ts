@@ -261,6 +261,15 @@ export const en = {
   "practice.hintsTitle": "Keep in mind",
   "practice.emptyAnswer": "Write something before checking.",
 
+  // Observations about the learner's own answer. Never a band — see api/practice.ts.
+  "practiceNote.copiedWords": "Much of your wording comes straight from the source. Change the nouns and the verbs, not just the small words.",
+  "practiceNote.freshWording": "Your wording is genuinely your own rather than a rearrangement of the source.",
+  "practiceNote.lengthShort": "Shorter than the model answer — there is probably a detail you have left out.",
+  "practiceNote.lengthGood": "About the right length for this exercise.",
+  "practiceNote.lengthLong": "Considerably longer than the model. Check whether every clause is earning its place.",
+  "practiceNote.subordinationUsed": "You used a subordinate or relative clause, which is where Grammatical Range is won.",
+  "practiceNote.noSubordination": "Every clause here is independent. Try joining two of them with \"which\", \"although\" or \"while\".",
+
   // ── Coming soon (Speaking) ──────────────────────────────────────────────────
   "soon.eyebrow": "In development",
   "soon.practiceTitle": "Speaking practice is coming",

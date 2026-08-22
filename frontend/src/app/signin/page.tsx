@@ -1,26 +1,16 @@
 import type { Metadata } from "next";
 
-import SiteFooter from "@/components/SiteFooter";
-import SiteHeader from "@/components/SiteHeader";
-import AuthForm from "@/components/auth/AuthForm";
+import AuthScreen from "@/components/auth/AuthScreen";
 
-export const metadata: Metadata = { title: "Sign in" };
+export const metadata: Metadata = { title: "Log in" };
 
-/** Sign-in page (002 T018). Calls `003`'s signIn(), then lands on the workspace. */
+/**
+ * Sign in.
+ *
+ * No `SiteHeader` and no `SiteFooter`: the marketing nav on an auth screen invites the
+ * visitor to wander off mid-task, and the footer's twelve links are twelve ways to lose
+ * someone who was about to sign in.
+ */
 export default function SignInPage() {
-  return (
-    <>
-      <SiteHeader />
-      <main className="mx-auto w-full max-w-md px-margin-mobile py-stack-lg">
-        <h1 className="font-display text-headline-md text-on-surface">Sign in</h1>
-        <p className="mt-stack-sm font-body text-body-md text-on-surface-variant">
-          Welcome back.
-        </p>
-        <div className="mt-stack-lg">
-          <AuthForm mode="signin" />
-        </div>
-      </main>
-      <SiteFooter />
-    </>
-  );
+  return <AuthScreen mode="signin" />;
 }

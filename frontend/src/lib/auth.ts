@@ -1,11 +1,18 @@
 /**
- * Raw auth API calls (003-account-authentication research.md decision 7 — this feature owns
- * the authentication *capability*; 002-core-app-ux owns the pages that call it).
+ * Auth calls, with a mock transport behind the same functions.
  *
- * The refresh token travels as an httpOnly cookie the browser manages automatically
- * (`credentials: "include"` on every call) — it is never readable or held here. The access
- * token is returned in the JSON body and is the caller's (useAuth's) responsibility to hold
- * in memory only, per 003's research.md decision 4.
+ * The real path is unchanged: the refresh token travels as an httpOnly cookie the
+ * browser manages (`credentials: "include"`), and the access token is returned in the
+ * body for `useAuth` to hold in memory only.
+ *
+ * The mock path exists because there is no server to talk to yet. It lives here, behind
+ * the same five functions, so `useAuth`, the route guard and every screen above them are
+ * identical either way — the swap later is this file and nothing else.
+ *
+ * One deliberate exception to "mock state resets on reload": the *session* is written to
+ * `localStorage`. Everything else (history, practice progress) is in-memory by design,
+ * but being logged out by a page refresh is not a product decision, it is an accident,
+ * and it would make the authenticated product unusable to review.
  */
 
 export interface Account {
@@ -40,12 +47,28 @@ export class AuthApiError extends Error {
   }
 }
 
+export interface SignupInput {
+  email: string;
+  password: string;
+  display_name?: string;
+}
+
+export interface SigninInput {
+  email: string;
+  password: string;
+}
+
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "") ?? "http://localhost:8000";
 
+/** Mock is the default; using the real service is the explicit choice. */
+const USE_REAL_API = process.env.NEXT_PUBLIC_USE_REAL_API === "true";
+
+// ── Real transport ────────────────────────────────────────────────────────────
+
 async function request<T>(
   path: string,
-  init: RequestInit & { accessToken?: string } = {}
+  init: RequestInit & { accessToken?: string } = {},
 ): Promise<T> {
   const { accessToken, headers, ...rest } = init;
 
@@ -74,25 +97,113 @@ async function request<T>(
   return body as T;
 }
 
-export interface SignupInput {
-  email: string;
-  password: string;
-  display_name?: string;
+// ── Mock transport ────────────────────────────────────────────────────────────
+
+const SESSION_KEY = "writewise.mock-session";
+const MIN_PASSWORD_LENGTH = 8;
+const MOCK_LATENCY_MS = Number(process.env.NEXT_PUBLIC_MOCK_LATENCY_MS);
+const MOCK_DELAY = Number.isFinite(MOCK_LATENCY_MS) ? MOCK_LATENCY_MS : 600;
+
+function pause(ms: number): Promise<void> {
+  return ms <= 0 ? Promise.resolve() : new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+function readSession(): Account | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(SESSION_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as Account;
+    return parsed && typeof parsed.email === "string" ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeSession(account: Account | null): void {
+  try {
+    if (account) {
+      window.localStorage.setItem(SESSION_KEY, JSON.stringify(account));
+    } else {
+      window.localStorage.removeItem(SESSION_KEY);
+    }
+  } catch {
+    // Private-mode storage refusals cost the learner a reload, not the session.
+  }
+}
+
+/** A display name derived from the email — better than an empty greeting. */
+function nameFromEmail(email: string): string {
+  const local = email.split("@")[0] ?? "";
+  const cleaned = local.replace(/[._-]+/g, " ").trim();
+  if (!cleaned) return "Learner";
+  return cleaned
+    .split(" ")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+function mockResponse(account: Account): AuthResponse {
+  return {
+    access_token: `mock.${account.id}.${Date.now().toString(36)}`,
+    token_type: "bearer",
+    expires_in: 3600,
+    user: account,
+  };
+}
+
+function accountFor(email: string, displayName?: string): Account {
+  return {
+    id: `acc_${email.toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 12) || "demo"}`,
+    email: email.trim(),
+    display_name: displayName?.trim() || nameFromEmail(email),
+  };
+}
+
+async function mockSignUp(input: SignupInput): Promise<AuthResponse> {
+  await pause(MOCK_DELAY);
+  if (input.password.length < MIN_PASSWORD_LENGTH) {
+    throw new AuthApiError("WEAK_PASSWORD", "Password too short.", 400);
+  }
+  const account = accountFor(input.email, input.display_name);
+  writeSession(account);
+  return mockResponse(account);
+}
+
+async function mockSignIn(input: SigninInput): Promise<AuthResponse> {
+  await pause(MOCK_DELAY);
+  // The only rule mock mode enforces. Anything shorter is almost always a mistyped
+  // password rather than an intentional one, and rejecting it keeps the error state
+  // reachable in a demo.
+  if (input.password.length < MIN_PASSWORD_LENGTH) {
+    throw new AuthApiError("INVALID_CREDENTIALS", "Wrong email or password.", 401);
+  }
+  const account = accountFor(input.email);
+  writeSession(account);
+  return mockResponse(account);
+}
+
+async function mockRefresh(): Promise<AuthResponse> {
+  await pause(Math.min(MOCK_DELAY, 150));
+  const account = readSession();
+  if (!account) {
+    throw new AuthApiError("SESSION_EXPIRED", "No session.", 401);
+  }
+  return mockResponse(account);
+}
+
+// ── Public surface ────────────────────────────────────────────────────────────
+
 export function signUp(input: SignupInput): Promise<AuthResponse> {
+  if (!USE_REAL_API) return mockSignUp(input);
   return request<AuthResponse>("/api/v1/auth/signup", {
     method: "POST",
     body: JSON.stringify(input),
   });
 }
 
-export interface SigninInput {
-  email: string;
-  password: string;
-}
-
 export function signIn(input: SigninInput): Promise<AuthResponse> {
+  if (!USE_REAL_API) return mockSignIn(input);
   return request<AuthResponse>("/api/v1/auth/signin", {
     method: "POST",
     body: JSON.stringify(input),
@@ -100,13 +211,23 @@ export function signIn(input: SigninInput): Promise<AuthResponse> {
 }
 
 export function refresh(): Promise<AuthResponse> {
+  if (!USE_REAL_API) return mockRefresh();
   return request<AuthResponse>("/api/v1/auth/refresh", { method: "POST" });
 }
 
-export function signOut(accessToken: string): Promise<void> {
-  return request<void>("/api/v1/auth/signout", { method: "POST", accessToken });
+export async function signOut(accessToken: string): Promise<void> {
+  if (!USE_REAL_API) {
+    writeSession(null);
+    return;
+  }
+  await request<void>("/api/v1/auth/signout", { method: "POST", accessToken });
 }
 
-export function me(accessToken: string): Promise<Account> {
+export async function me(accessToken: string): Promise<Account> {
+  if (!USE_REAL_API) {
+    const account = readSession();
+    if (!account) throw new AuthApiError("SESSION_EXPIRED", "No session.", 401);
+    return account;
+  }
   return request<Account>("/api/v1/auth/me", { method: "GET", accessToken });
 }

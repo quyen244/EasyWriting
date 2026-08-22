@@ -265,6 +265,14 @@ export const vi: Messages = {
   "practice.hintsTitle": "Lưu ý",
   "practice.emptyAnswer": "Hãy viết câu trả lời trước khi kiểm tra.",
 
+  "practiceNote.copiedWords": "Phần lớn cách diễn đạt của bạn lấy thẳng từ ngữ liệu. Hãy đổi danh từ và động từ, đừng chỉ đổi những từ nhỏ.",
+  "practiceNote.freshWording": "Cách diễn đạt là của riêng bạn, không phải sắp xếp lại từ ngữ liệu.",
+  "practiceNote.lengthShort": "Ngắn hơn bài mẫu — nhiều khả năng bạn còn bỏ sót một chi tiết.",
+  "practiceNote.lengthGood": "Độ dài phù hợp với yêu cầu của bài này.",
+  "practiceNote.lengthLong": "Dài hơn bài mẫu khá nhiều. Hãy kiểm tra xem mệnh đề nào cũng thật sự cần thiết chưa.",
+  "practiceNote.subordinationUsed": "Bạn đã dùng mệnh đề phụ hoặc mệnh đề quan hệ — đây chính là chỗ ăn điểm Grammatical Range.",
+  "practiceNote.noSubordination": "Ở đây mọi mệnh đề đều độc lập. Hãy thử nối hai mệnh đề bằng “which”, “although” hoặc “while”.",
+
   // ── Coming soon (Speaking) ──────────────────────────────────────────────────
   "soon.eyebrow": "Đang phát triển",
   "soon.practiceTitle": "Luyện Speaking sắp ra mắt",
