@@ -16,7 +16,7 @@
  */
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, type FormEvent } from "react";
 
 import PreferenceControls from "@/components/app/PreferenceControls";
@@ -31,9 +31,28 @@ const ERROR_COPY: Record<AuthErrorCode, MessageKey> = {
   INVALID_CREDENTIALS: "auth.errorInvalidCredentials",
   TOO_MANY_ATTEMPTS: "auth.errorTooMany",
   SESSION_EXPIRED: "auth.errorSessionExpired",
+  EMAIL_NOT_CONFIRMED: "auth.errorEmailNotConfirmed",
+  UNKNOWN: "auth.errorUnknown",
 };
 
 const MIN_PASSWORD_LENGTH = 8;
+
+/**
+ * Where to go once signed in.
+ *
+ * The route guard appends `?redirect=` with whatever was originally asked for, so
+ * someone who typed `/account` lands on `/account` rather than being dropped at the
+ * workspace and left to navigate again.
+ *
+ * Only same-site paths are honoured. Without this check the parameter is an open
+ * redirect: `?redirect=https://evil.example` would send someone straight off the site
+ * from a page they trusted. `//host` is rejected too — the browser reads it as
+ * protocol-relative and treats it as another origin.
+ */
+function safeRedirect(target: string | null): string {
+  if (!target || !target.startsWith("/") || target.startsWith("//")) return "/workspace";
+  return target;
+}
 /** Deliberately loose: the server is the authority, this only catches obvious typos. */
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -43,7 +62,9 @@ export default function AuthScreen({ mode }: { mode: "signin" | "signup" }) {
   const isSignUp = mode === "signup";
   const { signIn, signUp, status } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { t } = useLocale();
+  const destination = safeRedirect(searchParams.get("redirect"));
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -56,8 +77,8 @@ export default function AuthScreen({ mode }: { mode: "signin" | "signup" }) {
   // A signed-in visitor who navigates back to /signin should land in the product rather
   // than at a form they have already completed.
   useEffect(() => {
-    if (status === "authenticated") router.replace("/workspace");
-  }, [status, router]);
+    if (status === "authenticated") router.replace(destination);
+  }, [status, router, destination]);
 
   function validate(): FieldErrors {
     const errors: FieldErrors = {};
@@ -87,7 +108,7 @@ export default function AuthScreen({ mode }: { mode: "signin" | "signup" }) {
       } else {
         await signIn({ email, password });
       }
-      router.replace("/workspace");
+      router.replace(destination);
     } catch (caught) {
       setFormError(
         caught instanceof AuthApiError ? ERROR_COPY[caught.code] : "auth.errorNetwork",

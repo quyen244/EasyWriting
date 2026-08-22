@@ -10,7 +10,12 @@ const replace = vi.fn();
 // One stable router object: a fresh one per call changes effect dependencies on every
 // render and makes a single redirect look like a loop.
 const router = { replace, push: vi.fn(), prefetch: vi.fn() };
-vi.mock("next/navigation", () => ({ useRouter: () => router }));
+// Mutable so a test can put a `?redirect=` on the URL without re-mocking the module.
+let searchParams = new URLSearchParams();
+vi.mock("next/navigation", () => ({
+  useRouter: () => router,
+  useSearchParams: () => searchParams,
+}));
 
 const signIn = vi.fn();
 const signUp = vi.fn();
@@ -19,6 +24,7 @@ vi.mock("@/hooks/useAuth", () => ({ useAuth: () => auth }));
 
 beforeEach(() => {
   vi.clearAllMocks();
+  searchParams = new URLSearchParams();
   signIn.mockResolvedValue(undefined);
   signUp.mockResolvedValue(undefined);
 });
@@ -128,5 +134,33 @@ describe("AuthScreen", () => {
     expect(screen.getByText("Đăng nhập để tiếp tục luyện viết tiếng Anh.")).toBeInTheDocument();
     // The brand is never translated.
     expect(screen.getAllByText(/WriteWise/).length).toBeGreaterThan(0);
+  });
+  it("returns the learner to the page they were sent away from", async () => {
+    // The route guard appends ?redirect= with what was actually asked for. Dropping it
+    // and going to the workspace means every guarded deep link costs a second
+    // navigation the learner has to make themselves.
+    searchParams = new URLSearchParams("redirect=/account%3Ftab%3Dhistory");
+    const user = userEvent.setup();
+    render(<AuthScreen mode="signin" />);
+
+    await user.type(screen.getByLabelText(/email/i), "learner@writewise.app");
+    await user.type(screen.getByLabelText(/password/i), "correct-horse");
+    await user.click(screen.getByRole("button", { name: /log in/i }));
+
+    await waitFor(() => expect(replace).toHaveBeenCalledWith("/account?tab=history"));
+  });
+
+  it("ignores a redirect that points off the site", async () => {
+    // Otherwise ?redirect=https://evil.example turns a page the learner trusts into a
+    // one-click way off it, with their credentials just entered.
+    searchParams = new URLSearchParams("redirect=https://evil.example/steal");
+    const user = userEvent.setup();
+    render(<AuthScreen mode="signin" />);
+
+    await user.type(screen.getByLabelText(/email/i), "learner@writewise.app");
+    await user.type(screen.getByLabelText(/password/i), "correct-horse");
+    await user.click(screen.getByRole("button", { name: /log in/i }));
+
+    await waitFor(() => expect(replace).toHaveBeenCalledWith("/workspace"));
   });
 });

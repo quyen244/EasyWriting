@@ -1,19 +1,22 @@
 /**
- * Auth calls, with a mock transport behind the same functions.
+ * Auth calls, with two transports behind one set of functions.
  *
- * The real path is unchanged: the refresh token travels as an httpOnly cookie the
- * browser manages (`credentials: "include"`), and the access token is returned in the
- * body for `useAuth` to hold in memory only.
+ * The real one is Supabase Auth. The mock one stays because a checkout without
+ * credentials must still run: the unit suite, and anyone reviewing the UI, get a working
+ * product rather than a wall of connection errors. Which transport is used is decided by
+ * whether Supabase is configured at all — see `isSupabaseConfigured`.
  *
- * The mock path exists because there is no server to talk to yet. It lives here, behind
- * the same five functions, so `useAuth`, the route guard and every screen above them are
- * identical either way — the swap later is this file and nothing else.
+ * The five exported functions and the `AuthErrorCode` set are the contract. Every screen,
+ * `useAuth`, and the route guard are written against them and none of them know which
+ * transport answered. That is what made swapping the transport a one-file change.
  *
- * One deliberate exception to "mock state resets on reload": the *session* is written to
- * `localStorage`. Everything else (history, practice progress) is in-memory by design,
- * but being logged out by a page refresh is not a product decision, it is an accident,
- * and it would make the authenticated product unusable to review.
+ * Session storage differs by transport, and deliberately so. Supabase keeps the session
+ * in cookies (via `@supabase/ssr`) so the middleware can read it before a page renders.
+ * The mock keeps it in `localStorage`, because being logged out by a page refresh is not
+ * a product decision, it is an accident.
  */
+
+import { getSupabaseBrowserClient, isSupabaseConfigured } from "@/lib/supabase/client";
 
 export interface Account {
   id: string;
@@ -33,7 +36,10 @@ export type AuthErrorCode =
   | "WEAK_PASSWORD"
   | "INVALID_CREDENTIALS"
   | "TOO_MANY_ATTEMPTS"
-  | "SESSION_EXPIRED";
+  | "SESSION_EXPIRED"
+  /** Sign-up succeeded but no session came back: email confirmation is switched on. */
+  | "EMAIL_NOT_CONFIRMED"
+  | "UNKNOWN";
 
 export class AuthApiError extends Error {
   readonly code: AuthErrorCode;
@@ -58,43 +64,152 @@ export interface SigninInput {
   password: string;
 }
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "") ?? "http://localhost:8000";
+/** A display name derived from the email — better than an empty greeting. */
+function nameFromEmail(email: string): string {
+  const local = email.split("@")[0] ?? "";
+  const cleaned = local.replace(/[._-]+/g, " ").trim();
+  if (!cleaned) return "Learner";
+  return cleaned
+    .split(" ")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
 
-/** Mock is the default; using the real service is the explicit choice. */
-const USE_REAL_API = process.env.NEXT_PUBLIC_USE_REAL_API === "true";
+// ── Supabase transport ────────────────────────────────────────────────────────
 
-// ── Real transport ────────────────────────────────────────────────────────────
+/**
+ * Supabase's error codes, mapped onto the ones the UI already knows how to phrase.
+ *
+ * Anything unmapped becomes UNKNOWN rather than being forced into the nearest-looking
+ * code. Telling someone their password is too short when the real problem was something
+ * else sends them off fixing the wrong thing.
+ */
+const SUPABASE_ERROR_CODES: Record<string, AuthErrorCode> = {
+  user_already_exists: "EMAIL_ALREADY_REGISTERED",
+  email_exists: "EMAIL_ALREADY_REGISTERED",
+  weak_password: "WEAK_PASSWORD",
+  invalid_credentials: "INVALID_CREDENTIALS",
+  email_not_confirmed: "EMAIL_NOT_CONFIRMED",
+  over_request_rate_limit: "TOO_MANY_ATTEMPTS",
+  over_email_send_rate_limit: "TOO_MANY_ATTEMPTS",
+  session_expired: "SESSION_EXPIRED",
+  session_not_found: "SESSION_EXPIRED",
+  refresh_token_not_found: "SESSION_EXPIRED",
+};
 
-async function request<T>(
-  path: string,
-  init: RequestInit & { accessToken?: string } = {},
-): Promise<T> {
-  const { accessToken, headers, ...rest } = init;
+function toAuthApiError(error: { code?: string; status?: number; message: string }) {
+  const byCode = error.code ? SUPABASE_ERROR_CODES[error.code] : undefined;
+  // 429 is meaningful even when the body carries no code we recognise.
+  const code: AuthErrorCode = byCode ?? (error.status === 429 ? "TOO_MANY_ATTEMPTS" : "UNKNOWN");
+  return new AuthApiError(code, error.message, error.status ?? 400);
+}
 
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    ...rest,
-    credentials: "include", // sends/receives the httpOnly refresh_token cookie
-    headers: {
-      ...(rest.body ? { "Content-Type": "application/json" } : {}),
-      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-      ...headers,
-    },
+/**
+ * Resolves the account from `profiles`, which is the product's source of truth for a
+ * learner's name — not the copy in the auth user's metadata, which is only ever a
+ * snapshot of what they typed at sign-up.
+ *
+ * Falls back to the metadata, then to the email, so the sidebar always has something to
+ * show even if the profile row is a moment behind its trigger.
+ */
+async function accountFromSession(userId: string, email: string, metaName?: unknown) {
+  const client = getSupabaseBrowserClient();
+  const { data } = await client
+    .from("profiles")
+    .select("email, full_name")
+    .eq("id", userId)
+    .maybeSingle();
+
+  const fromMeta = typeof metaName === "string" ? metaName.trim() : "";
+  const resolvedEmail = data?.email ?? email;
+
+  return {
+    id: userId,
+    email: resolvedEmail,
+    display_name: data?.full_name || fromMeta || nameFromEmail(resolvedEmail),
+  } satisfies Account;
+}
+
+async function supabaseSignUp(input: SignupInput): Promise<AuthResponse> {
+  const client = getSupabaseBrowserClient();
+  const { data, error } = await client.auth.signUp({
+    email: input.email.trim(),
+    password: input.password,
+    // Read by the `on_auth_user_created` trigger to seed `profiles.full_name`.
+    options: { data: { full_name: input.display_name?.trim() || null } },
   });
 
-  if (response.status === 204) {
-    return undefined as T;
+  if (error) throw toAuthApiError(error);
+
+  // With confirmations off — the configuration this product expects — a session comes
+  // back immediately. If it does not, someone re-enabled them in the dashboard, and
+  // saying so plainly beats leaving a blank screen.
+  if (!data.session || !data.user) {
+    throw new AuthApiError(
+      "EMAIL_NOT_CONFIRMED",
+      "Sign-up created an account but no session. Email confirmation is enabled in Supabase.",
+      400,
+    );
   }
 
-  const body = await response.json().catch(() => null);
+  return {
+    access_token: data.session.access_token,
+    token_type: "bearer",
+    expires_in: data.session.expires_in ?? 3600,
+    user: await accountFromSession(
+      data.user.id,
+      data.user.email ?? input.email,
+      data.user.user_metadata?.full_name,
+    ),
+  };
+}
 
-  if (!response.ok) {
-    const code: AuthErrorCode = body?.error ?? "SESSION_EXPIRED";
-    const message: string = body?.message ?? "Something went wrong. Please try again.";
-    throw new AuthApiError(code, message, response.status);
+async function supabaseSignIn(input: SigninInput): Promise<AuthResponse> {
+  const client = getSupabaseBrowserClient();
+  const { data, error } = await client.auth.signInWithPassword({
+    email: input.email.trim(),
+    password: input.password,
+  });
+
+  if (error) throw toAuthApiError(error);
+
+  return {
+    access_token: data.session.access_token,
+    token_type: "bearer",
+    expires_in: data.session.expires_in ?? 3600,
+    user: await accountFromSession(
+      data.user.id,
+      data.user.email ?? input.email,
+      data.user.user_metadata?.full_name,
+    ),
+  };
+}
+
+async function supabaseRefresh(): Promise<AuthResponse> {
+  const client = getSupabaseBrowserClient();
+
+  // `getUser` verifies the token with the auth server; `getSession` would only read what
+  // the cookie claims. This call decides whether someone is signed in, so it verifies.
+  const { data: userData, error: userError } = await client.auth.getUser();
+  if (userError || !userData.user) {
+    throw new AuthApiError("SESSION_EXPIRED", "No session.", 401);
   }
 
-  return body as T;
+  const { data: sessionData } = await client.auth.getSession();
+  if (!sessionData.session) {
+    throw new AuthApiError("SESSION_EXPIRED", "No session.", 401);
+  }
+
+  return {
+    access_token: sessionData.session.access_token,
+    token_type: "bearer",
+    expires_in: sessionData.session.expires_in ?? 3600,
+    user: await accountFromSession(
+      userData.user.id,
+      userData.user.email ?? "",
+      userData.user.user_metadata?.full_name,
+    ),
+  };
 }
 
 // ── Mock transport ────────────────────────────────────────────────────────────
@@ -130,17 +245,6 @@ function writeSession(account: Account | null): void {
   } catch {
     // Private-mode storage refusals cost the learner a reload, not the session.
   }
-}
-
-/** A display name derived from the email — better than an empty greeting. */
-function nameFromEmail(email: string): string {
-  const local = email.split("@")[0] ?? "";
-  const cleaned = local.replace(/[._-]+/g, " ").trim();
-  if (!cleaned) return "Learner";
-  return cleaned
-    .split(" ")
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(" ");
 }
 
 function mockResponse(account: Account): AuthResponse {
@@ -195,39 +299,49 @@ async function mockRefresh(): Promise<AuthResponse> {
 // ── Public surface ────────────────────────────────────────────────────────────
 
 export function signUp(input: SignupInput): Promise<AuthResponse> {
-  if (!USE_REAL_API) return mockSignUp(input);
-  return request<AuthResponse>("/api/v1/auth/signup", {
-    method: "POST",
-    body: JSON.stringify(input),
-  });
+  return isSupabaseConfigured ? supabaseSignUp(input) : mockSignUp(input);
 }
 
 export function signIn(input: SigninInput): Promise<AuthResponse> {
-  if (!USE_REAL_API) return mockSignIn(input);
-  return request<AuthResponse>("/api/v1/auth/signin", {
-    method: "POST",
-    body: JSON.stringify(input),
-  });
+  return isSupabaseConfigured ? supabaseSignIn(input) : mockSignIn(input);
 }
 
 export function refresh(): Promise<AuthResponse> {
-  if (!USE_REAL_API) return mockRefresh();
-  return request<AuthResponse>("/api/v1/auth/refresh", { method: "POST" });
+  return isSupabaseConfigured ? supabaseRefresh() : mockRefresh();
 }
 
-export async function signOut(accessToken: string): Promise<void> {
-  if (!USE_REAL_API) {
+/**
+ * `accessToken` is unused by both transports now — Supabase reads the session from the
+ * cookie it manages. The parameter stays so `useAuth` and the screens above it did not
+ * have to change when the transport did.
+ */
+export async function signOut(_accessToken?: string): Promise<void> {
+  if (!isSupabaseConfigured) {
     writeSession(null);
     return;
   }
-  await request<void>("/api/v1/auth/signout", { method: "POST", accessToken });
+  const { error } = await getSupabaseBrowserClient().auth.signOut();
+  // A failed sign-out still ends the local session; the caller clears its own state
+  // regardless. A server-side session that outlives the cookie simply never validates.
+  if (error && error.status !== 401 && error.status !== 403) {
+    throw toAuthApiError(error);
+  }
 }
 
-export async function me(accessToken: string): Promise<Account> {
-  if (!USE_REAL_API) {
+export async function me(_accessToken?: string): Promise<Account> {
+  if (!isSupabaseConfigured) {
     const account = readSession();
     if (!account) throw new AuthApiError("SESSION_EXPIRED", "No session.", 401);
     return account;
   }
-  return request<Account>("/api/v1/auth/me", { method: "GET", accessToken });
+
+  const { data, error } = await getSupabaseBrowserClient().auth.getUser();
+  if (error || !data.user) {
+    throw new AuthApiError("SESSION_EXPIRED", "No session.", 401);
+  }
+  return accountFromSession(
+    data.user.id,
+    data.user.email ?? "",
+    data.user.user_metadata?.full_name,
+  );
 }

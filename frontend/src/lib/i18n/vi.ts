@@ -106,6 +106,8 @@ export const vi: Messages = {
   "auth.errorInvalidCredentials": "Email hoặc mật khẩu chưa đúng.",
   "auth.errorTooMany": "Bạn đã thử quá nhiều lần. Vui lòng đợi vài phút.",
   "auth.errorSessionExpired": "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.",
+  "auth.errorEmailNotConfirmed": "Tài khoản này cần xác thực email trước khi đăng nhập.",
+  "auth.errorUnknown": "Có lỗi xảy ra. Vui lòng thử lại.",
   "auth.errorNetwork": "Không kết nối được máy chủ. Kiểm tra kết nối và thử lại.",
   "auth.checkingSession": "Đang kiểm tra phiên đăng nhập…",
   "auth.demoHint": "Chế độ demo — mọi email cùng mật khẩu từ 8 ký tự đều đăng nhập được.",

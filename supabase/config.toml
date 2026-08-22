@@ -223,6 +223,16 @@ enable_signup = true
 # addresses. If disabled, only the new email is required to confirm.
 double_confirm_changes = true
 # If enabled, users need to confirm their email address before signing in.
+#
+# OFF by decision A-1 in CLARIFICATION.md: sign-up hands the learner a session
+# immediately, which removes /verify-email, /auth/callback and the resend flow from
+# scope. The trade-off is accepted and recorded — anyone can register with an address
+# they do not own, so this must be switched back on before real users arrive.
+#
+# NOTE: this file governs the LOCAL stack. The linked project still had confirmations
+# ON as of 2026-08-23 (checked via /auth/v1/settings -> mailer_autoconfirm: false).
+# Run `supabase config push` once linked, or turn "Confirm email" off in the dashboard,
+# or sign-up will return no session and the app will report EMAIL_NOT_CONFIRMED.
 enable_confirmations = false
 # If enabled, users will need to reauthenticate or have logged in recently to change their password.
 secure_password_change = false

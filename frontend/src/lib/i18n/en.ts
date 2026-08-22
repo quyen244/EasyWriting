@@ -104,6 +104,8 @@ export const en = {
   "auth.errorInvalidCredentials": "That email and password combination is not right.",
   "auth.errorTooMany": "Too many attempts. Wait a few minutes before trying again.",
   "auth.errorSessionExpired": "Your session expired. Please log in again.",
+  "auth.errorEmailNotConfirmed": "This account needs its email confirmed before you can log in.",
+  "auth.errorUnknown": "Something went wrong. Please try again.",
   "auth.errorNetwork": "Could not reach the server. Check your connection and try again.",
   "auth.checkingSession": "Checking your session…",
   "auth.demoHint": "Demo mode — any email and an 8-character password will get you in.",
