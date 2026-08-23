@@ -16,8 +16,8 @@ Tài liệu nền: [CLARIFICATION.md](./CLARIFICATION.md) ·
 
 | Việc | Từ | Ghi chú |
 |---|---|---|
-| Nạp `seed.sql` lên cloud | 2026-08-23 | 🚧 `db push` không chạy seed — bảng nội dung trên cloud đang rỗng. Cần `psql` + mật khẩu database |
 | Quyết định về "tiêu chí yếu nhất" | 2026-08-23 | Xếp hạng đang so TASK_ACHIEVEMENT (n=1) với TASK_RESPONSE (n=2) — hai tiêu chí loại trừ nhau |
+| Nối `lib/api/*` vào Supabase | 2026-08-23 | Dữ liệu đã sẵn trên cloud và đường đọc đã được test. Frontend vẫn đang `import` thẳng `mockData` |
 
 ---
 
@@ -86,7 +86,9 @@ Tài liệu nền: [CLARIFICATION.md](./CLARIFICATION.md) ·
 - [x] ✅ Auth end-to-end trên local: sign up trả session ngay · trigger tạo `profiles` với `full_name` từ metadata · sign in · sai mật khẩu → `invalid_credentials` · logout 204 rồi token cũ → 403
 - [x] ✅ Seed đọc được qua REST bằng token thật: 2 đề, 4 task, 12 module, 36 exercise, song ngữ nguyên vẹn
 - [x] ✅ Migrations đã lên cloud `tmwozpzntzyupxrmgsro` — trigger `on_auth_user_created` chạy đúng, `anon` đã bị thu hồi quyền
-- [ ] 🚧 Nạp `seed.sql` lên cloud — `db push` không chạy seed, `mock_tests`/`practice_modules` đang rỗng
+- [x] ✅ **Seed đã lên cloud** — 2 đề · 4 task · 12 module · 36 exercise, tiếng Việt round-trip nguyên vẹn qua REST
+- [x] ✅ **Bộ test API chạy thẳng vào cloud — 75/75** (`supabase/tests/api.mjs`): anon bị chặn ở cả 9 bảng và 2 view · học viên không tự đặt band, không ghi đè bài đã nộp, không nộp hộ người khác · trigger `submitted_at` → `submitted` · `combined_band` 6.5 · Storage chặn thư mục người khác, chặn file >5 MB và sai MIME · logout thu hồi refresh token
+- [x] ✅ **Siết grant trên `v_activity` / `v_practice_progress`** (migration `0008`) — Supabase cấp mặc định ALL cho `anon`; nay chỉ còn `select` cho `authenticated`
 - [ ] ❄️ Edge Function `grade-attempt` — hoãn, bàn riêng
 - [ ] ❄️ Trigger `pg_net` dispatch + **cron dọn row kẹt ở `queued`** — hoãn, đi cùng Edge Function
 - [ ] ❄️ Rate limit số lần chấm mỗi user · constitution Principle V
@@ -119,7 +121,6 @@ Ghi ra để nó không biến mất khỏi tầm nhìn.
 | **Prompt `v1` chỉ sinh một thứ tiếng** | 🟡 | Frontend cần song ngữ. Cần bộ `v2` và benchmark với `v1` trước khi dùng · constitution Principle IV |
 | **Chưa có baseline Principle IV** | 🟡 | `docs/live-model-validation.md` §5.2: gate so sánh trước/sau "dựng xong nhưng chưa có số liệu nền". Cần chạy đủ 10 bài |
 | **Chưa xác minh bằng browser** | 🟡 | Redesign mới chỉ được đảm bảo qua build + unit test, chưa mở mắt nhìn |
-| **Nội dung trên cloud rỗng** | 🟡 | `db push` chỉ chạy migrations. `mock_tests`, `practice_modules`, `practice_exercises` chưa có dữ liệu — chưa ảnh hưởng vì frontend còn đọc `mockData`, nhưng sẽ vỡ ngay khi nối `lib/api` vào Supabase |
 | **`useAuth` vẫn tự hẹn giờ refresh** | 🟢 | Supabase client đã tự làm việc đó. Lớp hẹn giờ cũ giờ là thừa chứ không sai — dọn khi nào chạm lại file |
 
 ---

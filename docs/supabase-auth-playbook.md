@@ -28,7 +28,8 @@ npx supabase init && npx supabase start          # cần Docker chạy sẵn
 |---|---|---|---|
 | 1 | **`next dev` mồ côi** giữ env cũ | "Something went wrong", console báo `ERR_CONNECTION_REFUSED` tới backend *cũ* | Env được nạp lúc **khởi động server**. Giết `next dev` bằng PID; đóng shell không đủ. Nghi ngờ thì `netstat -ano \| grep :3000` |
 | 2 | **Hai route guard đánh nhau** | Logout bị `ERR_ABORTED`, điều hướng sai đích | Khi chuyển sang middleware, **vô hiệu hoá guard client cũ**. Đừng để cả hai chạy |
-| 3 | **`db push` không chạy `seed.sql`** | Bảng nội dung rỗng trên cloud dù migration đã lên | Seed chỉ chạy khi `db reset`/`start`. Lên cloud phải chạy tay qua `psql` |
+| 3 | **`db push` không chạy `seed.sql`** | Bảng nội dung rỗng trên cloud dù migration đã lên | Seed chỉ chạy khi `db reset`/`start`. Lên cloud phải chạy tay qua `psql` — xem mục dưới |
+| 7 | **Host `db.<ref>.supabase.co` chỉ có bản ghi AAAA** | `could not translate host name … to address` dù tên phân giải được | Máy không có IPv6 thì phải đi qua pooler. Username đổi thành `postgres.<ref>` |
 | 4 | **Confirm email BẬT mặc định trên cloud** | Sign up không trả session | `config.toml` **chỉ áp dụng local**. Kiểm bằng `GET /auth/v1/settings` → `mailer_autoconfirm` |
 | 5 | **Nuốt lỗi provider** | Console in `{}` | Overlay dev dùng `JSON.stringify`; `Error` không có own property enumerable → `{}`. **Nội suy vào chuỗi**: `` `code=${e.code} msg=${e.message}` `` |
 | 6 | **Key `sb_publishable_…`** | `/rest/v1/` trả 401 "Secret API key required" | Đó là endpoint OpenAPI, cần secret key. Probe từng bảng: `/rest/v1/<table>?select=id&limit=1` |
@@ -54,6 +55,31 @@ for (const c of response.cookies.getAll()) r.cookies.set(c);
 **Lọc `?redirect=`.** Không lọc thì `?redirect=https://evil.example` biến trang đăng nhập thành
 cú click ra khỏi site, ngay sau khi vừa gõ mật khẩu. Chỉ nhận chuỗi bắt đầu bằng `/` và **không**
 bắt đầu bằng `//`.
+
+---
+
+## Nạp seed lên cloud
+
+`supabase db push` chỉ thi hành migrations. `seed.sql` là **dữ liệu**, chỉ tự chạy khi
+`supabase start` / `db reset` — tức chỉ local. Trên cloud phải nạp tay:
+
+```bash
+export PGPASSWORD='<database password>'
+export PGCLIENTENCODING=UTF8   # bắt buộc trên Windows, nếu không tiếng Việt thành mojibake
+psql "postgresql://postgres.<ref>@aws-0-<region>.pooler.supabase.com:5432/postgres?sslmode=require" \
+     -v ON_ERROR_STOP=1 -f supabase/seed.sql
+```
+
+Ba chỗ dễ vấp:
+
+- **Không dùng `db.<ref>.supabase.co`** nếu máy không có IPv6 — host đó chỉ có bản ghi
+  AAAA. Pooler có IPv4, nhưng username phải là `postgres.<ref>` chứ không phải `postgres`.
+- **Không biết region?** Thử vài host: sai region trả `FATAL: (ENOTFOUND) tenant/user … not
+  found` — một thông báo rất rõ, thử vòng là ra.
+- **Port 5432 (session), không phải 6543 (transaction)** nếu seed bọc trong `begin; … commit;`.
+
+Cách bền nhất là để seed **sinh ra từ chính fixtures của frontend** và toàn bộ là `upsert`.
+Chạy lại bao nhiêu lần cũng được, và nội dung trên cloud không thể trôi khỏi mock mode.
 
 ---
 
@@ -134,6 +160,28 @@ Chạy bằng trình duyệt thật, không phải unit test:
 > Mục áp chót là mục hay bị bỏ. `POST /auth/v1/logout` thường hiện `ERR_ABORTED` vì điều hướng
 > cắt ngang — **vô hại**, request vẫn tới nơi. Muốn chắc thì bắt refresh token trước khi logout
 > rồi thử đổi lại sau.
+
+---
+
+## Kiểm cả API, không chỉ auth
+
+Checklist trên chứng minh đăng nhập chạy. Nó **không** chứng minh cái token đó bị giới hạn
+đúng mức. Viết một script gọi thẳng REST bằng publishable key và hỏi những câu khó chịu —
+`supabase/tests/api.mjs` trong repo này là một bản mẫu, 75 mệnh đề:
+
+- anon đọc được bảng nào không? (kể cả **view** — Supabase cấp mặc định ALL cho `anon` trên
+  mọi thứ tạo trong `public`, và migration dễ quên revoke phần view)
+- học viên tự đặt điểm được không, trên `insert` lẫn `update`?
+- nộp bài dưới `user_id` người khác thì sao?
+- upload vào thư mục của người khác? file 6 MB? file PDF đội lốt ảnh?
+
+Một điểm phải chú ý khi viết: **"bị từ chối" phải là từ chối thật**. Nếu chỉ kiểm
+`status >= 400` thì gõ sai tên cột cũng ra 400 và test xanh trong khi chẳng chứng minh gì.
+Bắt đúng `42501` / vi phạm RLS.
+
+Và nửa hệ thống mà token học viên không chạm tới được — pipeline ghi điểm — chỉ kiểm được
+qua một kết nối đặc quyền đóng vai pipeline. Không có nó thì `v_activity`, `combined_band`
+và các ràng buộc "row đã chấm phải đủ trường" không bao giờ được chạy thử.
 
 ---
 
