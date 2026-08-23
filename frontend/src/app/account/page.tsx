@@ -100,7 +100,8 @@ function AccountView() {
     try {
       await signOut();
     } finally {
-      router.replace("/signin");
+      // Same destination as the sidebar's control — one sign-out, one place it leads.
+      router.replace("/");
     }
   }
 

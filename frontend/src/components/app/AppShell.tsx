@@ -46,8 +46,9 @@ export default function AppShell({ children, aside, variant = "default" }: Props
     try {
       await signOut();
     } finally {
-      // Even a failed sign-out ends the local session, so the destination is the same.
-      router.replace("/signin");
+      // The landing page, not /signin: signing out is leaving, not starting again. Even
+      // a failed sign-out ends the local session, so the destination is the same.
+      router.replace("/");
     }
   }, [router, signOut]);
 

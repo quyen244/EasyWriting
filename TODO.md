@@ -7,7 +7,7 @@ Nơi track mọi việc từ frontend, backend đến hạ tầng. Một dòng m
 
 Tài liệu nền: [CLARIFICATION.md](./CLARIFICATION.md) ·
 [docs/system-architecture.md](./docs/system-architecture.md) ·
-[docs/data-model.md](./docs/data-model.md) ·
+[docs/data-model.md](./docs/data-model.md) · [docs/supabase-auth-playbook.md](./docs/supabase-auth-playbook.md) ·
 [specs/README.md](./specs/README.md) · [.specify/memory/constitution.md](./.specify/memory/constitution.md)
 
 ---
@@ -16,7 +16,7 @@ Tài liệu nền: [CLARIFICATION.md](./CLARIFICATION.md) ·
 
 | Việc | Từ | Ghi chú |
 |---|---|---|
-| Đẩy migrations lên project cloud | 2026-08-23 | 🚧 Chặn: `supabase link` cần mật khẩu database, tôi không có |
+| Nạp `seed.sql` lên cloud | 2026-08-23 | 🚧 `db push` không chạy seed — bảng nội dung trên cloud đang rỗng. Cần `psql` + mật khẩu database |
 | Quyết định về "tiêu chí yếu nhất" | 2026-08-23 | Xếp hạng đang so TASK_ACHIEVEMENT (n=1) với TASK_RESPONSE (n=2) — hai tiêu chí loại trừ nhau |
 
 ---
@@ -45,6 +45,10 @@ Tài liệu nền: [CLARIFICATION.md](./CLARIFICATION.md) ·
 - [x] ✅ Thêm mã lỗi `EMAIL_NOT_CONFIRMED` + `UNKNOWN` kèm chuỗi EN/VI
 - [x] ✅ 10/10 test AuthScreen pass, kể cả 2 test mới cho redirect
 - [x] ✅ **Route guard kiểm bằng HTTP thật**: 6 route bảo vệ → 307 kèm `?redirect=`, 4 route công khai → 200
+- [x] ✅ **Auth chạy thật trên cloud, kiểm bằng trình duyệt** — 13/13 mệnh đề: sign up → `/workspace`, sign in về đúng `?redirect`, F5 không nháy, `/signin` đẩy đi khi đã đăng nhập, log out về landing + Back không vào lại, sai mật khẩu báo đúng, mật khẩu gõ dở còn nguyên
+- [x] ✅ Log out **thu hồi phiên thật**: refresh token cũ → `refresh_token_not_found`
+- [x] ✅ Gỡ guard client cũ đang đua với middleware (`ProtectedRoute` giờ chỉ còn phục vụ mock mode)
+- [x] ✅ Sign out về landing page, khớp CLARIFICATION §1.2 (trước đó đi `/signin`)
 
 ### Cần làm
 
@@ -81,7 +85,8 @@ Tài liệu nền: [CLARIFICATION.md](./CLARIFICATION.md) ·
 - [x] ✅ Test trigger `combined_band`: (6.0 + 7.0×2)/3 → 6.5
 - [x] ✅ Auth end-to-end trên local: sign up trả session ngay · trigger tạo `profiles` với `full_name` từ metadata · sign in · sai mật khẩu → `invalid_credentials` · logout 204 rồi token cũ → 403
 - [x] ✅ Seed đọc được qua REST bằng token thật: 2 đề, 4 task, 12 module, 36 exercise, song ngữ nguyên vẹn
-- [ ] 🚧 `supabase db push` lên project cloud `tmwozpzntzyupxrmgsro` — cần mật khẩu database để `supabase link`
+- [x] ✅ Migrations đã lên cloud `tmwozpzntzyupxrmgsro` — trigger `on_auth_user_created` chạy đúng, `anon` đã bị thu hồi quyền
+- [ ] 🚧 Nạp `seed.sql` lên cloud — `db push` không chạy seed, `mock_tests`/`practice_modules` đang rỗng
 - [ ] ❄️ Edge Function `grade-attempt` — hoãn, bàn riêng
 - [ ] ❄️ Trigger `pg_net` dispatch + **cron dọn row kẹt ở `queued`** — hoãn, đi cùng Edge Function
 - [ ] ❄️ Rate limit số lần chấm mỗi user · constitution Principle V
@@ -114,7 +119,7 @@ Ghi ra để nó không biến mất khỏi tầm nhìn.
 | **Prompt `v1` chỉ sinh một thứ tiếng** | 🟡 | Frontend cần song ngữ. Cần bộ `v2` và benchmark với `v1` trước khi dùng · constitution Principle IV |
 | **Chưa có baseline Principle IV** | 🟡 | `docs/live-model-validation.md` §5.2: gate so sánh trước/sau "dựng xong nhưng chưa có số liệu nền". Cần chạy đủ 10 bài |
 | **Chưa xác minh bằng browser** | 🟡 | Redesign mới chỉ được đảm bảo qua build + unit test, chưa mở mắt nhìn |
-| **Auth mới chỉ chạy thật trên local** | 🟡 | Toàn bộ luồng đã kiểm trên stack local. Project cloud đã tắt confirm email nhưng **chưa có schema mới** — chưa có trigger `on_auth_user_created`, nên đăng ký ở đó tạo `auth.users` mà không có `profiles` |
+| **Nội dung trên cloud rỗng** | 🟡 | `db push` chỉ chạy migrations. `mock_tests`, `practice_modules`, `practice_exercises` chưa có dữ liệu — chưa ảnh hưởng vì frontend còn đọc `mockData`, nhưng sẽ vỡ ngay khi nối `lib/api` vào Supabase |
 | **`useAuth` vẫn tự hẹn giờ refresh** | 🟢 | Supabase client đã tự làm việc đó. Lớp hẹn giờ cũ giờ là thừa chứ không sai — dọn khi nào chạm lại file |
 
 ---

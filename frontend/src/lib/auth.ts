@@ -101,6 +101,23 @@ function toAuthApiError(error: { code?: string; status?: number; message: string
   const byCode = error.code ? SUPABASE_ERROR_CODES[error.code] : undefined;
   // 429 is meaningful even when the body carries no code we recognise.
   const code: AuthErrorCode = byCode ?? (error.status === 429 ? "TOO_MANY_ATTEMPTS" : "UNKNOWN");
+
+  // UNKNOWN means the learner is about to be told "something went wrong" and nothing
+  // else. That sentence is fine for them and useless for anyone trying to fix it, so the
+  // provider's own words go to the console where a developer will find them. Without
+  // this the only way to learn why sign-up failed is to guess.
+  if (code === "UNKNOWN") {
+    // Interpolated into the string, not passed as an object: dev overlays serialise
+    // objects with JSON.stringify, which renders an error carrying no enumerable own
+    // properties as `{}` — the least useful thing it could say.
+    const raw = error as { name?: string };
+    console.error(
+      `[auth] unmapped error — name=${raw?.name ?? "?"} code=${error?.code ?? "?"} ` +
+        `status=${error?.status ?? "?"} message=${error?.message ?? "(none)"}`,
+      error,
+    );
+  }
+
   return new AuthApiError(code, error.message, error.status ?? 400);
 }
 

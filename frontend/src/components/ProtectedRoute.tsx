@@ -1,41 +1,56 @@
 "use client";
 
 /**
- * Client-side auth guard (002 T002, research.md decision 1, contracts/page-routes.md).
+ * Client-side auth guard — the fallback, not the guard.
  *
- * This is a client guard rather than Next.js middleware for a reason that is not a
- * preference: `003` scopes the refresh-token cookie to the backend's own domain, and the
- * access token is deliberately never persisted to a cookie at all. Middleware runs on a
- * different origin and can see neither. The only place that can answer "is this learner
- * signed in" is client JS, after `useAuth` has resolved.
+ * This used to be the only guard, for a reason that has since expired: the retired
+ * backend scoped its refresh cookie to another domain, so middleware could not see a
+ * session and only client JS could answer "is this learner signed in".
  *
- * The three-state flow matters. `checking` is not "signed out": a returning visitor with
- * a valid refresh cookie passes through it on every page load, so redirecting there
- * would sign out every returning learner. And children must not render during it —
- * SC-004 requires that protected content never reach the DOM for an unauthenticated
- * visitor, which "render then hide" would violate.
+ * With Supabase the session lives in a cookie this app's own middleware reads, so
+ * `middleware.ts` decides before a page renders. Leaving a second guard running was not
+ * harmless: on sign-out both fired at once, and this one's redirect aborted the
+ * in-flight logout request and beat `AppShell` to the destination — the learner ended up
+ * at /signin instead of the landing page, with the server-side session possibly still
+ * open.
+ *
+ * So when Supabase is configured, this component gets out of the way. It still guards
+ * mock mode, where there is no middleware to do it — a checkout without credentials
+ * should not hand out the product to anyone who types /workspace.
  */
 
 import { useRouter } from "next/navigation";
 import { useEffect, type ReactNode } from "react";
 
 import { useAuth } from "@/hooks/useAuth";
+import { isSupabaseConfigured } from "@/lib/supabase/client";
 
 export default function ProtectedRoute({ children }: { children: ReactNode }) {
   const { status } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
+    if (isSupabaseConfigured) return;
     if (status === "unauthenticated") {
       router.replace("/signin");
     }
   }, [status, router]);
+
+  // The middleware already refused anyone without a session, so rendering is safe and a
+  // spinner here would be the very flash the middleware exists to prevent.
+  if (isSupabaseConfigured) {
+    return <>{children}</>;
+  }
 
   if (status === "authenticated") {
     return <>{children}</>;
   }
 
   if (status === "checking") {
+    // `checking` is not "signed out": a returning visitor passes through it on every
+    // load, so redirecting here would sign out every returning learner. Children must
+    // not render during it either — protected content should never reach the DOM for a
+    // visitor who turns out to be anonymous.
     return (
       <div
         role="status"
