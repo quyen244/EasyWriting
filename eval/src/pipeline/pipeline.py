@@ -25,8 +25,8 @@ import time
 from dataclasses import dataclass, field
 
 from src.llm.base import LLMClient
-from src.llm.prompts.builders import build_criterion_messages
-from src.llm.prompts.loader import PromptSet, get_prompt_set
+from src.llm.prompts.builders import build_combined_messages, build_criterion_messages
+from src.llm.prompts.loader import PromptSet, get_combined_prompt_set, get_prompt_set
 from src.pipeline.aggregate import aggregate_overall, clamp, length_penalty, snap_band
 from src.pipeline.config import PipelineConfig
 from src.pipeline.errors import ScoringFailedError
@@ -37,6 +37,8 @@ from src.schemas.assessment import (
     TASK_CRITERIA,
     CriterionEvaluation,
     TextFeatures,
+    combined_field_for,
+    combined_response_model_for,
 )
 from src.utils.logging import get_logger
 
@@ -58,6 +60,13 @@ class CriterionOutcome:
     band_was_coerced: bool = False
     degraded: bool = False
     error: str | None = None
+    # pipeline-v2.0 only — v1's `_evaluate_criterion` leaves these at "" and nothing
+    # downstream (compute_metrics, aggregate_overall) reads them, so this is additive,
+    # not a shape change v1 has to account for.
+    comment_en: str = ""
+    comment_vi: str = ""
+    improvement_en: str = ""
+    improvement_vi: str = ""
 
 
 @dataclass
@@ -240,6 +249,137 @@ async def run_assessment(
     logger.info(
         '"event":"assessment_scored","overall_band":%s,"latency_s":%s,'
         '"quote_fidelity":%s,"model":"%s"',
+        overall,
+        outcome.latency_s,
+        round(outcome.quote_fidelity, 3),
+        config.model.id,
+    )
+    return outcome
+
+
+async def run_assessment_v2(
+    client: LLMClient,
+    *,
+    task_type: str,
+    essay_text: str,
+    config: PipelineConfig,
+    prompt_text: str | None = None,
+    features: TextFeatures | None = None,
+) -> PipelineOutcome:
+    """pipeline-v2.0 — score one essay with ONE combined model call.
+
+    Returns the same `PipelineOutcome` shape `run_assessment` does, so every
+    downstream consumer (`evaluation/harness.py`'s `compute_metrics`, `render_report`,
+    the raw-results writer) works unchanged for either pipeline version. Only what
+    happens between "build the prompt" and "get 4 `CriterionOutcome`s back" differs:
+    one request instead of four concurrent ones, and no per-criterion degradation is
+    possible — the model either returns a complete, schema-valid answer for all four
+    criteria in one shot, or the whole assessment fails and is retried like any other
+    malformed response (`OpenRouterClient`'s existing repair loop). This is not a new
+    failure mode relative to v1: `run_assessment` above already promotes ANY partial
+    result (even 3 of 4 criteria present) to a full `ScoringFailedError` (see `if
+    partial` below the v1 orchestration), so "no partial results survive" was already
+    the caller-visible contract before this function existed.
+    """
+    started = time.perf_counter()
+    features = features or extract_features(essay_text, task_type)
+
+    # Resolved once, like v1 — a mid-run version change would make the result
+    # untraceable, and there is only one call to resolve it for here anyway.
+    prompt_set = get_combined_prompt_set(config.prompts.version)
+
+    lp = config.scoring.length_penalty
+    penalty = length_penalty(
+        features.length_deficit_ratio,
+        moderate_deficit_ratio=lp.moderate_deficit_ratio,
+        moderate_penalty=lp.moderate_penalty,
+        severe_deficit_ratio=lp.severe_deficit_ratio,
+        severe_penalty=lp.severe_penalty,
+    )
+
+    codes = CRITERIA_BY_TASK[task_type]
+    messages = build_combined_messages(
+        task_type=task_type,
+        essay_text=essay_text,
+        features=features,
+        prompt_text=prompt_text,
+        prompt_set=prompt_set,
+    )
+    response_model = combined_response_model_for(task_type)
+
+    response = await client.chat(
+        messages,
+        response_model,
+        node="combined",
+        max_tokens=config.model.max_tokens,
+    )
+
+    if not response.ok or response.parsed is None:
+        logger.warning('"event":"combined_call_failed","task_type":"%s"', task_type)
+        raise ScoringFailedError(failures=[f"combined: {response.error}"])
+
+    parsed = response.parsed
+    outcomes: list[CriterionOutcome] = []
+    for code in codes:
+        block = getattr(parsed, combined_field_for(code))
+        raw_band, coerced = snap_band(block.band)
+
+        # Same rule as v1: under-length is absorbed by the task criterion only.
+        applied = penalty if code in TASK_CRITERIA else 0.0
+        final_band = round(clamp(raw_band - applied), 1) if applied else raw_band
+
+        returned_quotes = [e.quote for e in block.evidence]
+        verified_quotes, dropped = drop_unverified_quotes(returned_quotes, essay_text)
+        if dropped:
+            logger.warning(
+                '"event":"quotes_dropped","criterion":"%s","dropped":%d', code, dropped
+            )
+
+        outcomes.append(
+            CriterionOutcome(
+                criterion=code,
+                band=final_band,
+                explanation=block.justification,
+                descriptor_reference=block.descriptor_reference,
+                evidence_quotes=verified_quotes,
+                raw_band=raw_band,
+                applied_length_penalty=applied,
+                confidence=clamp(block.confidence, 0.0, 1.0),
+                quotes_returned=len(returned_quotes),
+                quotes_dropped=dropped,
+                band_was_coerced=coerced,
+                comment_en=block.comment.en,
+                comment_vi=block.comment.vi,
+                improvement_en=block.improvement.en,
+                improvement_vi=block.improvement.vi,
+            )
+        )
+
+    overall, raw, partial = aggregate_overall([o.band for o in outcomes])
+
+    outcome = PipelineOutcome(
+        overall_band=overall,
+        raw_overall=raw,
+        partial=partial,
+        criteria=outcomes,
+        features=features,
+        pipeline_version=config.version,
+        prompt_version=prompt_set.version,
+        model_used=config.model.id,
+        latency_s=round(time.perf_counter() - started, 3),
+        prompt_tokens=response.prompt_tokens,
+        completion_tokens=response.completion_tokens,
+    )
+
+    # Structurally unreachable — all 4 named fields are required by the strict
+    # schema, so `outcomes` always has exactly 4 non-None bands — kept anyway so
+    # this function's contract matches run_assessment's exactly, defensively.
+    if partial:  # pragma: no cover
+        raise ScoringFailedError(failures=["combined: incomplete result"])
+
+    logger.info(
+        '"event":"assessment_scored","overall_band":%s,"latency_s":%s,'
+        '"quote_fidelity":%s,"model":"%s","call_mode":"single_call"',
         overall,
         outcome.latency_s,
         round(outcome.quote_fidelity, 3),

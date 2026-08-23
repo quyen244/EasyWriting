@@ -1,0 +1,74 @@
+{
+  "task_response": {
+    "justification": "This sits between band 6 and band 7: parts of the task are covered more fully than others, the 'for' side has two developed ideas, the 'against' side has two as well, and the conclusion offers a genuine alternative rather than a restatement, which is stronger than a typical band 6. What keeps it from a clean band 7 is that the illustrative examples remain somewhat general ('a student who volunteer at a nursing home will learn how to communicate') rather than fully extended into a specific, developed case.",
+    "descriptor_reference": "TASK_RESPONSE band 6",
+    "band": 6.5,
+    "confidence": 0.65,
+    "comment": {
+      "en": "You take a clear position from the very first sentence and keep it consistent to the conclusion, and both sides of the argument get a real idea each, not just a mention. Your examples make a general claim ('a student who volunteers... will learn how to communicate') rather than fully developing one specific case, which is what is keeping this just below band 7.",
+      "vi": "Bạn nêu rõ quan điểm ngay từ câu đầu tiên và giữ nhất quán đến tận kết luận, và cả hai phía của lập luận đều có một ý thực sự chứ không chỉ nhắc qua. Ví dụ của bạn vẫn ở mức khái quát ('a student who volunteers... will learn how to communicate') thay vì phát triển đầy đủ một trường hợp cụ thể, đó là điều giữ bài ở dưới mức band 7."
+    },
+    "improvement": {
+      "en": "Pick just one of your examples, the nursing-home volunteer, and extend it for two more sentences with a specific detail (what did they actually learn to say, what changed for them) instead of introducing a new idea; one fully developed example outweighs two general ones.",
+      "vi": "Hãy chọn đúng một ví dụ — người tình nguyện ở viện dưỡng lão — rồi phát triển thêm hai câu với chi tiết cụ thể (họ học được cách nói gì, điều gì thay đổi ở họ) thay vì đưa thêm ý mới; một ví dụ được phát triển đầy đủ có giá trị hơn hai ví dụ chung chung."
+    },
+    "evidence": [
+      { "quote": "I partly agree with this opinion, although I believe it should not be forced on every student.", "comment": "A clear, specific position stated early and held consistently." },
+      { "quote": "a student who volunteer at a nursing home will learn how to communicate with elderly people", "comment": "An example given, but it stays at the level of a general claim rather than a fully developed illustration." }
+    ]
+  },
+  "coherence_cohesion": {
+    "justification": "Paragraphing follows a clear for/against/conclusion structure, and cohesive devices ('Firstly', 'Secondly', 'On the other hand', 'Moreover', 'In conclusion') mark every transition. This matches band 6: cohesive devices are used effectively but may be mechanical. It stays at 6 because the devices are used mechanically, almost every new point starts with a listing word rather than a varied connection to the previous sentence.",
+    "descriptor_reference": "COHERENCE_COHESION band 6",
+    "band": 6.0,
+    "confidence": 0.75,
+    "comment": {
+      "en": "Your four-paragraph structure (for / against / conclusion) is easy to follow, and you mark every new point clearly with words like 'Firstly' and 'Moreover'. Because nearly every sentence starts with one of these listing words, the linking feels mechanical rather than naturally connected.",
+      "vi": "Cấu trúc bốn đoạn của bạn (ủng hộ / phản đối / kết luận) rất dễ theo dõi, và bạn đánh dấu rõ mỗi ý mới bằng các từ như 'Firstly' và 'Moreover'. Vì gần như câu nào cũng bắt đầu bằng một từ liệt kê như vậy, phần liên kết đọc hơi máy móc thay vì gắn kết tự nhiên."
+    },
+    "improvement": {
+      "en": "Replace one of the listing words with a link back to the previous sentence's idea instead, for example instead of 'Moreover, if the activity is not voluntary...', try 'This lack of choice also means that...', which connects to what was just said rather than just adding a new point.",
+      "vi": "Hãy thay một trong các từ liệt kê bằng một câu nối lại ý của câu trước — ví dụ thay vì 'Moreover, if the activity is not voluntary...', thử 'This lack of choice also means that...', vừa nối được với điều vừa nói vừa không chỉ đơn thuần thêm ý mới."
+    },
+    "evidence": [
+      { "quote": "Firstly, it help students to understand the problem of their local area", "comment": "A listing device used correctly to open the first supporting idea." },
+      { "quote": "On the other hand, forcing all students to do unpaid work also has some drawbacks.", "comment": "A clear paragraph-level transition into the counter-argument." }
+    ]
+  },
+  "lexical_resource": {
+    "justification": "There is some range of less common vocabulary and collocation, 'a sense of responsibility', 'heavy study schedule', 'unnecessary pressure', matching band 6's mix of less common vocabulary with some inaccuracy. Word choice is occasionally imprecise ('reduce their academic result' rather than 'lower their results'), and some phrasing stays simple ('some people think', 'I believe'), which keeps this at 6 rather than 7.",
+    "descriptor_reference": "LEXICAL_RESOURCE band 6",
+    "band": 6.0,
+    "confidence": 0.7,
+    "comment": {
+      "en": "Phrases like 'a sense of responsibility' and 'heavy study schedule' show you can go beyond basic vocabulary. A few word choices are slightly off ('reduce their academic result' instead of 'lower their results'), and some sentences fall back on very simple phrasing like 'some people think', which is what keeps this at band 6.",
+      "vi": "Các cụm như 'a sense of responsibility' và 'heavy study schedule' cho thấy bạn có thể vượt ra ngoài vốn từ cơ bản. Một vài lựa chọn từ hơi lệch ('reduce their academic result' thay vì 'lower their results'), và một số câu vẫn dùng cách diễn đạt rất đơn giản như 'some people think', đó là điều giữ bài ở band 6."
+    },
+    "improvement": {
+      "en": "Check collocations for your key nouns before submitting, 'results' pairs with 'improve/lower/affect', not 'reduce', a quick collocation check on 3-4 key phrases usually removes exactly this kind of near-miss.",
+      "vi": "Trước khi nộp bài, hãy kiểm tra collocation của các danh từ quan trọng — 'results' thường đi với 'improve/lower/affect', không phải 'reduce' — chỉ cần kiểm tra nhanh 3-4 cụm từ then chốt là đủ loại bỏ kiểu lỗi gần-đúng này."
+    },
+    "evidence": [
+      { "quote": "a sense of responsibility and teamwork", "comment": "A natural, less common collocation used correctly." },
+      { "quote": "reduce their academic result", "comment": "An imprecise collocation, 'results' does not naturally pair with 'reduce' in this sense." }
+    ]
+  },
+  "grammatical_range_accuracy": {
+    "justification": "The essay uses a range of complex structures, including a conditional ('if the activity is not voluntary, students may complete it only to satisfy the requirement') and a relative clause ('a skill that is not taught in normal lessons'), matching band 6's mix of simple and complex forms. Accuracy is let down by a recurring third-person-singular agreement error ('it help', 'a student who volunteer'), the same error type in two places, which is why this sits at 5.5 rather than higher.",
+    "descriptor_reference": "GRAMMATICAL_RANGE_ACCURACY band 5",
+    "band": 5.5,
+    "confidence": 0.7,
+    "comment": {
+      "en": "You use some genuinely complex structures well, like the conditional clause about voluntary participation. The recurring issue is third-person-singular agreement, 'it help' and 'a student who volunteer' both drop the 's', and because the same error type appears twice, it looks like a gap in control rather than a slip.",
+      "vi": "Bạn dùng khá tốt một số cấu trúc phức tạp thực sự, như mệnh đề điều kiện về việc tham gia tự nguyện. Vấn đề lặp lại là hoà hợp ngôi thứ ba số ít — 'it help' và 'a student who volunteer' đều thiếu 's' — và vì cùng một kiểu lỗi xuất hiện hai lần, đây trông giống lỗ hổng kiểm soát ngữ pháp hơn là gõ nhầm."
+    },
+    "improvement": {
+      "en": "Whenever your subject is 'it', 'he', 'she', or a singular noun like 'a student', check the verb ends in '-s' in the present tense, reading your essay once specifically for this one rule would catch both errors here.",
+      "vi": "Mỗi khi chủ ngữ là 'it', 'he', 'she', hoặc một danh từ số ít như 'a student', hãy kiểm tra động từ có tận cùng bằng '-s' ở thì hiện tại không — chỉ cần đọc lại bài một lượt riêng cho quy tắc này là bắt được cả hai lỗi ở đây."
+    },
+    "evidence": [
+      { "quote": "it help students to understand the problem of their local area", "comment": "Third-person-singular agreement error: should be 'it helps'." },
+      { "quote": "a student who volunteer at a nursing home will learn how to communicate with elderly people", "comment": "The same error pattern: should be 'volunteers'." }
+    ]
+  }
+}

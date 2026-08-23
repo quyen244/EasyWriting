@@ -36,7 +36,7 @@ from src.evaluation.metrics import percentile, score_block
 from src.llm.base import LLMClient
 from src.pipeline.config import PipelineConfig, load_pipeline_config
 from src.pipeline.errors import ScoringFailedError
-from src.pipeline.pipeline import PipelineOutcome, run_assessment
+from src.pipeline.pipeline import PipelineOutcome, run_assessment, run_assessment_v2
 from src.schemas.assessment import CRITERION_NAMES
 
 BACKEND_ROOT = Path(__file__).resolve().parents[2]
@@ -56,12 +56,18 @@ async def run_benchmark(
     failures: list[dict] = []
     started = time.perf_counter()
 
+    # Constitution IV's before/after comparison needs both orchestrators available
+    # from the same harness — call_mode picks which one runs, everything else
+    # (metrics, report rendering, raw-results shape) is shared and unaware of which.
+    orchestrator = run_assessment_v2 if config.call_mode == "single_call" else run_assessment
+    calls_per_essay = 1 if config.call_mode == "single_call" else 4
+
     for index, essay in enumerate(essays, 1):
         gold = essay.gold.overall if essay.gold else "?"
         if verbose:
             print(f"[{index}/{len(essays)}] {essay.essay_id} (gold {gold})", flush=True)
         try:
-            outcome = await run_assessment(
+            outcome = await orchestrator(
                 client,
                 task_type=essay.task_type,
                 essay_text=essay.essay_text,
@@ -84,7 +90,13 @@ async def run_benchmark(
                 print(f"    -> ERROR: {type(exc).__name__}: {exc}", flush=True)
 
     metrics = compute_metrics(
-        results, failures, run_id, time.perf_counter() - started, config, len(essays)
+        results,
+        failures,
+        run_id,
+        time.perf_counter() - started,
+        config,
+        len(essays),
+        calls_per_essay=calls_per_essay,
     )
 
     if out_dir:
@@ -109,6 +121,13 @@ async def run_benchmark(
                             "evidence_quotes": c.evidence_quotes,
                             "quotes_returned": c.quotes_returned,
                             "quotes_dropped": c.quotes_dropped,
+                            # Empty string for pipeline-v1.0 rows (CriterionOutcome's
+                            # default) — present here so a v2 report is readable
+                            # without cross-referencing raw_response elsewhere.
+                            "comment_en": c.comment_en,
+                            "comment_vi": c.comment_vi,
+                            "improvement_en": c.improvement_en,
+                            "improvement_vi": c.improvement_vi,
                         }
                         for c in outcome.criteria
                     ],
@@ -119,7 +138,13 @@ async def run_benchmark(
             ],
         )
         write_json(base / "metrics.json", metrics)
-        (base / "report.md").write_text(render_report(metrics), encoding="utf-8")
+        report_text = render_report(metrics)
+        if config.call_mode == "single_call" and results:
+            # Numbers alone (MAE, within_0.5) don't let a human judge PROMPT quality —
+            # whether the bilingual comment/improvement text is actually usable. This
+            # is what a reviewer reads before deciding Phase B starts (spec.md US5).
+            report_text += render_bilingual_sample(results)
+        (base / "report.md").write_text(report_text, encoding="utf-8")
         if verbose:
             print(f"\nWrote {base}")
 
@@ -133,6 +158,8 @@ def compute_metrics(
     wall_s: float,
     config: PipelineConfig,
     n_essays: int,
+    *,
+    calls_per_essay: int = 4,
 ) -> dict:
     overall_pred: list[float] = []
     overall_gold: list[float] = []
@@ -211,7 +238,8 @@ def compute_metrics(
             if criteria_total
             else None,
             "failure_rate": round(len(failures) / n_essays, 4) if n_essays else 0.0,
-            "llm_calls": len(results) * 4,
+            "llm_calls": len(results) * calls_per_essay,
+            "call_mode": config.call_mode,
             "p50_latency_s": round(percentile(latencies, 0.50), 1),
             "p95_latency_s": round(percentile(latencies, 0.95), 1),
             "prompt_tokens_total": prompt_tokens,
@@ -288,6 +316,31 @@ def render_report(m: dict) -> str:
         lines += ["", "## Failures", ""]
         lines += [f"- `{f['essay_id']}`: {f['error']}" for f in m["failures"]]
 
+    return "\n".join(lines) + "\n"
+
+
+def render_bilingual_sample(
+    results: list[tuple[GoldenEssay, PipelineOutcome]], limit: int = 2
+) -> str:
+    """A human-readable excerpt of the actual bilingual output, for reading — not
+    measuring. `metrics.json`'s numbers say whether v2 predicts the right band; this
+    is what lets a reviewer judge whether the comment/improvement text is any good,
+    which no automated metric here checks (the golden set has no gold comment text
+    to compare against, only gold bands)."""
+    lines = ["", "## Sample bilingual output (for human review, not scored)", ""]
+    for essay, outcome in results[:limit]:
+        lines.append(f"### {essay.essay_id} ({essay.task_type}, predicted overall {outcome.overall_band})")
+        for c in outcome.criteria:
+            lines += [
+                "",
+                f"**{c.criterion}** — band {c.band} (raw {c.raw_band}, confidence {c.confidence})",
+                f"- comment.en: {c.comment_en}",
+                f"- comment.vi: {c.comment_vi}",
+                f"- improvement.en: {c.improvement_en}",
+                f"- improvement.vi: {c.improvement_vi}",
+                f"- evidence: {c.evidence_quotes}",
+            ]
+        lines.append("")
     return "\n".join(lines) + "\n"
 
 

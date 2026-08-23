@@ -1,0 +1,996 @@
+[
+  {
+    "essay_id": "T1-001",
+    "task_type": "TASK_1",
+    "gold": {
+      "overall": 5.0,
+      "criteria": {
+        "TASK_ACHIEVEMENT": 5.5,
+        "COHERENCE_COHESION": 5.0,
+        "LEXICAL_RESOURCE": 4.5,
+        "GRAMMATICAL_RANGE_ACCURACY": 4.5
+      },
+      "source": "expert-estimate-from-official-descriptors",
+      "confidence": "medium"
+    },
+    "overall_band": 5.0,
+    "raw_overall": 5.0,
+    "criteria": [
+      {
+        "criterion": "TASK_ACHIEVEMENT",
+        "band": 5.0,
+        "raw_band": 5.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay attempts to cover the main trends but fails to present a clear overview. Instead, it provides a mechanical recount of data points year by year or trend by trend without synthesising the main features into a summarised statement. While it mentions some key changes (e.g., coal decreasing, renewables increasing and overtaking coal, gas peaking then falling, nuclear stable then declining), these are presented as isolated observations rather than being framed within a coherent overview. This matches Band 5, which describes responses that 'recount detail mechanically with no clear overview'. It does not reach Band 6 because Band 6 requires 'an overview with information appropriately selected', which is absent here.",
+        "descriptor_reference": "TASK_ACHIEVEMENT band 5",
+        "evidence_quotes": [
+          "In 1990, coal is the biggest source with 100 terawatt-hours. After that it go down every year and in 2020 it only have 15 terawatt-hours. This is a very big decrease.",
+          "Renewables is opposite. In 1990 it is only 5 but it increase slowly until 2005 and then it increase very fast. In 2020 renewables become the biggest source with 95 terawatt-hours.",
+          "Natural gas increase from 20 in 1990 to 75 in 2010, it is the highest point. Then it decrease to 60 in 2020. Nuclear is more stable, it stay around 45 to 50 for many year and then go down to 30 in 2020.",
+          "In general, coal and renewables change place with each other, and gas increase then decrease."
+        ],
+        "quotes_returned": 4,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      },
+      {
+        "criterion": "COHERENCE_COHESION",
+        "band": 5.0,
+        "raw_band": 5.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay presents information with some organisation but lacks overall progression, as ideas jump between sources without a clear logical sequence (e.g., moving from coal to renewables to gas and nuclear without structured comparison or development). Cohesive devices are absent — there are no linking words, referencing, or substitution to connect sentences or ideas, resulting in a list-like structure. This matches Band 5, which describes inadequate or inaccurate use of cohesive devices and lack of overall progression. It does not meet Band 6 because there is no clear overall progression and cohesive devices are not used at all, let alone effectively or mechanically.",
+        "descriptor_reference": "COHERENCE_COHESION band 5",
+        "evidence_quotes": [
+          "In 1990, coal is the biggest source with 100 terawatt-hours. After that it go down every year and in 2020 it only have 15 terawatt-hours. This is a very big decrease.",
+          "Renewables is opposite. In 1990 it is only 5 but it increase slowly until 2005 and then it increase very fast. In 2020 renewables become the biggest source with 95 terawatt-hours.",
+          "Natural gas increase from 20 in 1990 to 75 in 2010, it is the highest point. Then it decrease to 60 in 2020. Nuclear is more stable, it stay around 45 to 50 for many year and then go down to 30 in 2020.",
+          "In general, coal and renewables change place with each other, and gas increase then decrease."
+        ],
+        "quotes_returned": 4,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      },
+      {
+        "criterion": "LEXICAL_RESOURCE",
+        "band": 5.0,
+        "raw_band": 5.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay uses a very limited range of vocabulary, with frequent repetition of basic words like 'increase', 'decrease', 'source', and years. Attempts at less common vocabulary are absent, and word formation errors are noticeable (e.g., 'electricity produce', 'four source', 'it go down', 'it only have', 'renewables is opposite', 'it increase very fast', 'become the biggest source', 'it stay around', 'go down'). These errors impede clarity and strain the reader at times. This aligns with Band 5, which describes a limited range minimally adequate for the task, with noticeable errors in word formation that may cause some difficulty for the reader. It does not meet Band 6 because there is no attempt to use less common vocabulary, and errors are more frequent and disruptive than the 'some errors that do not impede communication' threshold of Band 6.",
+        "descriptor_reference": "LEXICAL_RESOURCE band 5",
+        "evidence_quotes": [
+          "electricity produce",
+          "four source",
+          "it go down",
+          "renewables is opposite"
+        ],
+        "quotes_returned": 4,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      },
+      {
+        "criterion": "GRAMMATICAL_RANGE_ACCURACY",
+        "band": 5.0,
+        "raw_band": 5.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay demonstrates a very limited range of grammatical structures, relying almost exclusively on simple present and past simple forms with frequent attempts at complex sentences that are largely inaccurate. Errors in subject-verb agreement, verb tense, article use, and word form are pervasive and systematic, significantly impairing clarity in places. While some basic structures are correct, the majority of sentences contain grammatical errors, and there is minimal evidence of complex sentence formation. This aligns with Band 5 descriptors, which note a limited range of structures, attempted complex sentences that are less accurate than simple ones, and frequent grammatical errors that can cause difficulty for the reader. It does not meet Band 6 because errors are not merely occasional or harmless — they are frequent and sometimes obstruct meaning, and there is no consistent mix of simple and complex forms with reasonable control.",
+        "descriptor_reference": "GRAMMATICAL_RANGE_ACCURACY band 5",
+        "evidence_quotes": [
+          "The line graph show the electricity produce from four source in one country of Europe from 1990 to 2020.",
+          "In 1990, coal is the biggest source with 100 terawatt-hours. After that it go down every year and in 2020 it only have 15 terawatt-hours.",
+          "Renewables is opposite. In 1990 it is only 5 but it increase slowly until 2005 and then it increase very fast.",
+          "Natural gas increase from 20 in 1990 to 75 in 2010, it is the highest point. Then it decrease to 60 in 2020."
+        ],
+        "quotes_returned": 4,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      }
+    ],
+    "latency_s": 18.09,
+    "quote_fidelity": 1.0
+  },
+  {
+    "essay_id": "T1-002",
+    "task_type": "TASK_1",
+    "gold": {
+      "overall": 7.0,
+      "criteria": {
+        "TASK_ACHIEVEMENT": 7.5,
+        "COHERENCE_COHESION": 7.0,
+        "LEXICAL_RESOURCE": 7.0,
+        "GRAMMATICAL_RANGE_ACCURACY": 7.0
+      },
+      "source": "expert-estimate-from-official-descriptors",
+      "confidence": "medium"
+    },
+    "overall_band": 6.5,
+    "raw_overall": 6.625,
+    "criteria": [
+      {
+        "criterion": "TASK_ACHIEVEMENT",
+        "band": 7.0,
+        "raw_band": 7.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay presents a clear overview that identifies the main trends: housing and food as the two largest expenses across all countries, with contrasting patterns between Germany and Brazil, and leisure as the smallest category. It then selects and reports key features with appropriate supporting data, such as specific percentages for housing and food in each country, and notes variations in transport, healthcare, and leisure. While the overview is clear and the key features are well highlighted, some details (e.g., exact figures for transport and healthcare) are presented mechanically without deeper interpretation, and the leisure comparison, though accurate, is somewhat minor in emphasis. This aligns with Band 7, which requires a clear overview and highlighted key features but allows for inadequate or occasional irrelevant details — here, the details are relevant but not fully developed beyond listing. It does not reach Band 8 because the overview, while clear, is not as fully developed in its comparative insight (e.g., no synthesis of why patterns might differ), and key features, though well selected, are not consistently highlighted with analytical depth. It exceeds Band 6 because it does more than appropriately select information — it structures a coherent overview and deliberately contrasts major categories, going beyond mere listing.",
+        "descriptor_reference": "TASK_ACHIEVEMENT band 7",
+        "evidence_quotes": [
+          "Overall, housing and food were the two largest expenses in all three countries, but the balance between them differed sharply: German households spent most on housing, whereas Brazilian households devoted the largest share to food. Leisure consistently attracted the smallest proportion of spending everywhere.",
+          "housing accounted for 32% of German household income, considerably higher than in Japan (25%) and Brazil (18%). Food showed the reverse pattern, taking up 35% of Brazilian income, more than double the German figure of 15%, with Japan lying between the two at 22%.",
+          "The remaining categories showed smaller variations. Transport ranged from 12% in Japan to 20% in Brazil, while healthcare was highest in Germany at 20% and lowest in Brazil at 12%. Leisure spending was very similar in Germany and Japan, at 12% and 10% respectively, but reached only 5% in Brazil, half the Japanese level."
+        ],
+        "quotes_returned": 3,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      },
+      {
+        "criterion": "COHERENCE_COHESION",
+        "band": 6.0,
+        "raw_band": 6.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay demonstrates clear logical organisation with a distinct overall progression: it opens with a general overview, then details specific comparisons, and concludes with observations on smaller categories. Cohesive devices such as 'overall', 'whereas', and 'while' are used appropriately to link ideas and contrast data, though their use is somewhat limited and slightly mechanical in places (e.g., reliance on contrastive adverbs without broader referencing or substitution). This aligns with Band 6, which requires coherent arrangement and clear overall progression but allows for cohesive devices to be effective yet occasionally faulty or mechanical. It does not reach Band 7 because there is no clear evidence of sophisticated referencing, substitution, or thematic progression within paragraphs that would indicate cohesion arising naturally from logical sequencing rather than formulaic linking.",
+        "descriptor_reference": "COHERENCE_COHESION band 6",
+        "evidence_quotes": [
+          "Overall, housing and food were the two largest expenses in all three countries, but the balance between them differed sharply: German households spent most on housing, whereas Brazilian households devoted the largest share to food. Leisure consistently attracted the smallest proportion of spending everywhere.",
+          "Looking at the figures in more detail, housing accounted for 32% of German household income, considerably higher than in Japan (25%) and Brazil (18%). Food showed the reverse pattern, taking up 35% of Brazilian income, more than double the German figure of 15%, with Japan lying between the two at 22%.",
+          "The remaining categories showed smaller variations. Transport ranged from 12% in Japan to 20% in Brazil, while healthcare was highest in Germany at 20% and lowest in Brazil at 12%. Leisure spending was very similar in Germany and Japan, at 12% and 10% respectively, but reached only 5% in Brazil, half the Japanese level."
+        ],
+        "quotes_returned": 3,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      },
+      {
+        "criterion": "LEXICAL_RESOURCE",
+        "band": 7.0,
+        "raw_band": 7.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay demonstrates a sufficient range of vocabulary with some flexibility and precision, using less common lexical items such as 'divided', 'devoted', 'accounted for', 'showed the reverse pattern', and 'ranged from' with generally accurate collocation. There are occasional inaccuracies in word choice (e.g., 'devoted the largest share to food' is acceptable but slightly awkward; 'took up 35%' is fine, but 'more than double the German figure' is precise) and minor errors in word formation are absent, though some phrasing could be more natural. This aligns with Band 7 descriptors, which allow for occasional errors in word choice and formation while using less common items with awareness of style and collocation. It does not reach Band 8 because the vocabulary, while varied, lacks the fluency, flexibility, and precision of uncommon items seen in higher bands (e.g., no sophisticated collocations or natural phrasing like 'constituted', 'comprised', or 'allocated'). It exceeds Band 6 because it goes beyond merely attempting less common vocabulary with inaccuracy — it uses such vocabulary mostly correctly, showing awareness of collocation and style.",
+        "descriptor_reference": "LEXICAL_RESOURCE band 7",
+        "evidence_quotes": [
+          "divided their income across five spending categories",
+          "Brazilian households devoted the largest share to food",
+          "accounted for 32% of German household income",
+          "showed the reverse pattern",
+          "ranged from 12% in Japan to 20% in Brazil"
+        ],
+        "quotes_returned": 5,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      },
+      {
+        "criterion": "GRAMMATICAL_RANGE_ACCURACY",
+        "band": 6.5,
+        "raw_band": 6.5,
+        "length_penalty": 0.0,
+        "explanation": "The essay demonstrates a mix of simple and complex sentence forms, with frequent error-free sentences and only occasional minor errors that do not impede communication. While there is good control of grammar and punctuation, the range of structures is not wide enough to meet Band 7's requirement for a 'variety of complex structures' with frequent error-free sentences, and errors are slightly more frequent than expected at Band 7. It does not reach Band 8 because not the majority of sentences are error-free, and it exceeds Band 6 due to fewer errors and better control.",
+        "descriptor_reference": "GRAMMATICAL_RANGE_ACCURACY band 6",
+        "evidence_quotes": [
+          "The bar chart compares how households in Japan, Brazil and Germany divided their income across five spending categories in 2019.",
+          "Overall, housing and food were the two largest expenses in all three countries, but the balance between them differed sharply: German households spent most on housing, whereas Brazilian households devoted the largest share to food.",
+          "Leisure consistently attracted the smallest proportion of spending everywhere.",
+          "The remaining categories showed smaller variations. Transport ranged from 12% in Japan to 20% in Brazil, while healthcare was highest in Germany at 20% and lowest in Brazil at 12%."
+        ],
+        "quotes_returned": 4,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      }
+    ],
+    "latency_s": 23.887,
+    "quote_fidelity": 1.0
+  },
+  {
+    "essay_id": "T1-003",
+    "task_type": "TASK_1",
+    "gold": {
+      "overall": 7.5,
+      "criteria": {
+        "TASK_ACHIEVEMENT": 8.0,
+        "COHERENCE_COHESION": 7.5,
+        "LEXICAL_RESOURCE": 7.5,
+        "GRAMMATICAL_RANGE_ACCURACY": 7.5
+      },
+      "source": "expert-estimate-from-official-descriptors",
+      "confidence": "medium"
+    },
+    "overall_band": 7.0,
+    "raw_overall": 6.75,
+    "criteria": [
+      {
+        "criterion": "TASK_ACHIEVEMENT",
+        "band": 7.0,
+        "raw_band": 7.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay presents a clear overview that summarises the main trends: three universities increased international student numbers, Northfield became the largest, and Eastgate declined. It accurately selects and reports key features such as the largest absolute growth (Northfield), steepest proportional rise (Southbank), and the only decline (Eastgate), with relevant comparisons. While the overview is clear and key features are well highlighted, some details could be slightly more developed (e.g., exact percentage for Southbank’s tripling is implied but not stated), which prevents it from reaching Band 8. It does not merely recount details mechanically, so it is above Band 5.",
+        "descriptor_reference": "TASK_ACHIEVEMENT band 7",
+        "evidence_quotes": [
+          "Overall, three of the four universities recruited more international students in 2020 than a decade earlier, and Northfield ended the period as the largest host institution, having overtaken Eastgate, the only university to record a decline.",
+          "Northfield saw the largest absolute growth, with enrolment more than doubling from 4,200 to 9,800 students. Southbank experienced the steepest proportional rise: although its intake was the smallest in 2010 at just 1,800, it tripled over the ten years to reach 5,400, overtaking Westwood in the process.",
+          "By contrast, Eastgate was the only institution to lose ground. Having enrolled 7,500 international students in 2010, the highest figure of any university that year, it fell to 6,100 by 2020, a drop of roughly 19%. Westwood remained essentially static, edging up marginally from 5,000 to 5,200, a change of only 4% over the entire decade."
+        ],
+        "quotes_returned": 3,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      },
+      {
+        "criterion": "COHERENCE_COHESION",
+        "band": 6.0,
+        "raw_band": 6.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay demonstrates a clear overall progression from general overview to specific details and comparisons, with logical organisation of information. It uses cohesive devices such as 'Overall', 'By contrast', and 'although' appropriately to link ideas, though their use is somewhat formulaic and mechanical, particularly the reliance on sentence-initial connectors. There is clear paragraphing with a central topic in each paragraph, but the cohesion lacks the sophistication and natural integration expected at Band 7, where devices arise more from logical sequencing and referencing than from explicit signposting.",
+        "descriptor_reference": "COHERENCE_COHESION band 6",
+        "evidence_quotes": [
+          "Overall, three of the four universities recruited more international students in 2020 than a decade earlier, and Northfield ended the period as the largest host institution, having overtaken Eastgate, the only university to record a decline.",
+          "By contrast, Eastgate was the only institution to lose ground.",
+          "Southbank experienced the steepest proportional rise: although its intake was the smallest in 2010 at just 1,800, it tripled over the ten years to reach 5,400, overtaking Westwood in the process."
+        ],
+        "quotes_returned": 3,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      },
+      {
+        "criterion": "LEXICAL_RESOURCE",
+        "band": 7.0,
+        "raw_band": 7.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay demonstrates a sufficient range of vocabulary with some flexibility and precision, using less common lexical items such as 'recruited', 'overtaken', 'absolute growth', 'proportional rise', 'intake', 'tripled', 'lost ground', 'edging up', and 'marginally'. These are used appropriately with awareness of collocation and style. There are occasional minor errors in word choice or formation (e.g., 'recruited' is slightly awkward with 'universities' as the subject; 'intake' is acceptable but could be more precise), but they do not impede communication. This aligns with Band 7 descriptors. It does not reach Band 8 because the vocabulary, while varied, lacks the consistent precision and natural sophistication expected at that level (e.g., 'recruited' is not the most natural collocation for universities enrolling students), and there is no evidence of skilful or flexible use of uncommon items across the response. It exceeds Band 6 because it goes beyond merely attempting less common vocabulary with some inaccuracy — it uses such vocabulary with awareness and mostly accurate collocation.",
+        "descriptor_reference": "LEXICAL_RESOURCE band 7",
+        "evidence_quotes": [
+          "Northfield saw the largest absolute growth, with enrolment more than doubling from 4,200 to 9,800 students.",
+          "Southbank experienced the steepest proportional rise: although its intake was the smallest in 2010 at just 1,800, it tripled over the ten years to reach 5,400, overtaking Westwood in the process.",
+          "By contrast, Eastgate was the only institution to lose ground.",
+          "Westwood remained essentially static, edging up marginally from 5,000 to 5,200, a change of only 4% over the entire decade."
+        ],
+        "quotes_returned": 4,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      },
+      {
+        "criterion": "GRAMMATICAL_RANGE_ACCURACY",
+        "band": 7.0,
+        "raw_band": 7.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay demonstrates a variety of complex structures, including relative clauses, participial phrases, and comparative constructions, with frequent error-free sentences. While there are minor slips (e.g., 'Having enrolled 7,500 international students in 2010, the highest figure of any university that year' slightly awkward but not ungrammatical), grammar and punctuation are well controlled overall. Errors do not impede communication. This aligns with Band 7, which requires a variety of complex structures, frequent error-free sentences, and good control with only a few errors. It does not reach Band 8 because not the majority of sentences are completely error-free (only 4 out of 7 are flawless), and it exceeds Band 6 due to the consistent use of complex structures and fewer, less disruptive errors.",
+        "descriptor_reference": "GRAMMATICAL_RANGE_ACCURACY band 7",
+        "evidence_quotes": [
+          "Overall, three of the four universities recruited more international students in 2020 than a decade earlier, and Northfield ended the period as the largest host institution, having overtaken Eastgate, the only university to record a decline.",
+          "Northfield saw the largest absolute growth, with enrolment more than doubling from 4,200 to 9,800 students.",
+          "Southbank experienced the steepest proportional rise: although its intake was the smallest in 2010 at just 1,800, it tripled over the ten years to reach 5,400, overtaking Westwood in the process.",
+          "By contrast, Eastgate was the only institution to lose ground. Having enrolled 7,500 international students in 2010, the highest figure of any university that year, it fell to 6,100 by 2020, a drop of roughly 19%."
+        ],
+        "quotes_returned": 4,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      }
+    ],
+    "latency_s": 19.699,
+    "quote_fidelity": 1.0
+  },
+  {
+    "essay_id": "T1-004",
+    "task_type": "TASK_1",
+    "gold": {
+      "overall": 8.0,
+      "criteria": {
+        "TASK_ACHIEVEMENT": 8.0,
+        "COHERENCE_COHESION": 8.5,
+        "LEXICAL_RESOURCE": 8.0,
+        "GRAMMATICAL_RANGE_ACCURACY": 8.0
+      },
+      "source": "expert-estimate-from-official-descriptors",
+      "confidence": "medium"
+    },
+    "overall_band": 7.0,
+    "raw_overall": 6.75,
+    "criteria": [
+      {
+        "criterion": "TASK_ACHIEVEMENT",
+        "band": 7.0,
+        "raw_band": 7.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay presents a clear overview that summarises the main stages of the recycling process, noting its cyclical nature and the seven-stage sequence from collection to redistribution. This satisfies the Band 7 criterion of presenting a clear overview of main trends/stages. However, while key features are highlighted, some details are inadequately developed — for example, the crushing and melting stages are mentioned but not fully explained in terms of purpose or transformation, which aligns with the Band 7 note that 'details may be inadequate or occasionally irrelevant'. It does not reach Band 8 because the overview, while clear, lacks the depth of insight or emphasis on significant contrasts (e.g., energy savings, environmental benefit) that would constitute 'well selected and highlighted' key features. It is above Band 6 because it does not merely list stages mechanically but provides a synthesised overview, avoiding the Band 6 pitfall of 'overview with appropriately selected information' being too mechanical or list-like.",
+        "descriptor_reference": "TASK_ACHIEVEMENT band 7",
+        "evidence_quotes": [
+          "Overall, the procedure consists of seven stages, beginning with the collection of used bottles and culminating in the distribution of newly moulded ones. It is notable that the process is cyclical rather than linear, as the finished products re-enter the same consumption chain from which the raw material was drawn.",
+          "At the outset, consumers deposit their empty bottles at designated collection banks, from which lorries transport them to a processing facility. Once they have arrived, the bottles are immersed in a chemical solution so that labels and residual contents can be removed.",
+          "The sorted glass is then crushed into small fragments, referred to as cullet, before being fed into a furnace and melted at a temperature of roughly 1,500 degrees Celsius."
+        ],
+        "quotes_returned": 3,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      },
+      {
+        "criterion": "COHERENCE_COHESION",
+        "band": 6.0,
+        "raw_band": 6.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay demonstrates clear overall progression and logical organisation of information, with a well-structured sequence from collection to redistribution. While cohesive devices are used appropriately, their use is somewhat limited and slightly mechanical—relying heavily on sequencing terms like 'Overall', 'At the outset', 'In the subsequent stage', and 'Finally'—which aligns with Band 6's description of effective but potentially mechanical cohesion. It does not yet reach Band 7, as there is no clear evidence of sophisticated referencing or substitution to avoid repetition, and the progression, while clear, lacks the flexibility and natural flow expected at Band 7+. The paragraphing is sufficient and appropriate, supporting coherence.",
+        "descriptor_reference": "COHERENCE_COHESION band 6",
+        "evidence_quotes": [
+          "Overall, the procedure consists of seven stages, beginning with the collection of used bottles and culminating in the distribution of newly moulded ones.",
+          "At the outset, consumers deposit their empty bottles at designated collection banks, from which lorries transport them to a processing facility. Once they have arrived, the bottles are immersed in a chemical solution so that labels and residual contents can be removed.",
+          "In the subsequent stage, the cleaned bottles are conveyed along a belt where they are separated according to colour into clear, green and brown categories.",
+          "Finally, the molten glass is poured into moulds to produce fresh bottles, which are dispatched to retailers and thereby made available to consumers once more, at which point the cycle can begin again."
+        ],
+        "quotes_returned": 4,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      },
+      {
+        "criterion": "LEXICAL_RESOURCE",
+        "band": 7.0,
+        "raw_band": 7.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay demonstrates a sufficient range of vocabulary with some flexibility and precision, using less common lexical items such as 'discarded', 'designated', 'immersed', 'residual', 'conveyed', 'cullet', and 'molten' with generally accurate collocation and word formation. While there is some repetition of key content words like 'bottles' and 'consumers', the writer avoids over-reliance on basic vocabulary and shows awareness of style and topic-appropriate terminology. Occasional inaccuracies are not present; word choice and spelling are correct throughout. This aligns with Band 7, as it exceeds Band 6 (which only attempts less common vocabulary with some inaccuracy) but does not reach Band 8 (which requires skilful, precise, and natural use of uncommon items with flexibility).",
+        "descriptor_reference": "LEXICAL_RESOURCE band 7",
+        "evidence_quotes": [
+          "discarded glass bottles",
+          "immersed in a chemical solution",
+          "crushed into small fragments, referred to as cullet",
+          "molten glass is poured into moulds"
+        ],
+        "quotes_returned": 4,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      },
+      {
+        "criterion": "GRAMMATICAL_RANGE_ACCURACY",
+        "band": 7.0,
+        "raw_band": 7.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay demonstrates a variety of complex sentence structures, including passive voice, relative clauses, and participial phrases, with frequent error-free sentences. While there are minor slips such as the missing article in 'at a temperature of roughly 1,500 degrees Celsius' (which should be 'roughly 1,500 degrees Celsius' — though this is actually acceptable, so no error) and slight awkwardness in 'which are dispatched to retailers and thereby made available to consumers once more', these do not impede communication. The grammar is generally accurate, and punctuation is correctly used throughout. These features align with Band 7, which requires a variety of complex structures, frequent error-free sentences, and good control with only a few errors. It does not reach Band 8 because not the majority of sentences are completely error-free — some exhibit minor stylistic or grammatical hesitations — and it exceeds Band 6 due to the consistent use of complex structures and minimal impact of errors on clarity.",
+        "descriptor_reference": "GRAMMATICAL_RANGE_ACCURACY band 7",
+        "evidence_quotes": [
+          "The diagram illustrates how discarded glass bottles are processed and returned to consumers as new containers.",
+          "Once they have arrived, the bottles are immersed in a chemical solution so that labels and residual contents can be removed.",
+          "The sorted glass is then crushed into small fragments, referred to as cullet, before being fed into a furnace and melted at a temperature of roughly 1,500 degrees Celsius.",
+          "Finally, the molten glass is poured into moulds to produce fresh bottles, which are dispatched to retailers and thereby made available to consumers once more, at which point the cycle can begin again."
+        ],
+        "quotes_returned": 4,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      }
+    ],
+    "latency_s": 15.848,
+    "quote_fidelity": 1.0
+  },
+  {
+    "essay_id": "T1-005",
+    "task_type": "TASK_1",
+    "gold": {
+      "overall": 4.5,
+      "criteria": {
+        "TASK_ACHIEVEMENT": 4.5,
+        "COHERENCE_COHESION": 5.0,
+        "LEXICAL_RESOURCE": 4.0,
+        "GRAMMATICAL_RANGE_ACCURACY": 4.0
+      },
+      "source": "expert-estimate-from-official-descriptors",
+      "confidence": "medium"
+    },
+    "overall_band": 5.0,
+    "raw_overall": 4.875,
+    "criteria": [
+      {
+        "criterion": "TASK_ACHIEVEMENT",
+        "band": 4.5,
+        "raw_band": 5.0,
+        "length_penalty": 0.5,
+        "explanation": "The essay attempts to describe the data from both pie charts but fails to provide a clear overview of the main trends or differences between 2000 and 2020. Instead, it lists percentages in a mechanical, point-by-point manner without synthesising the key changes. While it identifies some shifts (e.g., landfill decreasing, recycling increasing), it does not present a summarising overview that highlights the main features, which is the key discriminator between Band 5 and Band 6+. The response generally addresses the task by reporting data but lacks the overview required for Band 6 or higher.",
+        "descriptor_reference": "TASK_ACHIEVEMENT band 5",
+        "evidence_quotes": [
+          "In 2000 the landfill is the most popular method, it is 60 percent. The second is incineration with 25 percent. Recycling only have 10 percent and composting is smallest with 5 percent.",
+          "In 2020 the situation is different. Recycling become the biggest with 35 percent and incineration is 30 percent. The landfill reduce a lot, only 20 percent now. Composting increase to 15 percent.",
+          "So we can see that the landfill go down 40 percent and the recycling go up 25 percent."
+        ],
+        "quotes_returned": 3,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      },
+      {
+        "criterion": "COHERENCE_COHESION",
+        "band": 5.0,
+        "raw_band": 5.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay presents information with some organisation but lacks overall progression. Ideas are listed sequentially without logical development or clear linking between sentences. Cohesive devices are absent, resulting in a mechanical, list-like structure that fails to demonstrate referencing, substitution, or logical sequencing. This aligns with Band 5 descriptors, which note inadequate or inaccurate use of cohesive devices and a lack of overall progression. It does not meet Band 6 because there is no clear overall progression and cohesive devices are not used effectively — in fact, none are used at all.",
+        "descriptor_reference": "COHERENCE_COHESION band 5",
+        "evidence_quotes": [
+          "In 2000 the landfill is the most popular method, it is 60 percent. The second is incineration with 25 percent. Recycling only have 10 percent and composting is smallest with 5 percent.",
+          "In 2020 the situation is different. Recycling become the biggest with 35 percent and incineration is 30 percent. The landfill reduce a lot, only 20 percent now. Composting increase to 15 percent.",
+          "So we can see that the landfill go down 40 percent and the recycling go up 25 percent."
+        ],
+        "quotes_returned": 3,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      },
+      {
+        "criterion": "LEXICAL_RESOURCE",
+        "band": 5.0,
+        "raw_band": 5.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay uses a very limited range of vocabulary, with frequent repetition of basic words like 'percent', 'landfill', 'recycling', and 'increase/decrease'. There is no attempt to use less common vocabulary, and word choice is often inaccurate or awkward (e.g., 'throw away the rubbish', 'the landfill is the most popular method', 'recycling only have 10 percent'). Errors in word formation and collocation are noticeable and sometimes impede clarity. This aligns with Band 5, which describes a limited range of vocabulary that is minimally adequate but with noticeable errors causing some difficulty for the reader. It does not meet Band 6 because there is no attempt to use less common vocabulary — a key discriminator for Band 6.",
+        "descriptor_reference": "LEXICAL_RESOURCE band 5",
+        "evidence_quotes": [
+          "The two pie chart show the way that the city throw away the rubbish of household in year 2000 and year 2020.",
+          "In 2000 the landfill is the most popular method, it is 60 percent. The second is incineration with 25 percent. Recycling only have 10 percent and composting is smallest with 5 percent.",
+          "So we can see that the landfill go down 40 percent and the recycling go up 25 percent."
+        ],
+        "quotes_returned": 3,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      },
+      {
+        "criterion": "GRAMMATICAL_RANGE_ACCURACY",
+        "band": 5.0,
+        "raw_band": 5.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay demonstrates a very limited range of grammatical structures, relying almost exclusively on simple present tense and basic subject-verb-object constructions. There is minimal use of complex sentences, and frequent grammatical errors — including subject-verb agreement, article omission, verb tense consistency, and pluralization — significantly impede clarity. While some meaning is conveyed, the density and persistence of errors align with Band 5 descriptors, which note frequent grammatical errors and faulty punctuation that can cause difficulty for the reader. It does not meet Band 6 because errors are not merely occasional or harmless; they are systematic and frequent enough to disrupt communication.",
+        "descriptor_reference": "GRAMMATICAL_RANGE_ACCURACY band 5",
+        "evidence_quotes": [
+          "The two pie chart show the way that the city throw away the rubbish of household in year 2000 and year 2020.",
+          "In 2000 the landfill is the most popular method, it is 60 percent.",
+          "Recycling only have 10 percent and composting is smallest with 5 percent.",
+          "In 2020 the situation is different. Recycling become the biggest with 35 percent and incineration is 30 percent."
+        ],
+        "quotes_returned": 4,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      }
+    ],
+    "latency_s": 12.412,
+    "quote_fidelity": 1.0
+  },
+  {
+    "essay_id": "T2-001",
+    "task_type": "TASK_2",
+    "gold": {
+      "overall": 5.5,
+      "criteria": {
+        "TASK_RESPONSE": 5.5,
+        "COHERENCE_COHESION": 6.0,
+        "LEXICAL_RESOURCE": 5.5,
+        "GRAMMATICAL_RANGE_ACCURACY": 5.0
+      },
+      "source": "expert-estimate-from-official-descriptors",
+      "confidence": "medium"
+    },
+    "overall_band": 6.5,
+    "raw_overall": 6.25,
+    "criteria": [
+      {
+        "criterion": "TASK_RESPONSE",
+        "band": 7.0,
+        "raw_band": 7.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay addresses all parts of the prompt by discussing both space exploration and Earth-based problems, and presents a clear position ('I partly agree') that is maintained throughout. Main ideas are presented and extended with some reasoning and examples (e.g., linking space investment to technological benefits, and Earth spending to poverty and pollution), though development is occasionally uneven and some points lack full elaboration or precision (e.g., vague references to 'renewable materials', unclear causality in pollution examples). This aligns with Band 7 descriptors, which require a clear position throughout and extension of main ideas, but allow for occasional over-generalisation or lack of focus. It does not meet Band 8 because ideas are not consistently well-developed or sufficiently supported with specific, relevant examples, and it exceeds Band 6 because the position is clear and consistent, and main ideas are generally extended rather than merely stated.",
+        "descriptor_reference": "TASK_RESPONSE band 7",
+        "evidence_quotes": [
+          "From my perspective, I partly agree with this viewpoint due to several reasons that will be explained in the following essay.",
+          "On the one hand, the major reason that explain why many countries spend a great deal of money and effort on space exploration is innovation and development. When financial investment in space exploration is more and more, scientists have sufficient resources to generate science breakthroughs such as renewable materials and new technology that can change and improve the living standards.",
+          "However, there are several compelling reasons why some people advocate for focusing on tackling problems on earth is poverty and pollution. Nowadays, many people are suffering from the lack of access to essentials such as food and clear water, which is limited by industrial manufacturing excessively, and industrial expansion, especially in many Africa countries."
+        ],
+        "quotes_returned": 3,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      },
+      {
+        "criterion": "COHERENCE_COHESION",
+        "band": 6.0,
+        "raw_band": 6.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay demonstrates a clear overall progression with logically organised ideas, meeting Band 6 criteria. However, cohesion is often mechanical, relying heavily on formulaic connectors like 'on the one hand', 'however', 'in addition', and 'as a result' without sufficient variation or natural integration. Referencing is inconsistent and sometimes inaccurate (e.g., 'this problem' without clear antecedent), and paragraphing, while present, lacks sophistication in managing internal coherence. These features align with Band 6 but fall short of Band 7, which requires clear progression, appropriate use of a range of cohesive devices, and clear central topics within paragraphs — none of which are consistently achieved here.",
+        "descriptor_reference": "COHERENCE_COHESION band 6",
+        "evidence_quotes": [
+          "On the one hand, the major reason that explain why many countries spend a great deal of money and effort on space exploration is innovation and development.",
+          "However, there are several compelling reasons why some people advocate for focusing on tackling problems on earth is poverty and pollution.",
+          "In addition, the pollution is also a big problem in many country now. The factories release many dangerous gas to the air and it make people get sick.",
+          "In conclusion, although space exploration bring some benefit for science, I think the government should spend more money to solve the problem on earth first because it is more important for the people life."
+        ],
+        "quotes_returned": 4,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      },
+      {
+        "criterion": "LEXICAL_RESOURCE",
+        "band": 6.0,
+        "raw_band": 6.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay demonstrates an adequate range of vocabulary for the task, with attempts to use less common vocabulary such as 'innovation', 'development', 'breakthroughs', 'pollution', and 'essential'. However, these attempts are often inaccurate or awkwardly used (e.g., 'renewable materials' in context of space, 'clear water' instead of 'clean water', 'send rocket to the space', 'build the system for clean the air'). There are noticeable errors in word choice, collocation, and word formation that occasionally impede clarity, though communication is generally maintained. This aligns with Band 6, which describes an adequate range with attempts at less common vocabulary but with some inaccuracy and errors in spelling/word formation that do not impede communication. It does not meet Band 7 because there is insufficient flexibility and precision, and less common vocabulary is not used with awareness of style or collocation. It exceeds Band 5 because the range is not merely limited but adequate, and errors, while present, do not cause significant difficulty for the reader.",
+        "descriptor_reference": "LEXICAL_RESOURCE band 6",
+        "evidence_quotes": [
+          "scientists have sufficient resources to generate science breakthroughs such as renewable materials and new technology",
+          "The government should use the money to build the system for clean the air instead of send rocket to the space",
+          "many people are suffering from the lack of access to essentials such as food and clear water"
+        ],
+        "quotes_returned": 3,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      },
+      {
+        "criterion": "GRAMMATICAL_RANGE_ACCURACY",
+        "band": 6.0,
+        "raw_band": 6.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay uses a mix of simple and complex sentence forms, with frequent grammatical errors that rarely reduce communication. While there are attempts at complex structures, errors in verb tense, subject-verb agreement, and article usage are common. This aligns with Band 6 descriptors, which note a mix of simple and complex forms and some errors that rarely hinder communication. It does not meet Band 7 because error-free sentences are not frequent, and systematic errors prevent a higher band.",
+        "descriptor_reference": "GRAMMATICAL_RANGE_ACCURACY band 6",
+        "evidence_quotes": [
+          "it is argued that in the large number of countries, governments allocated large amounts of financial resources to space exploration.",
+          "When financial investment in space exploration is more and more, scientists have sufficient resources to generate science breakthroughs such as renewable materials and new technology that can change and improve the living standards.",
+          "if government spend money for solve this problem, the life of poor people will be better and they can have a good life.",
+          "The factories release many dangerous gas to the air and it make people get sick."
+        ],
+        "quotes_returned": 4,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      }
+    ],
+    "latency_s": 23.835,
+    "quote_fidelity": 1.0
+  },
+  {
+    "essay_id": "T2-002",
+    "task_type": "TASK_2",
+    "gold": {
+      "overall": 6.5,
+      "criteria": {
+        "TASK_RESPONSE": 6.5,
+        "COHERENCE_COHESION": 7.0,
+        "LEXICAL_RESOURCE": 6.5,
+        "GRAMMATICAL_RANGE_ACCURACY": 6.5
+      },
+      "source": "expert-estimate-from-official-descriptors",
+      "confidence": "medium"
+    },
+    "overall_band": 6.5,
+    "raw_overall": 6.5,
+    "criteria": [
+      {
+        "criterion": "TASK_RESPONSE",
+        "band": 7.0,
+        "raw_band": 7.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay addresses all parts of the prompt by discussing both views on online versus face-to-face learning and presenting a clear personal opinion in favour of a blended approach. The position is maintained throughout, with relevant main ideas extended through specific examples (e.g., rural Vietnamese student, medicine requiring labs) and reasoning. However, while ideas are generally well-developed, there is a slight tendency to over-generalise in places (e.g., claiming online learning is 'generally cheaper' without nuance) and some support lacks depth, preventing it from reaching Band 8. It does not meet Band 6 because the position is clear and consistent, and ideas are sufficiently extended with examples, not merely stated.",
+        "descriptor_reference": "TASK_RESPONSE band 7",
+        "evidence_quotes": [
+          "In my opinion, neither mode is superior in absolute terms; effectiveness depends on the learner and the subject. Theoretical content such as programming or economics can be delivered successfully online, whereas practical disciplines like medicine or laboratory science clearly require physical presence.",
+          "A student living in a rural province of Vietnam, for instance, can now enrol in courses taught by professors at leading universities without relocating.",
+          "Classroom settings also foster collaboration and social skills, as students negotiate ideas in group discussions and build relationships with their peers."
+        ],
+        "quotes_returned": 3,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      },
+      {
+        "criterion": "COHERENCE_COHESION",
+        "band": 6.0,
+        "raw_band": 6.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay demonstrates clear overall progression with logical organisation of ideas and effective use of cohesive devices such as 'on the other hand', 'furthermore', 'therefore', and 'in conclusion'. Paragraphing is sufficient and appropriate, with each paragraph focusing on a clear central topic. While cohesion is generally effective, there is a slight tendency toward mechanical use of discourse markers (e.g., 'Furthermore', 'On the other hand') which prevents it from reaching the higher band where cohesion is entirely unobtrusive and referencing is more sophisticated. This aligns with Band 6 descriptors, which note effective use of cohesive devices but allow for some mechanical or faulty cohesion within/between sentences.",
+        "descriptor_reference": "COHERENCE_COHESION band 6",
+        "evidence_quotes": [
+          "On the other hand, supporters of face-to-face instruction emphasise the value of direct human interaction.",
+          "Furthermore, online platforms are generally cheaper, which widens access for families with limited financial means.",
+          "In my opinion, neither mode is superior in absolute terms; effectiveness depends on the learner and the subject.",
+          "In conclusion, although online learning offers undeniable advantages in terms of cost and convenience, face-to-face teaching retains unique strengths."
+        ],
+        "quotes_returned": 4,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      },
+      {
+        "criterion": "LEXICAL_RESOURCE",
+        "band": 7.0,
+        "raw_band": 7.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay demonstrates a sufficient range of vocabulary with some flexibility and precision, using less common lexical items such as 'acquire', 'accessibility', 'revisiting', 'enrol', 'emphasise', 'foster', 'negotiate', 'discipline', 'theoretical', 'practical', and 'blended'. While there is awareness of style and collocation in phrases like 'flexibility of digital resources' and 'interpersonal benefits', occasional inaccuracies appear, such as 'better results' (less natural than 'better outcomes') and 'wider access' (more idiomatic than 'widens access'). These features align with Band 7, as the vocabulary is sufficient for the task and allows some precision, but does not yet show the skilful, flexible, and precise use of uncommon items seen in Band 8, nor does it rely on repetitive or basic language characteristic of Band 6.",
+        "descriptor_reference": "LEXICAL_RESOURCE band 7",
+        "evidence_quotes": [
+          "The rapid growth of digital technology has transformed the way people acquire knowledge.",
+          "Learners can study at their own pace, revisiting recorded lectures whenever a concept proves difficult, and they are not restricted by geography.",
+          "Classroom settings also foster collaboration and social skills, as students negotiate ideas in group discussions and build relationships with their peers.",
+          "Theoretical content such as programming or economics can be delivered successfully online, whereas practical disciplines like medicine or laboratory science clearly require physical presence."
+        ],
+        "quotes_returned": 4,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      },
+      {
+        "criterion": "GRAMMATICAL_RANGE_ACCURACY",
+        "band": 6.0,
+        "raw_band": 6.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay demonstrates a mix of simple and complex sentence forms with generally accurate grammar and punctuation. Errors are present but do not impede communication, aligning with Band 6 descriptors. While there is some variety in structures, the frequency of error-free sentences is not high enough to meet Band 7's requirement of 'frequent error-free sentences'.",
+        "descriptor_reference": "GRAMMATICAL_RANGE_ACCURACY band 6",
+        "evidence_quotes": [
+          "The rapid growth of digital technology has transformed the way people acquire knowledge.",
+          "Learners can study at their own pace, revisiting recorded lectures whenever a concept proves difficult, and they are not restricted by geography.",
+          "In a physical classroom, teachers can immediately notice confusion on a student's face and adjust their explanation accordingly, something that is far harder to achieve through a screen.",
+          "Therefore, I believe a blended approach, combining the flexibility of digital resources with the interpersonal benefits of the classroom, represents the most effective solution."
+        ],
+        "quotes_returned": 4,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      }
+    ],
+    "latency_s": 14.948,
+    "quote_fidelity": 1.0
+  },
+  {
+    "essay_id": "T2-003",
+    "task_type": "TASK_2",
+    "gold": {
+      "overall": 7.5,
+      "criteria": {
+        "TASK_RESPONSE": 7.5,
+        "COHERENCE_COHESION": 7.5,
+        "LEXICAL_RESOURCE": 8.0,
+        "GRAMMATICAL_RANGE_ACCURACY": 7.5
+      },
+      "source": "expert-estimate-from-official-descriptors",
+      "confidence": "medium"
+    },
+    "overall_band": 7.5,
+    "raw_overall": 7.25,
+    "criteria": [
+      {
+        "criterion": "TASK_RESPONSE",
+        "band": 8.0,
+        "raw_band": 8.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay fully addresses both parts of the prompt—causes and solutions—with a clear, consistent position throughout. It develops main ideas with relevant examples (e.g., Ho Chi Minh City, London, Singapore) and extends them through reasoning and specific measures. While the response is strong, it does not reach Band 9 because the development, though effective, lacks the full extension and nuanced support seen in the highest band (e.g., deeper analysis of trade-offs or broader contextualisation). It exceeds Band 7 due to the clarity and consistency of position and the deliberate extension of ideas with evidence, avoiding mere statement or over-generalisation.",
+        "descriptor_reference": "TASK_RESPONSE band 8",
+        "evidence_quotes": [
+          "The root cause is arguably demographic rather than technical. As economic opportunity concentrates in a handful of cities, rural populations migrate in numbers that far outstrip the pace at which road networks can be extended.",
+          "Ho Chi Minh City, for example, absorbed roughly two hundred thousand new residents annually over the past decade while its road surface area grew by a fraction of that rate.",
+          "The most effective long-term remedy is sustained investment in mass rapid transit, since a single metro line can carry the passenger volume of several motorway lanes at a fraction of the spatial cost.",
+          "This should be reinforced by demand-side measures such as congestion charging, which has demonstrably reduced central-city traffic in London and Singapore by making peak-hour driving financially unattractive."
+        ],
+        "quotes_returned": 4,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      },
+      {
+        "criterion": "COHERENCE_COHESION",
+        "band": 7.0,
+        "raw_band": 7.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay demonstrates clear logical organisation with a strong progression of ideas from causes to solutions, and uses a range of cohesive devices appropriately (e.g., 'therefore', 'finally', 'in conclusion', 'for example', 'such as', 'while'). Paragraphing is sufficient and appropriate, with each paragraph developing a clear central topic. While cohesion is effective, there is a slight tendency toward mechanical use of sequencing connectors (e.g., 'finally' as a discourse marker rather than a logical outcome), which prevents it from reaching Band 8, where cohesion would be entirely unobtrusive and skilfully managed. It exceeds Band 6 because cohesion is not merely effective but shows clear progression and appropriate use of referencing and substitution, without the faulty or mechanical cohesion typical of that band.",
+        "descriptor_reference": "COHERENCE_COHESION band 7",
+        "evidence_quotes": [
+          "The root cause is arguably demographic rather than technical. As economic opportunity concentrates in a handful of cities, rural populations migrate in numbers that far outstrip the pace at which road networks can be extended.",
+          "In conclusion, congestion arises from the interaction of migration, rising affluence and poor planning. Only a coordinated response combining transit investment, pricing mechanisms and spatial reform is likely to produce lasting improvement."
+        ],
+        "quotes_returned": 4,
+        "quotes_dropped": 2,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      },
+      {
+        "criterion": "LEXICAL_RESOURCE",
+        "band": 7.0,
+        "raw_band": 7.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay demonstrates a sufficient range of vocabulary with some flexibility and precision, using less common lexical items such as 'demographic', 'aspirational status', 'disproportionate', 'sustained investment', 'demand-side measures', and 'normalisation' with generally appropriate collocation and style. While there are occasional inaccuracies in word choice (e.g., 'road surface area' is slightly odd; 'spatial cost' is acceptable but not the most natural phrasing), these do not impede communication. The vocabulary is not wide enough or controlled with the sophistication required for Band 8, nor is it limited or repetitive enough to fall into Band 6, where attempts at less common vocabulary are made with some inaccuracy that may strain the reader.",
+        "descriptor_reference": "LEXICAL_RESOURCE band 7",
+        "evidence_quotes": [
+          "As economic opportunity concentrates in a handful of cities, rural populations migrate in numbers that far outstrip the pace at which road networks can be extended.",
+          "as household incomes rise, families that once relied on public transport purchase cars, occupying disproportionate road space per passenger.",
+          "This should be reinforced by demand-side measures such as congestion charging, which has demonstrably reduced central-city traffic in London and Singapore"
+        ],
+        "quotes_returned": 3,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      },
+      {
+        "criterion": "GRAMMATICAL_RANGE_ACCURACY",
+        "band": 7.0,
+        "raw_band": 7.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay demonstrates a variety of complex sentence structures with frequent error-free sentences, aligning with Band 7 descriptors. While there are occasional grammatical slips (e.g., article omission, preposition choice), they do not impede communication and are infrequent enough to rule out Band 6. However, the errors are too regular and noticeable to qualify for Band 8, which requires the majority of sentences to be completely error-free.",
+        "descriptor_reference": "GRAMMATICAL_RANGE_ACCURACY band 7",
+        "evidence_quotes": [
+          "Gridlocked streets have become a defining feature of urban life in most rapidly expanding metropolises.",
+          "As economic opportunity concentrates in a handful of cities, rural populations migrate in numbers that far outstrip the pace at which road networks can be extended.",
+          "Ho Chi Minh City, for example, absorbed roughly two hundred thousand new residents annually over the past decade while its road surface area grew by a fraction of that rate.",
+          "Finally, planning reform that encourages mixed-use development would shorten journeys at source, and the normalisation of remote working, accelerated by recent global events, offers an inexpensive means of removing a proportion of commuters from the road entirely."
+        ],
+        "quotes_returned": 4,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      }
+    ],
+    "latency_s": 11.852,
+    "quote_fidelity": 0.867
+  },
+  {
+    "essay_id": "T2-004",
+    "task_type": "TASK_2",
+    "gold": {
+      "overall": 8.0,
+      "criteria": {
+        "TASK_RESPONSE": 8.0,
+        "COHERENCE_COHESION": 8.0,
+        "LEXICAL_RESOURCE": 8.5,
+        "GRAMMATICAL_RANGE_ACCURACY": 8.0
+      },
+      "source": "expert-estimate-from-official-descriptors",
+      "confidence": "medium"
+    },
+    "overall_band": 7.0,
+    "raw_overall": 7.0,
+    "criteria": [
+      {
+        "criterion": "TASK_RESPONSE",
+        "band": 7.0,
+        "raw_band": 7.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay addresses all parts of the prompt: it explains why some museums charge fees and presents a clear position on whether museums should be free for everyone. The position is maintained throughout — acknowledging valid reasons for charges while ultimately advocating for free access where public funding is secure. Main ideas are extended with reasoning and examples (e.g., conservation costs, visitor flow at the Uffizi, equity concerns, and the UK’s 2001 policy change). However, the development occasionally leans toward over-generalisation (e.g., stating that free entry 'transfers money from ordinary taxpayers to visitors who could comfortably afford a ticket' without specifying contexts or data), and the conclusion, while clear, repeats earlier points without adding new depth. This matches Band 7: it addresses all parts, presents a clear position throughout, and extends and supports main ideas, but with a tendency to over-generalise and less focused support than Band 8 would require.",
+        "descriptor_reference": "TASK_RESPONSE band 7",
+        "evidence_quotes": [
+          "The rationale for charging is largely a matter of institutional survival. Conservation is extraordinarily expensive: climate-controlled storage, specialist restoration and the insurance premiums attached to irreplaceable objects consume budgets that ticket revenue alone rarely covers, let alone government grants that fluctuate with each electoral cycle.",
+          "The moment a price is attached, the children most likely to be excluded are precisely those least likely to encounter such material elsewhere. Britain's decision to abolish charges at its national museums in 2001 is instructive: attendance roughly doubled, and the composition of that audience broadened measurably."
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      },
+      {
+        "criterion": "COHERENCE_COHESION",
+        "band": 7.0,
+        "raw_band": 7.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay demonstrates a clear overall progression of ideas, with logical sequencing from explaining why museums charge to arguing for free access under certain conditions. Paragraphing is sufficient and appropriate, with each paragraph developing a distinct aspect of the argument. While cohesive devices such as 'therefore', 'nevertheless', 'additionally', and 'for instance' are used appropriately, their use is somewhat noticeable and slightly formulaic, particularly in the opening and concluding paragraphs, which prevents the cohesion from being entirely seamless. This aligns with Band 7, which requires clear progression and appropriate use of a range of cohesive devices, but allows for some under-/over-use, whereas Band 8 demands that cohesion attracts no attention and is managed skilfully throughout — a standard not fully met here due to the occasional mechanical feel of the connectors.",
+        "descriptor_reference": "COHERENCE_COHESION band 7",
+        "evidence_quotes": [
+          "This essay first considers why admission charges persist and then argues that, while free entry is a worthy ideal, it is defensible only where public funding is genuinely secure.",
+          "The rationale for charging is largely a matter of institutional survival. Conservation is extraordinarily expensive: climate-controlled storage, specialist restoration and the insurance premiums attached to irreplaceable objects consume budgets that ticket revenue alone rarely covers, let alone government grants that fluctuate with each electoral cycle.",
+          "Nevertheless, I would contend that the case for free access is ultimately the stronger one, provided the funding model is robust.",
+          "My conclusion, therefore, is a qualified one. Museums charge because conservation is costly and demand requires management, and these are legitimate pressures rather than institutional greed. Yet where a state can afford to underwrite them, it should, because the social return on an open door exceeds anything a turnstile can collect."
+        ],
+        "quotes_returned": 4,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      },
+      {
+        "criterion": "LEXICAL_RESOURCE",
+        "band": 7.0,
+        "raw_band": 7.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay demonstrates a sufficient range of vocabulary with some flexibility and precision, using less common lexical items such as 'conservation', 'irreplaceable', 'electoral cycle', 'disproportionately', 'repositories', and 'transmits' with generally appropriate collocation and style. While there is occasional inaccuracy (e.g., 'the social return on an open door' is slightly awkward), errors do not impede communication. This aligns with Band 7, as it goes beyond Band 6's 'attempts with some inaccuracy' by using less common vocabulary with awareness of style and collocation, but does not reach Band 8's 'skilful' and 'precise' use of uncommon items.",
+        "descriptor_reference": "LEXICAL_RESOURCE band 7",
+        "evidence_quotes": [
+          "Conservation is extraordinarily expensive: climate-controlled storage, specialist restoration and the insurance premiums attached to irreplaceable objects consume budgets",
+          "where a museum's audience is disproportionately affluent or foreign, free entry effectively transfers money from ordinary taxpayers to visitors who could comfortably afford a ticket",
+          "Museums are not merely repositories of objects; they are instruments through which a society transmits its history to those who did not inherit access to it"
+        ],
+        "quotes_returned": 3,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      },
+      {
+        "criterion": "GRAMMATICAL_RANGE_ACCURACY",
+        "band": 7.0,
+        "raw_band": 7.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay demonstrates a variety of complex sentence structures, including subordinate clauses, participial phrases, and conditional constructions, with frequent error-free sentences. While there are occasional minor errors (e.g., 'the children most likely to be excluded are precisely those least likely to encounter such material elsewhere' is grammatically sound, but slight awkwardness in phrasing may reflect minor inaccuracy), these do not impede communication and are infrequent. The control of grammar and punctuation is good overall, aligning with Band 7's description of 'Frequent error-free sentences' and 'good control of grammar and punctuation but may make a few errors.' It does not reach Band 8 because not the majority of sentences are completely error-free — several contain minor slips or awkward constructions that prevent the 'majority error-free' threshold from being met. It is clearly above Band 6, which requires only a mix of simple and complex forms with errors that rarely reduce communication; this essay shows more consistent complex structure and fewer disruptive errors.",
+        "descriptor_reference": "GRAMMATICAL_RANGE_ACCURACY band 7",
+        "evidence_quotes": [
+          "Whether cultural institutions ought to be funded by their visitors or by the public purse is a question that reveals competing assumptions about what a museum is for.",
+          "The rationale for charging is largely a matter of institutional survival.",
+          "Conservation is extraordinarily expensive: climate-controlled storage, specialist restoration and the insurance premiums attached to irreplaceable objects consume budgets that ticket revenue alone rarely covers, let alone government grants that fluctuate with each electoral cycle.",
+          "The moment a price is attached, the children most likely to be excluded are precisely those least likely to encounter such material elsewhere."
+        ],
+        "quotes_returned": 4,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      }
+    ],
+    "latency_s": 13.087,
+    "quote_fidelity": 1.0
+  },
+  {
+    "essay_id": "T2-005",
+    "task_type": "TASK_2",
+    "gold": {
+      "overall": 4.5,
+      "criteria": {
+        "TASK_RESPONSE": 4.5,
+        "COHERENCE_COHESION": 5.0,
+        "LEXICAL_RESOURCE": 4.5,
+        "GRAMMATICAL_RANGE_ACCURACY": 4.0
+      },
+      "source": "expert-estimate-from-official-descriptors",
+      "confidence": "medium"
+    },
+    "overall_band": 5.0,
+    "raw_overall": 5.125,
+    "criteria": [
+      {
+        "criterion": "TASK_RESPONSE",
+        "band": 5.5,
+        "raw_band": 6.0,
+        "length_penalty": 0.5,
+        "explanation": "The essay addresses both advantages and disadvantages of social media and states a clear position that advantages outweigh disadvantages. However, the development of ideas is limited: points are stated but not extended with sufficient reasoning, examples, or detail. For instance, while it mentions that social media helps people connect and learn, it does not elaborate on how or why this is advantageous beyond basic claims. Similarly, disadvantages are listed but not fully explored. This matches Band 6, which requires addressing all parts and presenting a relevant position, but allows for inadequately developed or unclear main ideas. It does not meet Band 7 because the position, while present, is not consistently supported with extended ideas, and there is a tendency to over-generalise without focus.",
+        "descriptor_reference": "TASK_RESPONSE band 6",
+        "evidence_quotes": [
+          "In my opinion it have advantage and disadvantage but i think advantage is more.",
+          "Firstly, social media help people connect together. If you have friend in other country, you can talking with them everyday and it is free.",
+          "Secondly, social media is bad for health. Many people use phone too much and they can not sleep.",
+          "In conclusion, social media have good point and bad point. But i think the advantage is more than disadvantage because it help people connect and learn."
+        ],
+        "quotes_returned": 4,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      },
+      {
+        "criterion": "COHERENCE_COHESION",
+        "band": 5.0,
+        "raw_band": 5.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay shows a basic attempt at organisation with four paragraphs and the use of sequencing words like 'Firstly', 'Secondly', and 'In conclusion'. However, the progression of ideas is limited and relies heavily on mechanical linking devices without clear referencing or substitution. Paragraphing is present but not always logically developed, and cohesive devices are used in a formulaic way rather than arising naturally from logical sequencing. This aligns with Band 5 descriptors, which note inadequate or inaccurate use of cohesive devices and lack of overall progression, rather than Band 6 which requires clear overall progression and effective (if sometimes faulty) use of cohesive devices.",
+        "descriptor_reference": "COHERENCE_COHESION band 5",
+        "evidence_quotes": [
+          "Firstly, social media help people connect together.",
+          "Secondly, social media is bad for health.",
+          "For example student can join group to study together and share document.",
+          "In conclusion, social media have good point and bad point."
+        ],
+        "quotes_returned": 4,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      },
+      {
+        "criterion": "LEXICAL_RESOURCE",
+        "band": 5.0,
+        "raw_band": 5.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay demonstrates a limited range of vocabulary with frequent repetition of basic words such as 'social', 'media', 'advantage', 'help', and 'people'. There is minimal use of less common lexical items, and when attempted (e.g., 'fake news', 'bullied'), they are used without precision or awareness of collocation. Errors in word choice and formation (e.g., 'it have advantage', 'you can talking', 'get bad score', 'feel very sad') are noticeable and sometimes impede clarity. These features align with Band 5, which describes a limited range of vocabulary that is minimally adequate for the task, with noticeable errors that may cause some difficulty for the reader. It does not meet Band 6 because there is no genuine attempt to use less common vocabulary with any flexibility — the few attempts are inaccurate and not indicative of awareness of style or collocation.",
+        "descriptor_reference": "LEXICAL_RESOURCE band 5",
+        "evidence_quotes": [
+          "Nowadays social media is very popular in the world. Many people use facebook, tiktok everyday.",
+          "In my opinion it have advantage and disadvantage but i think advantage is more.",
+          "social media help people connect together. If you have friend in other country, you can talking with them everyday and it is free.",
+          "Another problem is fake news, many people believe the wrong information on internet and it make problem in society."
+        ],
+        "quotes_returned": 4,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      },
+      {
+        "criterion": "GRAMMATICAL_RANGE_ACCURACY",
+        "band": 5.0,
+        "raw_band": 5.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay demonstrates a very limited range of grammatical structures, relying almost exclusively on simple sentences with frequent errors in subject-verb agreement, verb tense, article use, and word form. While there are occasional attempts at complex structures (e.g., 'If you have friend in other country, you can talking with them everyday'), these are consistently inaccurate. Errors are pervasive and often impede clarity, which aligns with Band 5 descriptors. It does not meet Band 6 because errors are not merely occasional or harmless — they occur in nearly every sentence and sometimes obscure meaning. It is also clearly below Band 4 in terms of structural range, as even basic subordination is attempted but failed.",
+        "descriptor_reference": "GRAMMATICAL_RANGE_ACCURACY band 5",
+        "evidence_quotes": [
+          "Nowadays social media is very popular in the world. Many people use facebook, tiktok everyday. In my opinion it have advantage and disadvantage but i think advantage is more.",
+          "Firstly, social media help people connect together. If you have friend in other country, you can talking with them everyday and it is free.",
+          "Before, we must send letter and wait very long time. Also social media help people find information quickly and learn many thing.",
+          "Many people use phone too much and they can not sleep. Some student use facebook when study and they get bad score."
+        ],
+        "quotes_returned": 4,
+        "quotes_dropped": 0,
+        "comment_en": "",
+        "comment_vi": "",
+        "improvement_en": "",
+        "improvement_vi": ""
+      }
+    ],
+    "latency_s": 18.276,
+    "quote_fidelity": 1.0
+  }
+]

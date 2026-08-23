@@ -1,0 +1,52 @@
+## THE FOUR CRITERIA — assess ALL of them from this one essay
+{rubric_block}
+{prompt_block}
+## STUDENT ESSAY
+<<<ESSAY
+{essay}
+ESSAY
+
+## OBJECTIVE TEXT STATISTICS
+These were computed programmatically. Treat them as ground truth and do not re-count.
+{features}
+
+## WHAT TO PRODUCE
+Return a JSON object with exactly four keys: `{first_criterion_field}`, `coherence_cohesion`,
+`lexical_resource`, `grammatical_range_accuracy`. Each key's value is one assessment block,
+with these fields in this order:
+1. `justification` — 3 to 5 sentences. Name the band descriptor this criterion matches and
+   explain why it matches that one rather than the band above or below. Write this BEFORE
+   you decide on a number.
+2. `descriptor_reference` — the descriptor line you grounded that judgement in,
+   formatted as "<CRITERION_CODE> band N".
+3. `band` — a number from 1.0 to 9.0 in steps of 0.5, consistent with your justification.
+4. `confidence` — 0.0 to 1.0, how certain you are in this specific criterion's band.
+5. `comment` — an object with `en` and `vi`. 2-3 sentences, in the learner's own terms, saying
+   why they got this band on this criterion. Keep official IELTS terms (e.g. "cohesive
+   devices", "lexical range") in English even inside the Vietnamese sentence, exactly as a
+   Vietnamese IELTS teacher would say them — do not translate the terminology itself.
+6. `improvement` — an object with `en` and `vi`. One concrete, actionable thing this learner
+   should change next time on THIS criterion, tied to something their essay actually did —
+   not generic advice like "use more vocabulary."
+7. `evidence` — 2 to 4 items. Each `quote` MUST be copied character-for-character from
+   between the ESSAY markers above, and `comment` says why it supports this criterion.
+
+## RULES
+- Never invent a quote. If you cannot find an exact supporting quote, leave that evidence
+  item out rather than paraphrasing or correcting the student's words. Quotes are verified
+  against the source text and fabricated ones are discarded.
+- Assess `{first_criterion_field}` using ONLY the {first_criterion_name} descriptors above.
+  Assess each of the other three using ONLY its own descriptors. A weakness that belongs to
+  one criterion must never lower a different criterion's band — score each independently.
+- Use the word count given above; do not count words yourself.
+- For `{first_criterion_field}` ONLY: do NOT deduct marks for the essay being under the word
+  limit. Length is handled separately by the scoring system, and deducting here would
+  penalise the student twice.
+- For `coherence_cohesion`, `lexical_resource`, and `grammatical_range_accuracy`: ignore
+  essay length entirely; it is not part of these criteria.
+- `comment.en`, `comment.vi`, `improvement.en`, and `improvement.vi` MUST all be non-empty
+  for all four criteria. An empty string in either language is treated as a failed response.
+- `comment.vi` and `improvement.vi` MUST be written entirely in Vietnamese script. Do not
+  mix in words, particles, or characters from any other language (Chinese, Dutch, or any
+  other) — every word in these two fields must be either Vietnamese or one of the kept
+  English IELTS terms explicitly allowed above.

@@ -16,7 +16,20 @@ import asyncio
 from pydantic import BaseModel
 
 from src.llm.base import LLMResponse
-from src.schemas.assessment import CriterionEvaluation
+from src.schemas.assessment import (
+    CRITERIA_BY_TASK,
+    Bilingual,
+    CombinedCriterionBlock,
+    CombinedEvaluationTask1,
+    CombinedEvaluationTask2,
+    CriterionEvaluation,
+    combined_field_for,
+)
+
+_COMBINED_TASK_TYPE = {
+    CombinedEvaluationTask1: "TASK_1",
+    CombinedEvaluationTask2: "TASK_2",
+}
 
 
 class FakeLLMClient:
@@ -96,6 +109,43 @@ class FakeLLMClient:
                 ok=False,
                 error="forced failure",
                 attempts=3,
+            )
+
+        if response_model in _COMBINED_TASK_TYPE:
+            task_type = _COMBINED_TASK_TYPE[response_model]
+            quote_source = self._extract_real_quote(messages) if self.echo_real_quote else self.quote
+            blocks = {}
+            for criterion in CRITERIA_BY_TASK[task_type]:
+                band = self.bands_by_criterion.get(criterion, self.band)
+                quotes = self.quotes_by_criterion.get(criterion, [quote_source])
+                blocks[combined_field_for(criterion)] = CombinedCriterionBlock(
+                    justification=(
+                        f"The essay matches the band {band} descriptor for {criterion} "
+                        "rather than the band above or below."
+                    ),
+                    descriptor_reference=f"{criterion} band {band}",
+                    band=band,
+                    confidence=0.8,
+                    comment=Bilingual(
+                        en=f"Fake comment for {criterion}.",
+                        vi=f"Nhận xét giả cho {criterion}.",
+                    ),
+                    improvement=Bilingual(
+                        en=f"Fake improvement for {criterion}.",
+                        vi=f"Gợi ý cải thiện giả cho {criterion}.",
+                    ),
+                    evidence=[{"quote": q, "comment": "Illustrates the band."} for q in quotes],
+                )
+            payload = response_model(**blocks)
+            return LLMResponse(
+                node=node,
+                model=self.model_name,
+                ok=True,
+                content=payload.model_dump_json(),
+                parsed=payload,
+                prompt_tokens=100,
+                completion_tokens=50,
+                latency_s=0.01,
             )
 
         if response_model is not CriterionEvaluation:

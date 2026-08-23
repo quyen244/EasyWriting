@@ -103,6 +103,93 @@ class CriterionEvaluation(BaseModel):
 
 
 # --------------------------------------------------------------------------- #
+# LLM-FACING — pipeline-v2.0, the single-call combined evaluation.
+#
+# `v1` asked one question per call (4 calls); `v2` asks all four at once. The four
+# criteria are NAMED FIELDS on the response object, not an array with a `code` per
+# item — this is a deliberate departure from the array shape sketched in
+# specs/00-grading-feature/spec.md §11 during design. An array requires trusting the
+# model to both report the right `code` per item AND return the four items in the
+# right order (spec.md's original "reorder server-side" step exists only to cover
+# for that). A named-field object needs neither: `strict: true` structured output
+# makes every field required, so the four criteria the model must answer are fixed
+# by the schema itself, in a fixed position, before generation even starts — there
+# is no ordering or mislabelling failure mode left to guard against. Two schemas
+# exist (Task 1 vs Task 2) because the first field's name IS the first criterion's
+# code, and that code differs by task type (CRITERIA_BY_TASK).
+# --------------------------------------------------------------------------- #
+class Bilingual(BaseModel):
+    en: str = Field(description="English text. Must not be empty.")
+    vi: str = Field(
+        description="Vietnamese text, IELTS terminology kept in English. Must not be empty."
+    )
+
+
+class CombinedCriterionBlock(BaseModel):
+    """One criterion's full judgement inside a single-call response.
+
+    Field order matches `CriterionEvaluation`'s reasoning-before-answering property
+    (module docstring): `justification` before `band`, and both learner-facing fields
+    (`comment`, `improvement`) come AFTER the band is already committed to, so they
+    explain a decision already made rather than being drafted independently of it.
+    """
+
+    justification: str = Field(
+        description="3-5 sentences naming the band descriptor THIS criterion matches "
+        "and why, before deciding the band. Assess this criterion only — ignore "
+        "problems that belong to a different criterion."
+    )
+    descriptor_reference: str = Field(
+        description='The band-descriptor line this judgement is grounded in, '
+        'e.g. "LEXICAL_RESOURCE band 6".'
+    )
+    band: float = Field(description="Band score from 1.0 to 9.0 in steps of 0.5")
+    confidence: float = Field(description="How certain you are in THIS criterion, 0.0 to 1.0")
+    comment: Bilingual = Field(
+        description="2-3 sentences, learner-facing, explaining this band in both languages."
+    )
+    improvement: Bilingual = Field(
+        description="One concrete, actionable next step for THIS criterion, in both "
+        "languages, tied to something the essay actually did."
+    )
+    evidence: list[Evidence] = Field(description="2-4 verbatim quotes with commentary")
+
+
+class CombinedEvaluationTask1(BaseModel):
+    """The single-call response shape for TASK_1 — field order is CRITERIA_BY_TASK order."""
+
+    task_achievement: CombinedCriterionBlock
+    coherence_cohesion: CombinedCriterionBlock
+    lexical_resource: CombinedCriterionBlock
+    grammatical_range_accuracy: CombinedCriterionBlock
+
+
+class CombinedEvaluationTask2(BaseModel):
+    """The single-call response shape for TASK_2 — field order is CRITERIA_BY_TASK order."""
+
+    task_response: CombinedCriterionBlock
+    coherence_cohesion: CombinedCriterionBlock
+    lexical_resource: CombinedCriterionBlock
+    grammatical_range_accuracy: CombinedCriterionBlock
+
+
+COMBINED_RESPONSE_MODEL_BY_TASK: dict[str, type[BaseModel]] = {
+    "TASK_1": CombinedEvaluationTask1,
+    "TASK_2": CombinedEvaluationTask2,
+}
+
+
+def combined_response_model_for(task_type: str) -> type[BaseModel]:
+    return COMBINED_RESPONSE_MODEL_BY_TASK[task_type]
+
+
+def combined_field_for(criterion: str) -> str:
+    """CRITERIA_BY_TASK codes are already valid Python identifiers lowercased —
+    'TASK_ACHIEVEMENT' -> 'task_achievement', matching the schema field name exactly."""
+    return criterion.lower()
+
+
+# --------------------------------------------------------------------------- #
 # API-FACING — must match contracts/assessments-openapi.yaml
 # --------------------------------------------------------------------------- #
 class AssessmentRequest(BaseModel):

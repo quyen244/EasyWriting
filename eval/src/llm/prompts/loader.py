@@ -110,3 +110,90 @@ def load_prompt_set(version: str, prompts_root: Path | None = None) -> PromptSet
 def get_prompt_set(version: str) -> PromptSet:
     """Cached accessor — prompt assets are immutable for the lifetime of a process."""
     return load_prompt_set(version)
+
+
+# --------------------------------------------------------------------------- #
+# pipeline-v2.0 — the single-call combined prompt has a different file layout
+# (one system/user template covering all 4 criteria at once, plus a few-shot
+# worked example per task type) so it gets its own small loader rather than
+# overloading PromptSet with an optional/nullable shape that v1 would never fill.
+# --------------------------------------------------------------------------- #
+COMBINED_SYSTEM_FILE = "system.txt"
+COMBINED_USER_FILE = "user.txt"
+FEW_SHOT_DIR = "few_shot"
+
+COMBINED_REQUIRED_FILES = (COMBINED_SYSTEM_FILE, COMBINED_USER_FILE)
+FEW_SHOT_TASK_TYPES = ("TASK_1", "TASK_2")
+
+
+def _few_shot_stem(task_type: str) -> str:
+    return "task_1" if task_type == "TASK_1" else "task_2"
+
+
+@dataclass(frozen=True)
+class CombinedPromptSet:
+    """Every text asset needed to build a pipeline-v2.0 single-call request."""
+
+    version: str
+    system: str
+    user: str
+    rubrics: dict[str, str]
+    # One worked example per task type — NOT drawn from eval/data/golden/, on purpose:
+    # a few-shot example sourced from the benchmark set would leak that essay's answer
+    # into its own evaluation. These are hand-constructed, held out from the golden set.
+    few_shot_input: dict[str, str]
+    few_shot_output: dict[str, str]
+
+    def rubric_for(self, criterion: str) -> str:
+        try:
+            return self.rubrics[criterion]
+        except KeyError as exc:
+            raise PromptAssetError(
+                f"Prompt set {self.version!r} has no rubric for criterion {criterion!r}."
+            ) from exc
+
+
+def load_combined_prompt_set(version: str, prompts_root: Path | None = None) -> CombinedPromptSet:
+    root = (prompts_root or PROMPTS_ROOT) / version
+    if not root.is_dir():
+        raise PromptAssetError(f"No prompt version {version!r} at {root}.")
+
+    missing = [name for name in COMBINED_REQUIRED_FILES if not (root / name).is_file()]
+    rubrics_dir = root / RUBRICS_DIR
+    missing += [
+        f"{RUBRICS_DIR}/{code}.txt"
+        for code in CRITERION_NAMES
+        if not (rubrics_dir / f"{code}.txt").is_file()
+    ]
+    few_shot_dir = root / FEW_SHOT_DIR
+    for task_type in FEW_SHOT_TASK_TYPES:
+        stem = _few_shot_stem(task_type)
+        for suffix in ("input.txt", "output.json"):
+            name = f"{stem}_{suffix}"
+            if not (few_shot_dir / name).is_file():
+                missing.append(f"{FEW_SHOT_DIR}/{name}")
+    if missing:
+        raise PromptAssetError(
+            f"Combined prompt version {version!r} at {root} is incomplete. Missing: "
+            + ", ".join(missing)
+        )
+
+    return CombinedPromptSet(
+        version=version,
+        system=_read(root / COMBINED_SYSTEM_FILE),
+        user=_read(root / COMBINED_USER_FILE),
+        rubrics={code: _read(rubrics_dir / f"{code}.txt") for code in CRITERION_NAMES},
+        few_shot_input={
+            task_type: _read(few_shot_dir / f"{_few_shot_stem(task_type)}_input.txt")
+            for task_type in FEW_SHOT_TASK_TYPES
+        },
+        few_shot_output={
+            task_type: _read(few_shot_dir / f"{_few_shot_stem(task_type)}_output.json")
+            for task_type in FEW_SHOT_TASK_TYPES
+        },
+    )
+
+
+@lru_cache
+def get_combined_prompt_set(version: str) -> CombinedPromptSet:
+    return load_combined_prompt_set(version)

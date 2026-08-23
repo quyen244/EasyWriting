@@ -1,0 +1,51 @@
+# Versioned scoring-pipeline configuration (Constitution Principle IV).
+#
+# pipeline-v2.0 — the single-call methodology. One model call scores all 4 criteria
+# at once, instead of v1's 4 concurrent per-criterion calls. Model, temperature, seed,
+# and length-penalty thresholds are UNCHANGED from v1.yaml on purpose: this run is
+# meant to isolate the effect of the call-count change alone. Changing the model at
+# the same time would make the before/after comparison measure two variables at once.
+#
+# See specs/00-grading-feature/spec.md and plan.md for the full design and the
+# Phase A (this file) / Phase B (Edge Function) sequencing this belongs to.
+
+version: pipeline-v2.0
+
+model:
+  id: nvidia/nemotron-3-super-120b-a12b:free
+  temperature: 0.3
+  # v1 sized 2048 for a SINGLE criterion's response (~580 completion tokens measured,
+  # generous headroom). This call answers FOUR criteria plus bilingual comment and
+  # improvement text for each, so the budget must scale with the output, not stay
+  # fixed — sized at roughly 4x v1's measured worst case plus room for the added
+  # bilingual/improvement fields. If the benchmark run shows truncation, this is the
+  # first knob to revisit, not the prompt.
+  max_tokens: 6144
+  seed: 42
+  timeout_s: 180
+  max_retries: 2
+  reasoning:
+    # Unchanged from v1 for a measured reason, not carried over by default — see
+    # docs/live-model-validation.md and v1.yaml's own comment. Reasoning tokens are
+    # output tokens billed against max_tokens; on this model, reasoning left on
+    # starved the JSON of budget and failed every criterion. Re-enabling it for v2
+    # would need its own benchmark run to justify (plan.md, "What this plan
+    # deliberately does not re-decide").
+    enabled: false
+
+prompts:
+  # Selects ../prompts/v2/ — system.txt, user.txt, few_shot/, and the SAME rubrics/
+  # as v1 (copied, not rewritten — the rubric text is not what changed).
+  version: v2
+
+call_mode: single_call
+
+scoring:
+  # Unchanged from v1.yaml — the length-penalty arrangement (prompt told not to
+  # deduct, penalty applied deterministically in code) is not part of what this
+  # methodology change is testing.
+  length_penalty:
+    moderate_deficit_ratio: 0.15
+    moderate_penalty: 0.5
+    severe_deficit_ratio: 0.40
+    severe_penalty: 1.0

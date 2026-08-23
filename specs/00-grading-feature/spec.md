@@ -4,7 +4,9 @@
 
 **Created**: 2026-08-23
 
-**Status**: Draft — awaiting your review before any code is written
+**Status**: Phase A built and benchmarked (2026-08-23) — see
+[phase-a-findings.md](./phase-a-findings.md). Phase B (Edge Function) not started, awaiting
+your review of Phase A's results.
 
 **Input**: *"điều tôi muốn hiện tại cho pipeline mới là, một prompt, 1 llm call thay vì pipeline
 tới 4 llm calls. Prompt như cũ nhưng nhét tất cả vào 1 prompt và có thêm few-shot json. Lí do là

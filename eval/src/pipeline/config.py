@@ -116,11 +116,18 @@ class PromptsConfig(BaseModel):
     version: str
 
 
+CallMode = Literal["per_criterion", "single_call"]
+
+
 class PipelineConfig(BaseModel):
     version: str
     model: ModelConfig
     prompts: PromptsConfig
     scoring: ScoringConfig
+    # Which orchestrator in src/pipeline/pipeline.py runs this config: 4 concurrent
+    # calls (pipeline-v1.0, run_assessment) or 1 combined call (pipeline-v2.0,
+    # run_assessment_v2). Defaults to the existing behaviour so v1.yaml needs no edit.
+    call_mode: CallMode = "per_criterion"
 
 
 class PipelineConfigError(RuntimeError):

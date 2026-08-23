@@ -14,8 +14,13 @@ Tài liệu nền: [CLARIFICATION.md](./CLARIFICATION.md) ·
 
 ## 🔨 Đang làm
 
-Không có việc đang dang dở — chờ quyết định tiếp theo (pipeline chấm điểm, hoặc rename
-`GRAMMATICAL_RANGE` → `GRAMMATICAL_RANGE_ACCURACY`).
+**Phase A của pipeline chấm điểm 1-call (`specs/00-grading-feature/`) đã xong, chờ bạn
+review trước khi sang Phase B (Edge Function).** Xem
+[phase-a-findings.md](./specs/00-grading-feature/phase-a-findings.md) — có 2 phát hiện
+cần bạn quyết trước khi làm tiếp: (1) chi phí token thật ra **tăng** ~40%/bài chứ không
+giảm như giả định ban đầu (giảm đúng **số lần gọi**, không giảm token), (2) độ trễ p95
+thật đo được 72.5s, vượt mục tiêu 60s trong spec — vì 1 call không còn tận dụng được
+concurrency như 4 call cũ.
 
 ---
 
@@ -98,8 +103,21 @@ Không có việc đang dang dở — chờ quyết định tiếp theo (pipelin
 - [x] ✅ **Bộ test API chạy thẳng vào cloud — 75/75** (`supabase/tests/api.mjs`): anon bị chặn ở cả 9 bảng và 2 view · học viên không tự đặt band, không ghi đè bài đã nộp, không nộp hộ người khác · trigger `submitted_at` → `submitted` · `combined_band` 6.5 · Storage chặn thư mục người khác, chặn file >5 MB và sai MIME · logout thu hồi refresh token
 - [x] ✅ **Siết grant trên `v_activity` / `v_practice_progress`** (migration `0008`) — Supabase cấp mặc định ALL cho `anon`; nay chỉ còn `select` cho `authenticated`
 - [x] ✅ **Quyết xong "tiêu chí yếu nhất"** (migration `0009`) — `TASK_ACHIEVEMENT`/`TASK_RESPONSE` gộp làm một khi xếp hạng, vì cả hai đo cùng một thứ (đáp ứng yêu cầu đề) chỉ khác tên theo task. Còn 4 mã, mẫu cộng dồn qua cả hai loại bài. Đã tái hiện đúng ca gây lỗi trên cloud (1 bài Task 1 + 3 bài Task 2): trước gộp → TASK_ACHIEVEMENT (n=1) thắng; sau gộp → TASK_ACHIEVEMENT (n=4, gộp cả 4 bài) thành mạnh nhất đúng thực tế, yếu nhất chuyển sang tiêu chí có bằng chứng thật. `writing_attempts.criteria` không đổi — mỗi bài vẫn giữ đúng mã theo task để khớp đề thi thật
-- [ ] ❄️ Edge Function `grade-attempt` — hoãn, bàn riêng
-- [ ] ❄️ Trigger `pg_net` dispatch + **cron dọn row kẹt ở `queued`** — hoãn, đi cùng Edge Function
+- [x] ✅ **Phase A — `pipeline-v2.0` (1 call/bài thay vì 4) đã build + benchmark thật trong `eval/`**
+      · `eval/prompts/v2/` (system+user gộp 4 tiêu chí, few-shot 2 ví dụ tự viết — KHÔNG lấy từ
+      golden set để tránh rò rỉ đáp án vào chính bộ so sánh) · `eval/pipelines/v2.yaml` ·
+      schema `CombinedEvaluationTask{1,2}` dùng **field có tên cố định** (`task_achievement`,
+      `coherence_cohesion`,...) thay vì mảng + `code` — loại bỏ hẳn nhu cầu sắp lại thứ tự,
+      khác với thiết kế ban đầu trong spec.md §11 · `run_assessment_v2()` tái dùng nguyên
+      `aggregate.py`/`verify.py` · 20 test mới, 131/131 test cũ vẫn xanh · benchmark thật 10/10
+      bài golden set (không phải `FakeLLMClient` — phát hiện toàn bộ report 10-bài cũ trong
+      `eval/data/reports/` từ trước đều là fake, đã chạy lại thật cho cả v1 lẫn v2 để so công
+      bằng). Kết quả: MAE 0.45 vs 0.5, within_0.5 90% vs 70% (v2 tốt hơn) — nhưng token/bài
+      tăng ~40%, p95 latency 72.5s (vượt mục tiêu 60s), và rò rỉ tiếng Trung/Ả Rập vào
+      `comment.vi` còn sót 6/80 field sau 1 lần sửa prompt. Chi tiết:
+      [phase-a-findings.md](./specs/00-grading-feature/phase-a-findings.md)
+- [ ] 🚧 Phase B — Edge Function `grade-attempt` — **chờ bạn review Phase A ở trên**
+- [ ] ❄️ Trigger `pg_net` dispatch + **cron dọn row kẹt ở `queued`** — đi cùng Phase B
 - [ ] ❄️ Rate limit số lần chấm mỗi user · constitution Principle V
 
 ---

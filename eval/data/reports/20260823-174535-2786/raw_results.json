@@ -1,0 +1,932 @@
+[
+  {
+    "essay_id": "T1-001",
+    "task_type": "TASK_1",
+    "gold": {
+      "overall": 5.0,
+      "criteria": {
+        "TASK_ACHIEVEMENT": 5.5,
+        "COHERENCE_COHESION": 5.0,
+        "LEXICAL_RESOURCE": 4.5,
+        "GRAMMATICAL_RANGE_ACCURACY": 4.5
+      },
+      "source": "expert-estimate-from-official-descriptors",
+      "confidence": "medium"
+    },
+    "overall_band": 5.0,
+    "raw_overall": 5.0,
+    "criteria": [
+      {
+        "criterion": "TASK_ACHIEVEMENT",
+        "band": 5.0,
+        "raw_band": 5.0,
+        "length_penalty": 0.0,
+        "explanation": "The response attempts to cover all four sources (coal, renewables, natural gas, nuclear) and gives figures for 1990, 2005, 2010, and 2020, but the overview sentence is weak and mechanical: 'In general, coal and renewables change place with each other, and gas increase then decrease.' It merely lists changes without summarising the main trends or making clear comparisons, which is characteristic of band 5. Because the overview does not genuinely summarise main features but instead recounts details in a loose way, this response falls into band 5 rather than band 6.",
+        "descriptor_reference": "TASK_ACHIEVEMENT band 5",
+        "evidence_quotes": [
+          "In 1990, coal is the biggest source with 100 terawatt-hours.",
+          "In general, coal and renewables change place with each other, and gas increase then decrease."
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "You mentioned all four energy sources and gave some figures, but your overview just says things changed without really summing up the main trends. That kind of mechanical recount is what keeps task achievement at band 5 instead of moving up to band 6.",
+        "comment_vi": "Bạn đã nêu đủ bốn nguồn năng lượng và đưa một vài con số, nhưng câu overview chỉ nói những thứ thay đổi mà không thực sự tóm tắt xu hướng chính. Loại cách kể lại máy móc như vậy chính là gì giữ task achievement ở band 5 thay vì lên band 6.",
+        "improvement_en": "Replace the vague final sentence with a clear overview that states two main trends: one source declined sharply while another rose sharply to overtake it, and the other two sources showed opposite patterns or stability.",
+        "improvement_vi": "Thay vì câu cuối mơ hồ, hãy viết một câu overview rõ ràng nêu hai xu hướng chính: một nguồn giảm mạnh trong khi nguồn khác tăng mạnh để vượt qua nó, và hai nguồn còn lại cho thấy xu hướng đối lập hoặc ổn định."
+      },
+      {
+        "criterion": "COHERENCE_COHESION",
+        "band": 5.0,
+        "raw_band": 5.0,
+        "length_penalty": 0.0,
+        "explanation": "Information is arranged in a logical order (1990 → changes → 2020 for each source) and there is a clear overall progression from past to present. However, cohesive devices are virtually absent: no linking words, no referencing, no substitution. Sentences follow each other as isolated statements, which matches band 5's description of inadequate or inaccurate use of cohesive devices and lack of overall progression due to missing referencing. It does not reach band 6 because band 6 requires at least some effective use of cohesive devices, which this essay lacks.",
+        "descriptor_reference": "COHERENCE_COHESION band 5",
+        "evidence_quotes": [
+          "Renewables is opposite. In 1990 it is only 5 but it increase slowly until 2005 and then it increase very fast.",
+          "Natural gas increase from 20 in 1990 to 75 in 2010, it is the highest point. Then it decrease to 60 in 2020."
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "You organised the information in a sensible time order, but there are almost no linking words like 'however', 'while', or 'then' to connect the ideas between sentences. That lack of cohesive devices is why coherence and cohesion stays at band 5.",
+        "comment_vi": "Bạn đã sắp xếp thông tin theo thứ tự thời gian hợp lý, nhưng gần như không có từ liên kết như 'however', 'while', hoặc 'then' để nối các ý giữa các câu. Sự thiếu hụt các từ liên kết này chính là lý do coherence and cohesion vẫn ở band 5.",
+        "improvement_en": "Start at least three sentences with a time or contrast linker (e.g. 'By 2005', 'In contrast', 'After peaking') to show how each idea connects to the one before it.",
+        "improvement_vi": "Hãy bắt đầu ít nhất ba câu bằng một từ nối thời gian hoặc đối lập (ví dụ: 'By 2005', 'In contrast', 'After peaking') để cho thấy mỗi ý liên kết với ý trước nó như thế nào."
+      },
+      {
+        "criterion": "LEXICAL_RESOURCE",
+        "band": 5.0,
+        "raw_band": 5.0,
+        "length_penalty": 0.0,
+        "explanation": "The vocabulary is mostly basic and repetitive: 'increase', 'decrease', 'go down', 'go up', 'stay', 'become', 'biggest', 'opposite' appear repeatedly with little variation. There is no attempt at less common vocabulary (e.g. 'plummeted', 'surpassed', 'fluctuated', 'remained stable') and collocations are often inaccurate ('increase very fast', 'go down every year'). This matches band 5's limited range that is minimally adequate but causes some difficulty for the reader due to repetition and inaccuracy.",
+        "descriptor_reference": "LEXICAL_RESOURCE band 5",
+        "evidence_quotes": [
+          "coal is the biggest source with 100 terawatt-hours.",
+          "it increase very fast."
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "You kept using the same simple words like 'increase', 'decrease', 'go down' over and over, and tried hardly any less common vocabulary at all. That repetition and lack of range is why lexical resource is band 5.",
+        "comment_vi": "Bạn liên tục lặp lại những từ đơn giản như 'increase', 'decrease', 'go down' và gần như không thử dùng bất kỳ từ ít thông dụng nào. Sự lặp lại và thiếu phong phú từ vựng này chính là lý do lexical resource ở band 5.",
+        "improvement_en": "Before writing, make a list of six synonyms for 'increase' and 'decrease' (e.g. rise, climb, surge, drop, fall, decline) and force yourself to use a different one each time you need to describe a trend.",
+        "improvement_vi": "Trước khi viết, hãy chuẩn bị sẵn sáu từ đồng nghĩa của 'increase' và 'decrease' (ví dụ: rise, climb, surge, drop, fall, decline) và buộc chính mình dùng một từ khác nhau mỗi khi cần mô tả một xu hướng."
+      },
+      {
+        "criterion": "GRAMMATICAL_RANGE_ACCURACY",
+        "band": 5.0,
+        "raw_band": 5.0,
+        "length_penalty": 0.0,
+        "explanation": "The response relies almost entirely on simple subject-verb-object sentences with almost no complex structures (no subordinate clauses, no relative clauses, no passive voice). Verb forms are frequently incorrect: subject-verb agreement errors ('coal is', 'Renewables is', 'it go down', 'it only have', 'Renewables is', 'it increase', 'Natural gas increase', 'it stay') and tense errors (present simple used for past events). These errors are frequent and systematic, which matches band 5's description of frequent grammatical errors that can cause some difficulty for the reader. It does not reach band 6 because band 6 requires a mix of simple and complex forms with errors that rarely reduce communication, whereas here the errors are pervasive and impede clarity.",
+        "descriptor_reference": "GRAMMATICAL_RANGE_ACCURACY band 5",
+        "evidence_quotes": [
+          "The line graph show the electricity produce from four source",
+          "coal is the biggest source with 100 terawatt-hours. After that it go down every year"
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "Almost every sentence has a subject-verb agreement or tense mistake, like 'coal is' or 'it go down', and there are hardly any complex sentences at all. That pattern of frequent, systematic errors is why grammar stays at band 5.",
+        "comment_vi": "Gần như mỗi câu đều có lỗi hoà hợp chủ-vị hoặc thì, như 'coal is' hoặc 'it go down', và gần như không có câu phức nào cả. Mẫu lỗi lặp lại và có hệ thống như vậy là lý do vì sao ngữ pháp vẫn dừng ở band 5.",
+        "improvement_en": "Before writing, put a past-time marker like 'In 1990' or 'By 2020' at the start of each sentence, then make sure every main verb after that marker is in past tense (was, had, increased, decreased, became, stayed).",
+        "improvement_vi": "Trước khi viết, hãy đặt một mốc thời gian quá khứ như 'In 1990' hoặc 'By 2020' ở đầu mỗi câu, sau đó đảm bảo mọi động từ chính sau mốc đó đều ở thì quá khứ (was, had, increased, decreased, became, stayed)."
+      }
+    ],
+    "latency_s": 30.189,
+    "quote_fidelity": 1.0
+  },
+  {
+    "essay_id": "T1-002",
+    "task_type": "TASK_1",
+    "gold": {
+      "overall": 7.0,
+      "criteria": {
+        "TASK_ACHIEVEMENT": 7.5,
+        "COHERENCE_COHESION": 7.0,
+        "LEXICAL_RESOURCE": 7.0,
+        "GRAMMATICAL_RANGE_ACCURACY": 7.0
+      },
+      "source": "expert-estimate-from-official-descriptors",
+      "confidence": "medium"
+    },
+    "overall_band": 7.0,
+    "raw_overall": 7.0,
+    "criteria": [
+      {
+        "criterion": "TASK_ACHIEVEMENT",
+        "band": 7.0,
+        "raw_band": 7.0,
+        "length_penalty": 0.0,
+        "explanation": "The response satisfies all requirements: it selects and reports the main features of the bar chart (housing and food as top expenses, leisure as smallest) and makes clear comparisons between the three countries. The overview sentence correctly identifies the two largest expenses and notes the differing balance between them, which is a genuine overview rather than a mechanical recount. This matches band 7 because it presents a clear overview of main trends/differences and highlights key features, though details could be slightly more developed (e.g., exact figures for all categories are not all given). It does not reach band 8 because the overview, while clear, is not fully developed with all supporting data integrated.",
+        "descriptor_reference": "TASK_ACHIEVEMENT band 7",
+        "evidence_quotes": [
+          "Overall, housing and food were the two largest expenses in all three countries, but the balance between them differed sharply: German households spent most on housing, whereas Brazilian households devoted the largest share to food.",
+          "Leisure consistently attracted the smallest proportion of spending everywhere."
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "You gave a clear overview that picked out the two biggest expenses and noted how their balance differed across countries, which is exactly what band 7 rewards. You also made relevant comparisons throughout. To reach band 8, the overview would need to be even more fully developed with all key data woven in.",
+        "comment_vi": "Bạn đã đưa ra một overview rõ ràng, nêu đúng hai chi tiêu lớn nhất và chỉ ra sự khác biệt trong tỉ lệ giữa chúng ở các quốc gia — đây là điều band 7 đánh giá cao. Bạn cũng đã so sánh liên quan suốt bài. Để lên band 8, overview cần được phát triển đầy đủ hơn với tất cả dữ liệu chính được tích hợp vào.",
+        "improvement_en": "In your overview sentence, add one more concrete detail, such as the approximate percentage for leisure or transport, to show you have selected not just the categories but also their scale.",
+        "improvement_vi": "Trong câu overview, hãy bổ sung một chi tiết cụ thể hơn, ví dụ như tỷ lệ gần đúng của leisure hoặc transport, để cho thấy bạn không chỉ chọn ra các danh mục mà còn biết mức độ của chúng."
+      },
+      {
+        "criterion": "COHERENCE_COHESION",
+        "band": 7.0,
+        "raw_band": 7.0,
+        "length_penalty": 0.0,
+        "explanation": "Information is logically organised: overview first, then detailed comparisons grouped by category (housing, food, remaining). Cohesive devices like 'Overall', 'whereas', 'while' are used appropriately and selectively, not mechanically. Paragraphing is clear with a central topic in each. This matches band 7: logical organisation, clear progression, and appropriate use of cohesive devices. It does not reach band 8 because while cohesion is good, it is not so seamless as to attract no attention; the linking is still somewhat noticeable.",
+        "descriptor_reference": "COHERENCE_COHESION band 7",
+        "evidence_quotes": [
+          "Overall, housing and food were the two largest expenses in all three countries, but the balance between them differed sharply: German households spent most on housing, whereas Brazilian households devoted the largest share to food.",
+          "Leisure spending was very similar in Germany and Japan, at 12% and 10% respectively, but reached only 5% in Brazil, half the Japanese level."
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "Your ideas follow a clear order: overview, then housing, food, and the rest. Linking words like 'Overall', 'whereas', and 'while' are used at the right moments to show contrast and addition, not just as a list. This gives a clear progression throughout.",
+        "comment_vi": "Các ý tưởng của bạn được trình bày theo một trật tự rõ ràng: overview, sau đó là housing, food, và các mục còn lại. Các từ liên kết như 'Overall', 'whereas', 'while' được dùng đúng lúc để thể hiện sự đối lập và bổ sung, không chỉ là liệt kê. Điều này tạo ra một sự tiến triển rõ ràng xuyên suốt bài.",
+        "improvement_en": "Vary your sentence openings more: instead of starting two sentences with 'The remaining categories' and 'Transport', try beginning one with a participle phrase like 'Regarding the other categories...' to show even greater flexibility in cohesion.",
+        "improvement_vi": "Thay đổi cách mở câu nhiều hơn: thay vì bắt đầu hai câu bằng 'The remaining categories' và 'Transport', hãy thử bắt đầu một câu bằng cụm từ phân từ như 'Regarding the other categories...' để thể hiện sự linh hoạt cao hơn trong việc liên kết."
+      },
+      {
+        "criterion": "LEXICAL_RESOURCE",
+        "band": 7.0,
+        "raw_band": 7.0,
+        "length_penalty": 0.0,
+        "explanation": "There is a sufficient range of vocabulary allowing flexibility and precision: 'divided', 'accounted for', 'showed the reverse pattern', 'ranged from', 'devoted the largest share', 'consistently attracted'. Less common items like 'devoted', 'accounted for', 'reverse pattern' are used with awareness of collocation. Occasional repetition of 'households', 'income', 'spending' is present but does not impede communication. This matches band 7: sufficient range for flexibility and precision, with less common items used appropriately. It does not reach band 8 because while the range is good, it is not yet wide or fluently flexible enough to convey precise meanings with skilful use of uncommon items.",
+        "descriptor_reference": "LEXICAL_RESOURCE band 7",
+        "evidence_quotes": [
+          "housing accounted for 32% of German household income",
+          "Food showed the reverse pattern, taking up 35% of Brazilian income"
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "You used a good range of vocabulary beyond the basics, including phrases like 'accounted for', 'showed the reverse pattern', and 'devoted the largest share', which shows flexibility and precision. There is some repetition of topic words like 'households' and 'spending', but it does not get in the way of meaning.",
+        "comment_vi": "Bạn đã sử dụng một phạm vi từ vựng tốt hơn mức cơ bản, bao gồm các cụm từ như 'accounted for', 'showed the reverse pattern', và 'devoted the largest share', điều này cho thấy sự linh hoạt và chính xác. Có một số lặp lại từ chủ đề như 'households' và 'spending', nhưng nó không làm ảnh hưởng đến việc truyền đạt ý nghĩa.",
+        "improvement_en": "Replace one instance of 'households' with a synonym like 'families' or 'residents' when referring to the people, to reduce repetition of the key content word and demonstrate even greater lexical flexibility.",
+        "improvement_vi": "Thay thế một lần xuất hiện của từ 'households' bằng một từ đồng nghĩa như 'families' hoặc 'residents' khi đề cập đến người dân, để giảm bớt sự lặp lại của từ nội dung chính và thể hiện sự linh hoạt từ vựng cao hơn."
+      },
+      {
+        "criterion": "GRAMMATICAL_RANGE_ACCURACY",
+        "band": 7.0,
+        "raw_band": 7.0,
+        "length_penalty": 0.0,
+        "explanation": "A variety of complex structures is used accurately: relative clauses ('which accounted for'), comparative structures ('considerably higher than', 'more than double'), and participle phrases ('reached only 5% in Brazil, half the Japanese level'). The majority of sentences are error-free, with only minor slips such as the missing article in 'Leisure spending was very similar in Germany and Japan, at 12% and 10% respectively' (should be 'at 12% and 10%, respectively'). These are infrequent and do not reduce communication. This matches band 7: frequent error-free sentences with good control of grammar and punctuation. It does not reach band 8 because while error-free sentences are frequent, they are not yet the majority in a way that shows only very occasional errors.",
+        "descriptor_reference": "GRAMMATICAL_RANGE_ACCURACY band 7",
+        "evidence_quotes": [
+          "housing accounted for 32% of German household income, considerably higher than in Japan (25%) and Brazil (18%).",
+          "Leisure spending was very similar in Germany and Japan, at 12% and 10% respectively, but reached only 5% in Brazil, half the Japanese level."
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "You used a good mix of complex structures like relative clauses and comparisons accurately most of the time. There are only a few small slips, such as the spacing around 'respectively', which do not confuse the reader.",
+        "comment_vi": "Bạn đã sử dụng một sự kết hợp tốt giữa các cấu trúc phức tạp như mệnh đề quan hệ và các câu so sánh một cách chính xác hầu hết thời gian. Chỉ có một vài lỗi nhỏ, như khoảng cách quanh từ 'respectively', không làm cho người đọc bị nhầm lẫn.",
+        "improvement_en": "In your final proofread, pay special attention to punctuation around adverbs like 'respectively' and 'however' — they usually need a comma before them when they appear mid-sentence.",
+        "improvement_vi": "Khi kiểm tra lại bài cuối cùng, hãy đặc biệt chú ý đến dấu câu xung quanh các trạng từ như 'respectively' và 'however' — chúng thường cần một dấu phẩy trước khi xuất hiện giữa câu."
+      }
+    ],
+    "latency_s": 72.518,
+    "quote_fidelity": 1.0
+  },
+  {
+    "essay_id": "T1-003",
+    "task_type": "TASK_1",
+    "gold": {
+      "overall": 7.5,
+      "criteria": {
+        "TASK_ACHIEVEMENT": 8.0,
+        "COHERENCE_COHESION": 7.5,
+        "LEXICAL_RESOURCE": 7.5,
+        "GRAMMATICAL_RANGE_ACCURACY": 7.5
+      },
+      "source": "expert-estimate-from-official-descriptors",
+      "confidence": "medium"
+    },
+    "overall_band": 7.0,
+    "raw_overall": 7.0,
+    "criteria": [
+      {
+        "criterion": "TASK_ACHIEVEMENT",
+        "band": 7.0,
+        "raw_band": 7.0,
+        "length_penalty": 0.0,
+        "explanation": "The response presents a clear overview sentence that correctly identifies the two main features: three universities increased their international student numbers while one declined, and Northfield overtook Eastgate as the largest host. All four universities are covered with accurate figures for both years, and key comparisons (overtaking, proportional rise, absolute growth) are explicitly made. This satisfies the band 7 descriptor of presenting a clear overview with key features highlighted, and it does not reach band 8 because the overview, while clear, is not fully developed—it omits mentioning that Westwood remained nearly static, a detail that could have strengthened the overview.",
+        "descriptor_reference": "TASK_ACHIEVEMENT band 7",
+        "evidence_quotes": [
+          "Overall, three of the four universities recruited more international students in 2020 than a decade earlier, and Northfield ended the period as the largest host institution, having overtaken Eastgate, the only university to record a decline.",
+          "Southbank experienced the steepest proportional rise: although its intake was the smallest in 2010 at just 1,800, it tripled over the ten years to reach 5,400, overtaking Westwood in the process."
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "You gave a strong overview that picked out the most important trends and comparisons, and you supported it with accurate data for every university. The overview is clear but not fully developed because it doesn't mention Westwood's near-stability, which would have made it band 8.",
+        "comment_vi": "Bạn đã đưa ra một overview mạnh mẽ, chọn đúng xu hướng và so sánh quan trọng nhất, và hỗ trợ nó bằng số liệu chính xác cho từng trường. Tuy nhiên overview vẫn chưa được phát triển đầy đủ vì không nêu Westwood gần như không thay đổi — điều đó sẽ đưa bài lên band 8.",
+        "improvement_en": "In your overview sentence, add a brief clause about the fourth university: '..., and Westwood remained almost unchanged.' This small addition develops the overview fully into band 8 territory.",
+        "improvement_vi": "Trong câu overview, hãy bổ thêm một mệnh đề ngắn về trường thứ tư: '..., và Westwood gần như không thay đổi.' Thêm nhỏ này sẽ phát triển overview đầy đủ vào vùng band 8."
+      },
+      {
+        "criterion": "COHERENCE_COHESION",
+        "band": 7.0,
+        "raw_band": 7.0,
+        "length_penalty": 0.0,
+        "explanation": "Information is logically organised: overview first, then each university in descending order of change magnitude, with clear referencing ('Having enrolled...', 'By contrast'). Cohesive devices are used effectively but not mechanically—'Overall' and 'By contrast' signal logical relationships rather than just list items. Paragraphing is appropriate, one idea per paragraph. This matches band 7: clear progression throughout, cohesive devices used appropriately with only minor under-/over-use possible. It does not reach band 8 because the progression, while clear, relies heavily on sentence-initial connectors rather than a wider range of referencing and substitution techniques.",
+        "descriptor_reference": "COHERENCE_COHESION band 7",
+        "evidence_quotes": [
+          "Overall, three of the four universities recruited more international students in 2020 than a decade earlier, and Northfield ended the period as the largest host institution, having overtaken Eastgate, the only university to record a decline.",
+          "By contrast, Eastgate was the only institution to lose ground."
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "Your ideas follow a clear logical order (overview → biggest changer → next biggest → contrast with the loser → stable one), and you use linking words like 'Overall' and 'By contrast' to show relationships, not just to list points. The paragraphing is clean, one idea per paragraph. To reach band 8 you would need to vary the linking more, using pronouns or substitution instead of always starting sentences with connective adverbs.",
+        "comment_vi": "Các ý tưởng của bạn được trình bày theo một trật tự logic rõ ràng (overview → thay đổi lớn nhất → tiếp theo → đối lập với trường giảm → trường ổn định), và bạn sử dụng từ liên kết như 'Overall' và 'By contrast' để cho thấy mối quan hệ, không chỉ để liệt kê. Phân đoạn cũng tốt, một ý tưởng mỗi đoạn. Để lên band 8 bạn cần đa dạng hơn cách liên kết, dùng từ chỉ đại hoặc thay thế thay vì luôn bắt đầu câu bằng từ nối trạng từ.",
+        "improvement_en": "After mentioning Northfield's growth, try starting the Southbank sentence with a pronoun or substitution like 'It' or 'This pattern was even more pronounced at...' instead of repeating the university name—this reduces mechanical repetition and shows tighter cohesion.",
+        "improvement_vi": "Sau khi nêu tăng trưởng của Northfield, hãy bắt đầu câu về Southbank bằng một từ chỉ đại như 'It' hoặc 'Mẫu này còn rõ ràng hơn tại...' thay vì lặp lại tên trường—điều này giảm sự lặp lại máy móc và cho thấy sự gắn kết chặt chẽ hơn."
+      },
+      {
+        "criterion": "LEXICAL_RESOURCE",
+        "band": 7.0,
+        "raw_band": 7.0,
+        "length_penalty": 0.0,
+        "explanation": "The response uses a sufficient range of vocabulary with flexibility and precision: 'recruited', 'overtook', 'steepest proportional rise', 'tripled', 'edging up marginally', 'lost ground', 'remained essentially static'—all are less common items used with good awareness of collocation and style. Occasional repetition of 'students' and 'international' is present but does not impede communication. This matches band 7: sufficient range for flexibility and precision, less common lexical items used with some awareness of style and collocation. It does not reach band 8 because while the range is good, it is not yet 'wide' or used with the 'fluency and flexibility' of band 8; some repetition of content words remains.",
+        "descriptor_reference": "LEXICAL_RESOURCE band 7",
+        "evidence_quotes": [
+          "Southbank experienced the steepest proportional rise",
+          "Westwood remained essentially static"
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "You used a good variety of less-common vocabulary accurately—'overtook', 'tripled', 'edging up marginally', 'lost ground'—which shows flexibility and precision. There is some repetition of 'students' and 'international', but it does not confuse the reader. To reach band 8 you would need an even wider range and less repetition of these content words.",
+        "comment_vi": "Bạn đã dùng được một loạt từ vựng ít thông dụng khá tốt và chính xác—'overtook', 'tripled', 'edging up marginally', 'lost ground'—cho thấy sự linh hoạt và chính xác. Có một số lặp lại từ 'students' và 'international', nhưng không gây khó hiểu. Để lên band 8 bạn cần một kho từ vựng rộng hơn và lặp lại ít hơn những từ nội dung này.",
+        "improvement_en": "Before writing, note down three synonyms for 'increase' (grow, rise, climb) and three for 'decrease' (fall, drop, decline) and consciously rotate them when describing the four universities—this cuts repetition and demonstrates wider lexical resource.",
+        "improvement_vi": "Trước khi viết, hãy ghi lại ba từ đồng nghĩa của 'tăng' (grow, rise, climb) và ba từ đồng nghĩa của 'giảm' (fall, drop, decline) và cố dùng luân phiên khi mô tả bốn trường—điều này giảm lặp lại và chứng minh kho từ vựng rộng hơn."
+      },
+      {
+        "criterion": "GRAMMATICAL_RANGE_ACCURACY",
+        "band": 7.0,
+        "raw_band": 7.0,
+        "length_penalty": 0.0,
+        "explanation": "The response uses a variety of complex structures: relative clauses ('having overtaken Eastgate', 'the only university to record a decline'), participial phrases ('edging up marginally'), and passive constructions ('was the only institution to lose ground'). The majority of sentences are error-free; the only noticeable slips are the missing article before 'roughly 19%' (should be 'a drop of roughly 19%') and the slight awkwardness of 'Having enrolled 7,500... it fell' (better as 'Having enrolled... , it then fell'). These are infrequent and do not impede communication, matching band 7: frequent error-free sentences with good control and only a few errors.",
+        "descriptor_reference": "GRAMMATICAL_RANGE_ACCURACY band 7",
+        "evidence_quotes": [
+          "having overtaken Eastgate, the only university to record a decline",
+          "Westwood remained essentially static, edging up marginally from 5,000 to 5,200"
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "You handled complex grammar well—relative clauses, participial phrases—and most sentences are completely error-free. The only issues are a missing article ('a drop of roughly 19%') and a slightly awkward participle phrase, which are minor slips rather than systematic errors, keeping this at band 7.",
+        "comment_vi": "Bạn xử lý ngữ pháp phức tạp tốt—mệnh đề quan hệ, cụm từ phân từ—and hầu hết các câu đều hoàn toàn không lỗi. Những vấn đề chỉ là thiếu冠词 ('a drop of roughly 19%') và cụm từ participating hơi ngะ, những lỗi nhỏ này chứ không phải lỗi hệ thống, nên banda stays at 7.",
+        "improvement_en": "When using a participle phrase at the start of a sentence, always ask yourself whether you need a comma before the main clause ('Having enrolled 7,500..., it fell' → 'Having enrolled 7,500..., it then fell') and whether percentages need an article ('a drop of roughly 19%'). A quick proofread for these two points will eliminate the few slips keeping you from band 8.",
+        "improvement_vi": "Khi dùng cụm từ phân từ ở đầu câu, hãy luôn tự hỏi mình có cần phẩy trước mệnh đề chính không ('Having enrolled 7,500..., it fell' → 'Having enrolled 7,500..., it then fell') và liệu phần trăm có cần冠词 không ('a drop of roughly 19%'). Một lần kiểm tra nhanh cho hai điểm này sẽ loại bỏ những lỗi nhỏ đang giữ bạn ở band 7 thay vì lên band 8."
+      }
+    ],
+    "latency_s": 37.639,
+    "quote_fidelity": 1.0
+  },
+  {
+    "essay_id": "T1-004",
+    "task_type": "TASK_1",
+    "gold": {
+      "overall": 8.0,
+      "criteria": {
+        "TASK_ACHIEVEMENT": 8.0,
+        "COHERENCE_COHESION": 8.5,
+        "LEXICAL_RESOURCE": 8.0,
+        "GRAMMATICAL_RANGE_ACCURACY": 8.0
+      },
+      "source": "expert-estimate-from-official-descriptors",
+      "confidence": "medium"
+    },
+    "overall_band": 7.5,
+    "raw_overall": 7.25,
+    "criteria": [
+      {
+        "criterion": "TASK_ACHIEVEMENT",
+        "band": 7.0,
+        "raw_band": 7.0,
+        "length_penalty": 0.0,
+        "explanation": "The response selects and reports all seven stages of the recycling process accurately, with no invented or omitted steps. The overview sentence clearly summarises the main features: seven stages, cyclical nature, and start/end points. This matches the band 7 descriptor of presenting a clear overview of main trends/differences/stages and highlighting key features, though details are occasionally sparse (e.g. no mention of quality checks or energy inputs). It does not reach band 8 because the overview, while clear, is not fully developed with supporting data points woven throughout.",
+        "descriptor_reference": "TASK_ACHIEVEMENT band 7",
+        "evidence_quotes": [
+          "Overall, the procedure consists of seven stages, beginning with the collection of used bottles and culminating in the distribution of newly moulded ones.",
+          "It is notable that the process is cyclical rather than linear, as the finished products re-enter the same consumption chain from which the raw material was drawn."
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "You gave a clear overview that named the number of stages, the cyclical nature, and the start and end points, which is exactly what band 7 rewards. The description of each stage is accurate and in the right order, but a few minor details like quality inspection or energy use are missing, which keeps it from reaching band 8.",
+        "comment_vi": "Bạn đã đưa ra một overview rõ ràng, nêu số giai đoạn, tính chất vòng lặp, và điểm bắt đầu/kết thúc — đây chính là điều band 7 đánh giá cao. Mô tả từng giai đoạn cũng chính xác và theo đúng thứ tự, nhưng thiếu một vài chi tiết nhỏ như kiểm tra chất lượng hoặc năng lượng tiêu thụ, nên chưa đủ để đạt band 8.",
+        "improvement_en": "Add one specific detail per stage when it adds clarity, such as 'after magnetic separation to remove metal caps' or 'before quality inspection for thickness', to show you can select relevant supporting information beyond the main sequence.",
+        "improvement_vi": "Thêm một chi tiết cụ thể cho mỗi giai đoạn khi nó làm rõ hơn, ví dụ 'sau khi tách từ tính để loại bỏ nắp kim loại' hoặc 'trước khi kiểm tra chất lượng độ dày', để cho thấy bạn biết chọn thông tin hỗ trợ liên quan ngoài chuỗi chính."
+      },
+      {
+        "criterion": "COHERENCE_COHESION",
+        "band": 7.0,
+        "raw_band": 7.0,
+        "length_penalty": 0.0,
+        "explanation": "Information is logically organised with clear progression: overview → stage 1 → stage 2 → … → final stage → implicit return to overview. Paragraphing is sensible (one paragraph overview, one paragraph stages 1-3, one paragraph stages 4-7). Cohesive devices like 'Overall', 'At the outset', 'Once they have arrived', 'In the subsequent stage', 'Finally' are used appropriately and selectively rather than mechanically. This matches band 7: clear progression throughout, clear central topic within each paragraph, and a range of cohesive devices used appropriately with only minor under-/over-use possible. It does not reach band 8 because the linking between the two middle paragraphs relies heavily on time/order sequencing rather than a wider range of referencing devices.",
+        "descriptor_reference": "COHERENCE_COHESION band 7",
+        "evidence_quotes": [
+          "Overall, the procedure consists of seven stages, beginning with the collection of used bottles and culminating in the distribution of newly moulded ones.",
+          "Finally, the molten glass is poured into moulds to produce fresh bottles, which are dispatched to retailers and thereby made available to consumers once more, at which point the cycle can begin again."
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "Your paragraphs follow the process in order, and linking words like 'Overall', 'At the outset', 'Finally' show clear progression without sounding mechanical. Each paragraph sticks to one clear topic, which is exactly what band 7 rewards.",
+        "comment_vi": "Các đoạn của bạn theo đúng thứ tự quy trình, và từ nối như 'Overall', 'At the outset', 'Finally' cho thấy sự phát triển rõ rệt mà không听起来机械. Mỗi đoạn chỉ nói về một chủ đề rõ rệt — điều này chính là band 7 đánh giá cao.",
+        "improvement_en": "When moving from the colour-sorting paragraph to the melting paragraph, try using a demonstrative reference like 'This cullet' instead of 'The sorted glass' to tighten the referencing and push cohesion into band 8 territory.",
+        "improvement_vi": "Khi chuyển từ đoạn phân loại màu sang đoạn nóng chảy, hãy thử dùng từ chỉ định như 'This cullet' thay vì 'The sorted glass' để làm chặt chẽ hơn việc tham chiếu và đưa cohesion vào mức band 8."
+      },
+      {
+        "criterion": "LEXICAL_RESOURCE",
+        "band": 7.0,
+        "raw_band": 7.0,
+        "length_penalty": 0.0,
+        "explanation": "The response uses a sufficient range of vocabulary for a process diagram, including less-common items such as 'discarded', 'designated', 'immersed', 'residual', 'conveyed', 'cullet', 'molten', 'dispatched', which shows awareness of style and collocation. Occasional minor inaccuracies are absent; word choice and spelling are precise throughout. This matches band 7: sufficient range to allow flexibility and precision, less common lexical items used with some awareness of style and collocation. It does not reach band 8 because while the range is wide and accurate, there is no evidence of skilful use of uncommon lexical items for stylistic effect or nuanced meaning beyond accuracy.",
+        "descriptor_reference": "LEXICAL_RESOURCE band 7",
+        "evidence_quotes": [
+          "the cleaned bottles are conveyed along a belt where they are separated according to colour",
+          "before being fed into a furnace and melted at a temperature of roughly 1,500 degrees Celsius."
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "You used a good range of less-common vocabulary correctly — words like 'cullet', 'molten', 'dispatched', 'immersed' — which is exactly what band 7 looks for. The word choice is accurate and natural, but there is no real stylistic flair or nuanced synonym use that would push this into band 8.",
+        "comment_vi": "Bạn đã dùng được một loạt từ vựng ít thông dụng khá tốt — như 'cullet', 'molten', 'dispatched', 'immersed' — đây chính là điều band 7 tìm kiếm. Lựa chọn từ là chính xác và tự nhiên, nhưng chưa có sự tinh tế hoặc lựa chọn từ đồng nghĩa phong cách nào để đưa bài lên band 8.",
+        "improvement_en": "Try upgrading one or two plain verbs to more precise process-verbs, e.g. change 'put into' to 'charged into' the furnace or 'take away' to 'withdrawn from' the line, to demonstrate the skilful use of uncommon lexical items that band 8 rewards.",
+        "improvement_vi": "Hãy thử nâng cấp một hoặc hai động từ thường thành động từ quy trình chính xác hơn, ví dụ thay 'put into' bằng 'charged into' lò hoặc 'take away' bằng 'withdrawn from' dây chuyền, để thể hiện việc dùng từ vựng ít thông dụng có kỹ năng — điều mà band 8 thưởng."
+      },
+      {
+        "criterion": "GRAMMATICAL_RANGE_ACCURACY",
+        "band": 8.0,
+        "raw_band": 8.0,
+        "length_penalty": 0.0,
+        "explanation": "The response uses a variety of complex structures: passive voice ('are immersed', 'are conveyed', 'are separated'), relative clauses ('which are dispatched to retailers'), and prepositional phrases with participial clauses ('beginning with the collection…', 'culminating in the distribution…'). The majority of sentences are error-free; only one minor slip appears ('from which lorries transport them' could be tightened to 'from which lorries transport them to a facility', but it is not ungrammatical). This matches band 8: wide range of structures, majority of sentences error-free, only very occasional errors or inappropriacies. It does not reach band 9 because of that one slight awkwardness and the absence of more sophisticated structures like inversion or cleft sentences.",
+        "descriptor_reference": "GRAMMATICAL_RANGE_ACCURACY band 8",
+        "evidence_quotes": [
+          "Once they have arrived, the bottles are immersed in a chemical solution so that labels and residual contents can be removed.",
+          "Finally, the molten glass is poured into moulds to produce fresh bottles, which are dispatched to retailers and thereby made available to consumers once more, at which point the cycle can begin again."
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "You handled passive voice and relative clauses accurately throughout, and most sentences are completely error-free, which is exactly what band 8 requires. The only hesitation is a slightly clumsy prepositional phrase, which is why this does not reach the flawless control of band 9.",
+        "comment_vi": "Bạn dùng được câu bị động và mệnh đề quan hệ chính xác suốt bài, và hầu hết các câu đều hoàn toàn không lỗi — đây là điều band 8 yêu cầu. Chỉ có một chút vướng mắc trong một câu giới từ, nên bài chưa đạt được sự kiểm soát hoàn hảo của band 9.",
+        "improvement_en": "In your next report, try starting one sentence with a prepositional phrase for variety (e.g. 'From the collection banks, lorries transport the bottles…') to demonstrate the full flexibility that band 9 rewards.",
+        "improvement_vi": "Trong bài report tiếp theo, hãy thử bắt đầu một câu bằng một cụm từ giới từ để đa dạng (ví dụ: 'Từ các thùng chứa, xe tải vận chuyển các chai…') để thể hiện sự linh hoạt hoàn toàn mà band 9 thưởng."
+      }
+    ],
+    "latency_s": 27.339,
+    "quote_fidelity": 1.0
+  },
+  {
+    "essay_id": "T1-005",
+    "task_type": "TASK_1",
+    "gold": {
+      "overall": 4.5,
+      "criteria": {
+        "TASK_ACHIEVEMENT": 4.5,
+        "COHERENCE_COHESION": 5.0,
+        "LEXICAL_RESOURCE": 4.0,
+        "GRAMMATICAL_RANGE_ACCURACY": 4.0
+      },
+      "source": "expert-estimate-from-official-descriptors",
+      "confidence": "medium"
+    },
+    "overall_band": 5.0,
+    "raw_overall": 5.125,
+    "criteria": [
+      {
+        "criterion": "TASK_ACHIEVEMENT",
+        "band": 4.5,
+        "raw_band": 5.0,
+        "length_penalty": 0.5,
+        "explanation": "The essay covers both years and all four waste-disposal methods with roughly correct figures, so it addresses the requirements. However, there is no genuine overview sentence that summarises the main trends; instead the writer jumps straight into 2000 details. This mechanical recount of data points without a summarising overview is the defining weakness of band 5 Task Achievement.",
+        "descriptor_reference": "TASK_ACHIEVEMENT band 5",
+        "evidence_quotes": [
+          "In 2000 the landfill is the most popular method, it is 60 percent.",
+          "So we can see that the landfill go down 40 percent and the recycling go up 25 percent."
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "You included all the data from both pie charts with roughly correct numbers, which shows you tried to answer the question. But because you did not write a clear overview that sums up the main changes (like 'landfill fell sharply while recycling rose'), the response reads as a list of details rather than a summary, so it stays at band 5.",
+        "comment_vi": "Bạn đã đưa đủ dữ liệu từ cả hai biểu đồ tròn với con số khá chính xác, điều này cho thấy bạn đã cố làm bài. Tuy nhiên vì không có câu overview tổng hợp xu hướng chính (ví dụ: 'landfill giảm mạnh trong khi recycling tăng'), bài viết chỉ là liệt kê chi tiết thay vì tóm tắt, nên chỉ đạt band 5.",
+        "improvement_en": "Before describing any year, write one sentence that states the two biggest changes: 'Between 2000 and 2020, reliance on landfill dropped sharply while recycling became the most common method.' That single sentence lifts the response from band 5 to at least band 6.",
+        "improvement_vi": "Trước khi mô tả bất kỳ năm nào, hãy viết một câu nêu hai thay đổi lớn nhất: 'Trong khoảng 2000–2020, sự phụ thuộc vào landfill giảm mạnh trong khi recycling trở thành phương pháp phổ biến nhất.' Câu duy nhất này sẽ đưa bài từ band 5 lên ít nhất band 6."
+      },
+      {
+        "criterion": "COHERENCE_COHESION",
+        "band": 6.0,
+        "raw_band": 6.0,
+        "length_penalty": 0.0,
+        "explanation": "Information is arranged in a clear time order (2000 then 2020) and the simple conclusion 'So we can see…' gives a sense of progression, satisfying the band 6 requirement of clear overall progression. However, there are no linking words between sentences; cohesion relies entirely on juxtaposition, which is the mechanical use noted in the band 6 discriminator.",
+        "descriptor_reference": "COHERENCE_COHESION band 6",
+        "evidence_quotes": [
+          "In 2000 the landfill is the most popular method, it is 60 percent.",
+          "So we can see that the landfill go down 40 percent and the recycling go up 25 percent."
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "You put the information in a logical order (2000 first, then 2020) and ended with a simple conclusion, so the ideas do progress overall. But because you never used any linking words like 'while' or 'in contrast', the connections between sentences feel mechanical rather than smoothly linked.",
+        "comment_vi": "Bạn đã sắp xếp thông tin theo thứ tự logic (2000 trước, sau đó 2020) và kết thúc bằng một câu kết luận đơn giản, nên ý tưởng vẫn có sự tiến triển tổng thể. Tuy nhiên vì không dùng bất kỳ từ liên kết nào như 'while' hay 'in contrast', nên sự liên kết giữa các câu cảm thấy máy móc thay vì mượt mà.",
+        "improvement_en": "Start at least three sentences with a linking word that shows contrast or addition (e.g. 'In contrast,', 'Furthermore,', 'As a result,') — that alone will move your cohesion from mechanical to appropriately selective.",
+        "improvement_vi": "Hãy bắt đầu ít nhất ba câu bằng một từ liên kết chỉ sự đối lập hoặc bổ sung (ví dụ: 'In contrast,', 'Furthermore,', 'As a result,') — điều này đơn độc sẽ đưa sự liên kết của bạn từ máy móc sang được chọn lựa thích hợp."
+      },
+      {
+        "criterion": "LEXICAL_RESOURCE",
+        "band": 5.0,
+        "raw_band": 5.0,
+        "length_penalty": 0.0,
+        "explanation": "The vocabulary is mostly basic and repetitive: 'percent' appears ten times, 'landfill'/'recycling'/'incineration'/'composting' are repeated without synonyms or paraphrase. There is no attempt at less common lexical items; 'reduce' and 'increase' are the only verbs beyond the most basic, and even those are used with subject-verb errors. This matches band 5's limited range that is minimally adequate.",
+        "descriptor_reference": "LEXICAL_RESOURCE band 5",
+        "evidence_quotes": [
+          "percent",
+          "landfill"
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "You kept using the same words over and over — 'percent' ten times, and the four methods again and again — without trying synonyms or different phrasing. Because there is no real attempt at less common vocabulary, the range stays limited and fits band 5.",
+        "comment_vi": "Bạn lặp đi lặp lại những từ giống nhau — 'percent' mười lần, và bốn phương pháp lặp lại lặp lại — mà không thử dùng từ đồng nghĩa hoặc cách nói khác. Vì không có sự thật sự cố dùng từ ít phổ biến, nên phạm vi từ vựng vẫn hạn chế và nằm trong band 5.",
+        "improvement_en": "Replace at least half of the 'percent' occurrences with 'per cent', 'out of every hundred', or simply omit it after the number (e.g. 'landfill fell to 20'), and vary the verbs: use 'dropped', 'rose', 'fell', 'climbed' instead of repeating 'go down' and 'go up'.",
+        "improvement_vi": "Thay thế ít nhất một nửa số lần xuất hiện của từ 'percent' bằng 'per cent', 'out of every hundred', hoặc đơn giản bỏ nó sau số (ví dụ: 'landfill fell to 20'), và thay đổi các động từ: dùng 'dropped', 'rose', 'fell', 'climbed' thay vì lặp lại 'go down' và 'go up'."
+      },
+      {
+        "criterion": "GRAMMATICAL_RANGE_ACCURACY",
+        "band": 5.0,
+        "raw_band": 5.0,
+        "length_penalty": 0.0,
+        "explanation": "Sentence forms are overwhelmingly simple; there is no clear attempt at complex structures (no subordinate clauses beyond the occasional comma splice). Subject-verb agreement errors are frequent and systematic: 'landfill is' (should be 'was'), 'Recycling only have' (should be 'has'), 'landfill reduce' (should be 'reduced'), 'recycling go up' (should be 'went up'). These errors impede communication at times and match band 5's description of frequent grammatical errors that can cause some difficulty for the reader.",
+        "descriptor_reference": "GRAMMATICAL_RANGE_ACCURACY band 5",
+        "evidence_quotes": [
+          "the landfill is the most popular method",
+          "Recycling only have 10 percent"
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "Almost every sentence is simple, and you made the same subject-verb mistake many times — using present tense ('is', 'have', 'go') when you needed past tense ('was', 'had', 'went'). Because these errors happen often and follow the same pattern, they can make it harder for the reader to follow, which is why grammar stays at band 5.",
+        "comment_vi": "Hầu hết câu đều đơn giản, và bạn mắc lỗi hoà hợp chủ-vị nhiều lần — dùng thì hiện tại ('is', 'have', 'go') khi cần thì quá khứ ('was', 'had', 'went'). Vì những lỗi này xảy ra thường xuyên và theo cùng một mẫu, chúng có thể khiến người đọc khó theo dõi, nên ngữ pháp vẫn ở band 5.",
+        "improvement_en": "Read your essay aloud and change every verb to past tense because you are describing completed years (2000, 2020); that one step will fix most of the agreement errors and push your grammar into band 6.",
+        "improvement_vi": "Đọc to bài viết và thay đổi mọi động từ thành thì quá khứ vì bạn đang mô tả những năm đã qua (2000, 2020); bước đơn giản này sẽ sửa được hầu hết lỗi hoà hợp và đưa ngữ pháp của bạn lên band 6."
+      }
+    ],
+    "latency_s": 32.728,
+    "quote_fidelity": 1.0
+  },
+  {
+    "essay_id": "T2-001",
+    "task_type": "TASK_2",
+    "gold": {
+      "overall": 5.5,
+      "criteria": {
+        "TASK_RESPONSE": 5.5,
+        "COHERENCE_COHESION": 6.0,
+        "LEXICAL_RESOURCE": 5.5,
+        "GRAMMATICAL_RANGE_ACCURACY": 5.0
+      },
+      "source": "expert-estimate-from-official-descriptors",
+      "confidence": "medium"
+    },
+    "overall_band": 6.0,
+    "raw_overall": 5.75,
+    "criteria": [
+      {
+        "criterion": "TASK_RESPONSE",
+        "band": 6.0,
+        "raw_band": 6.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay addresses all parts of the prompt: it states a clear position ('I partly agree'), gives reasons for both sides, and concludes with a restatement of that position. However, the development of ideas remains superficial: the 'innovation' point is only asserted, not illustrated with a concrete example, and the earth-side points (poverty, pollution) are stated but not extended with specific evidence or explanation of how spending would help. This matches band 6, where main ideas are presented but may be inadequately developed, and keeps it below band 7, which requires extension and support.",
+        "descriptor_reference": "TASK_RESPONSE band 6",
+        "evidence_quotes": [
+          "When financial investment in space exploration is more and more, scientists have sufficient resources to generate science breakthroughs such as renewable materials and new technology that can change and improve the living standards.",
+          "Nowadays, many people are suffering from the lack of access to essentials such as food and clear water, which is limited by industrial manufacturing excessively, and industrial expansion, especially in many Africa countries."
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "You take a clear position from the start and keep it to the end, and you mention ideas for both space exploration and earthly problems. The ideas, however, stay at the level of general statements ('innovation and development', 'poverty and pollution') without a specific example or further explanation to show how the money would actually help, which is why this is band 6 rather than 7.",
+        "comment_vi": "Bạn nêu rõ quan điểm từ đầu và giữ nó đến cuối, và bạn đưa ra ý tưởng cho cả hai phía: khám phá không gian và giải quyết vấn đề trên Trái Đất. Tuy nhiên, các ý tưởng vẫn ở mức chung chung ('đổi mới và phát triển', 'nghèo đói và ô nhiễm') mà không có ví dụ cụ thể hoặc giải thích thêm để cho thấy tiền sẽ được dùng như thế nào để giúp đỡ, đó là lý do bài ở band 6 chứ không phải band 7.",
+        "improvement_en": "Choose one of your points, for example the poverty claim, and add one specific sentence showing how money would help: 'For instance, redirecting just 10% of a national space budget could fund school-meal programmes for a million children.' One concrete detail like this turns a general idea into a developed one.",
+        "improvement_vi": "Hãy chọn một trong các ý của bạn, ví dụ như主張 về nghèo đói, và thêm một câu cụ thể cho thấy tiền sẽ giúp đỡ như thế nào: 'Ví dụ, chỉ cần chuyển hướng 10% ngân sách quốc gia cho khám phá không gian cũng có thể tài trợ cho chương trình ăn trưa học sinh cho một triệu trẻ em.' Một chi tiết cụ thể như vậy sẽ biến một ý chung thành một ý được phát triển đầy đủ."
+      },
+      {
+        "criterion": "COHERENCE_COHESION",
+        "band": 6.0,
+        "raw_band": 6.0,
+        "length_penalty": 0.0,
+        "explanation": "Information is arranged in a logical five-paragraph structure (introduction, one-body-point, counter-point, additional point, conclusion) and there is a clear overall progression. Cohesive devices such as 'However', 'In addition', 'As a result', 'On the one hand' are used, but their use is often mechanical: nearly every new sentence begins with a listing or result word rather than a varied reference back to the previous idea. This matches band 6, where cohesive devices are effective but may be mechanical, and keeps it below band 7, which requires more selective, referencing-based cohesion.",
+        "descriptor_reference": "COHERENCE_COHESION band 6",
+        "evidence_quotes": [
+          "However, there are several compelling reasons why some people advocate for focusing on tackling problems on earth is poverty and pollution.",
+          "As a result, if government spend money for solve this problem, the life of poor people will be better and they can have a good life."
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "Your five-paragraph layout is easy to follow and you clearly mark each new point with words like 'However' and 'In addition'. Because almost every sentence starts with one of these linking words, the connections feel mechanical rather than arising naturally from the ideas themselves.",
+        "comment_vi": "Bố cục năm đoạn của bạn rất dễ theo dõi và bạn đánh dấu rõ mỗi ý mới bằng các từ như 'However' và 'In addition'. Vì gần như mỗi câu đều bắt đầu bằng một từ nối như vậy, các liên kết cảm thấy máy móc thay vì phát sinh tự nhiên từ chính những ý tưởng.",
+        "improvement_en": "Try starting one sentence with a pronoun or a phrase that points back to the previous idea instead of a fresh linker, for example change 'In addition, the pollution is also a big problem...' to 'This problem of pollution is also serious in many countries...' so the link comes from what was just said.",
+        "improvement_vi": "Hãy thử bắt đầu một câu bằng một đại từ hoặc một cụm từ chỉ về ý trước thay vì một từ nối mới, ví dụ thay vì 'In addition, the pollution is also a big problem...' thành 'This problem of pollution is also serious in many countries...' để liên kết xuất phát từ điều vừa nói."
+      },
+      {
+        "criterion": "LEXICAL_RESOURCE",
+        "band": 6.0,
+        "raw_band": 6.0,
+        "length_penalty": 0.0,
+        "explanation": "There is an adequate range of vocabulary for the task, with attempts at less common items such as 'financial resources', 'science breakthroughs', 'renewable materials', 'essentials', 'industrial manufacturing'. Word choice and collocation are sometimes inaccurate ('spend budget to address', 'limited by industrial manufacturing excessively', 'make people get sick'), and repetition of key content words like 'money', 'government', 'problem' is noticeable. This matches band 6, where less common vocabulary is attempted but with some inaccuracy, and keeps it below band 7, which requires awareness of collocation and style.",
+        "descriptor_reference": "LEXICAL_RESOURCE band 6",
+        "evidence_quotes": [
+          "governments allocated large amounts of financial resources to space exploration",
+          "spend budget to address issues on earth",
+          "The factories release many dangerous gas to the air and it make people get sick."
+        ],
+        "quotes_returned": 3,
+        "quotes_dropped": 0,
+        "comment_en": "You do use some less common vocabulary like 'financial resources' and 'science breakthroughs', which shows range. However, collocations are sometimes off ('spend budget', 'make people get sick'), and you repeat words like 'money', 'government', 'problem' quite often, which together keep this at band 6 rather than 7.",
+        "comment_vi": "Bạn thực sự dùng một số từ không phổ biến như 'financial resources' và 'science breakthroughs', điều này cho thấy vốn từ phong phú. Tuy nhiên, một số collocation không chính xác ('spend budget', 'make people get sick'), và bạn lặp lại từ như 'money', 'government', 'problem' khá nhiều, những điều này cùng nhau giữ bài ở band 6 chứ không phải band 7.",
+        "improvement_en": "Before writing, note down the usual verb partners for your key nouns: 'spend money on' (not 'spend budget to'), 'cause people to get sick' (not 'make people get sick'), checking these three collocations would fix the most noticeable inaccuracies.",
+        "improvement_vi": "Trước khi viết, hãy ghi lại các động từ thường đi cùng với danh từ quan trọng của bạn: 'spend money on' (không phải 'spend budget to'), 'cause people to get sick' (không phải 'make people get sick'), chỉ cần kiểm tra ba collocation này là sẽ sửa được phần lớn lỗi không chính xác."
+      },
+      {
+        "criterion": "GRAMMATICAL_RANGE_ACCURACY",
+        "band": 5.0,
+        "raw_band": 5.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay uses a mix of simple and complex sentence forms, including relative clauses ('which is limited by industrial manufacturing excessively'), passive-like structures ('financial investment ... is more and more'), and conditionals ('if government spend money...'). However, grammatical errors are frequent and varied: subject-verb agreement ('governments allocated' is past but later 'government spend' lacks -s), verb form errors ('explain why many countries spend' should be 'explains'), article errors ('the lack of access to essentials such as food and clear water' is awkward), and preposition errors ('release many dangerous gas to the air'). These errors, while they rarely obscure meaning, reduce the overall accuracy and keep this in band 5, where frequent errors can cause some difficulty for the reader.",
+        "descriptor_reference": "GRAMMATICAL_RANGE_ACCURACY band 5",
+        "evidence_quotes": [
+          "governments allocated large amounts of financial resources to space exploration",
+          "if government spend money for solve this problem"
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "You attempt some complex structures like relative clauses and conditionals, which is good for range. However, errors in subject-verb agreement ('government spend'), verb form ('explain' instead of 'explains'), articles, and prepositions appear often enough that they would cause some difficulty for a reader, placing this at band 5.",
+        "comment_vi": "Bạn thực hiện một số cấu trúc phức tạp như mệnh đề quan hệ và mệnh đề điều kiện, điều này tốt cho phạm vi. Tuy nhiên, lỗi trong hoà hợp chủ ngữ-động từ ('government spend'), dạng động từ ('explain' thay vì 'explains'), từ crown, và giới từ xuất hiện thường xuyên đủ để gây khó khăn cho người đọc, đặt bài này ở band 5.",
+        "improvement_en": "Pick one error type that appears twice or more, for example missing third-person-singular '-s' on present simple verbs, and read your essay once looking only for that; fixing just one high-frequency error often raises accuracy noticeably.",
+        "improvement_vi": "Chọn một kiểu lỗi xuất hiện hai lần hoặc hơn, ví dụ như thiếu '-s' ở người thứ ba số đơn trong thì hiện tại đơn, và đọc lại bài một lần chỉ tìm lỗi đó; việc sửa một lỗi tần suất cao thường làm tăng độ chính xác đáng kể."
+      }
+    ],
+    "latency_s": 38.891,
+    "quote_fidelity": 1.0
+  },
+  {
+    "essay_id": "T2-002",
+    "task_type": "TASK_2",
+    "gold": {
+      "overall": 6.5,
+      "criteria": {
+        "TASK_RESPONSE": 6.5,
+        "COHERENCE_COHESION": 7.0,
+        "LEXICAL_RESOURCE": 6.5,
+        "GRAMMATICAL_RANGE_ACCURACY": 6.5
+      },
+      "source": "expert-estimate-from-official-descriptors",
+      "confidence": "medium"
+    },
+    "overall_band": 8.0,
+    "raw_overall": 7.75,
+    "criteria": [
+      {
+        "criterion": "TASK_RESPONSE",
+        "band": 8.0,
+        "raw_band": 8.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay fully addresses all parts of the prompt: it discusses both views (online learning advantages and face-to-face advantages) and gives a clear personal opinion. The position is consistent throughout and well-developed, with relevant examples such as the rural Vietnamese student and the comparison of theoretical vs practical subjects. Ideas are extended with reasoning and specific illustrations, not merely stated, which aligns with Band 8 descriptors. While the conclusion slightly repeats points from the opinion paragraph, this does not detract from the overall sufficiency and development seen in Band 8.",
+        "descriptor_reference": "TASK_RESPONSE band 8",
+        "evidence_quotes": [
+          "A student living in a rural province of Vietnam, for instance, can now enrol in courses taught by professors at leading universities without relocating.",
+          "In my opinion, neither mode is superior in absolute terms; effectiveness depends on the learner and the subject."
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "You clearly discuss both views and give a well-supported opinion, using relevant examples like the rural student in Vietnam and the contrast between theoretical and practical subjects. Your ideas are extended with reasoning, not just listed, and your position remains clear from start to finish, which fits Band 8.",
+        "comment_vi": "Bạn đã thảo luận rõ cả hai quan điểm và đưa ra quan điểm cá nhân được hỗ trợ tốt bằng ví dụ như học sinh ở tỉnh nông thôn Việt Nam và sự khác biệt giữa môn lý thuyết và môn thực hành. Ý tưởng của bạn được phát triển bằng lý do, không chỉ liệt kê, và quan điểm của bạn luôn rõ ràng từ đầu đến cuối, phù hợp với band 8.",
+        "improvement_en": "To reach Band 9, try to make your examples even more specific — for instance, name an actual online course or university program the rural student could enrol in, which would make the support fully exemplary rather than just well-developed.",
+        "improvement_vi": "Để đạt band 9, hãy làm cho ví dụ của bạn cụ thể hơn — ví dụ, tên một khóa học trực tuyến cụ thể hoặc trường đại học mà học sinh nông thôn có thể đăng ký, điều này sẽ làm cho sự hỗ trợ của bạn trở nên hoàn hảo thay vì chỉ là phát triển tốt."
+      },
+      {
+        "criterion": "COHERENCE_COHESION",
+        "band": 7.0,
+        "raw_band": 7.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay is logically organised with clear paragraphing: introduction, two body paragraphs (one for each view), a third body paragraph for the opinion, and a conclusion. Cohesive devices such as 'Furthermore', 'On the other hand', 'In my opinion', 'Therefore', and 'In conclusion' are used appropriately and selectively, not mechanically. There is clear progression of ideas, and each paragraph has a central topic. This matches Band 7, where cohesion arises from logical sequencing rather than formulaic listing. It does not reach Band 8 because while cohesive devices are well used, they are not entirely 'invisible' — some, like 'Furthermore' and 'Therefore', are slightly noticeable, preventing the skilful management seen in Band 8.",
+        "descriptor_reference": "COHERENCE_COHESION band 7",
+        "evidence_quotes": [
+          "Furthermore, online platforms are generally cheaper, which widens access for families with limited financial means.",
+          "On the other hand, supporters of face-to-face instruction emphasise the value of direct human interaction."
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "Your ideas are well organised into clear paragraphs, and you use linking words like 'Furthermore' and 'On the other hand' to guide the reader. The progression is logical and easy to follow, which is typical of Band 7. To reach Band 8, the linking would need to feel even smoother and less noticeable.",
+        "comment_vi": "Bạn đã sắp xếp ý tưởng thành các đoạn rõ ràng, và sử dụng từ nối như 'Furthermore' và 'On the other hand' để dẫn dắt người đọc. Sự phát triển là logic và dễ theo dõi, đặc trưng của band 7. Để lên band 8, việc liên kết cần cảm thấy mượt mà hơn và ít để ý hơn.",
+        "improvement_en": "Vary your sentence openings more — instead of starting multiple sentences with 'Furthermore' or 'In my opinion', try beginning some with the subject or a participial phrase to reduce reliance on explicit connectors and create a more seamless flow.",
+        "improvement_vi": "Hãy thay đổi cách mở câu nhiều hơn — thay vì bắt đầu nhiều câu bằng 'Furthermore' hoặc 'In my opinion', hãy thử bắt đầu một số câu bằng chủ ngữ hoặc cụm từ nguyên thể để giảm sự phụ thuộc vào từ nối và tạo ra một luồng liền mạch hơn."
+      },
+      {
+        "criterion": "LEXICAL_RESOURCE",
+        "band": 8.0,
+        "raw_band": 8.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay demonstrates a wide range of vocabulary used fluently and flexibly, including less common and precise terms such as 'acquire knowledge', 'recorded lectures', 'irreplaceable', 'accessibility', 'foster collaboration', 'interpersonal benefits', and 'blended approach'. Word choice is accurate and natural, with only minor slips if any (e.g., 'deliver better results' is slightly informal but acceptable). There is awareness of style and collocation, and repetition is avoided through synonym use. This aligns with Band 8, where vocabulary is used with precision and natural style. It does not reach Band 9 because while the range is wide and control is strong, there are no signs of the 'very natural and sophisticated control' or 'rare minor errors only as slips' that characterise Band 9 — the language is effective but not exceptional.",
+        "descriptor_reference": "LEXICAL_RESOURCE band 8",
+        "evidence_quotes": [
+          "Learners can study at their own pace, revisiting recorded lectures whenever a concept proves difficult",
+          "a blended approach, combining the flexibility of digital resources with the interpersonal benefits of the classroom"
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "You use a wide range of vocabulary accurately and naturally, including phrases like 'acquire knowledge', 'foster collaboration', and 'blended approach'. Your word choice is precise and shows good awareness of collocation, which is typical of Band 8. To reach Band 9, the vocabulary would need to feel even more sophisticated and effortless.",
+        "comment_vi": "Bạn sử dụng vốn từ phong phú một cách chính xác và tự nhiên, bao gồm các cụm như 'acquire knowledge', 'foster collaboration', và 'blended approach'. Lựa chọn từ của bạn chính xác và cho thấy nhận thức tốt về collocation, đặc trưng của band 8. Để lên band 9, vốn từ cần cảm thấy phức tạp và tự nhiên hơn nữa.",
+        "improvement_en": "To push toward Band 9, try incorporating a few more advanced or idiomatic expressions where appropriate — for example, instead of 'widens access', consider 'democratises access' or 'levels the playing field', which would show greater lexical sophistication.",
+        "improvement_vi": "Để tiến gần hơn đến band 9, hãy thử sử dụng một vài cụm từ nâng cao hoặc thành ngữ khi thích hợp — ví dụ thay vì 'widens access', hãy cân nhắc 'democratises access' hoặc 'levels the playing field', điều này sẽ thể hiện sự phong phú hơn về vốn từ."
+      },
+      {
+        "criterion": "GRAMMATICAL_RANGE_ACCURACY",
+        "band": 8.0,
+        "raw_band": 8.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay uses a wide range of structures, including complex sentences with subordinate clauses ('While a considerable number of individuals argue...', 'Learners can study at their own pace, revisiting recorded lectures...'), participial phrases ('revisiting recorded lectures', 'negotiate ideas in group discussions'), and conditional or comparative structures ('whereas practical disciplines... clearly require'). The majority of sentences are error-free, with only minor slips such as the missing article in 'a physical environment' (though this is debatable) or the slightly awkward 'imposed by a fixed timetable' (which is actually acceptable). There are no persistent or systematic errors in grammar, tense, or agreement. This matches Band 8, where a wide range of structures is used and the majority of sentences are error-free. It does not reach Band 9 because while control is strong, there are still more than 'rare minor errors' — the few slips prevent the 'full flexibility and accuracy' required for Band 9.",
+        "descriptor_reference": "GRAMMATICAL_RANGE_ACCURACY band 8",
+        "evidence_quotes": [
+          "Learners can study at their own pace, revisiting recorded lectures whenever a concept proves difficult",
+          "In a physical classroom, teachers can immediately notice confusion on a student's face and adjust their explanation accordingly"
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "You use a variety of complex structures correctly, such as participial phrases ('revisiting recorded lectures') and complex noun phrases ('the flexibility of digital resources'). Most of your sentences are free of errors, with only very occasional slips, which is characteristic of Band 8. To reach Band 9, there would need to be almost no errors at all.",
+        "comment_vi": "Bạn sử dụng đúng nhiều cấu trúc phức tạp, như cụm từ nguyên thể ('revisiting recorded lectures') và cụm danh từ phức tạp ('the flexibility of digital resources'). Hầu hết câu của bạn không có lỗi, chỉ có rất occasional slips, đặc trưng của band 8. Để lên band 9, sẽ cần gần như không có lỗi nào.",
+        "improvement_en": "Proofread specifically for article use and preposition choice — for example, check whether 'a physical environment' needs an article in this context (it likely does not, but verifying such details builds the consistency needed for Band 9).",
+        "improvement_vi": "Kiểm tra lại cụm từ về冠词 (một) và giới từ — ví dụ, xem 'a physical environment' có cần冠词 trong هذا السياق không (có thể không, nhưng việc kiểm tra như vậy giúp xây dựng sự nhất quán cần thiết để đạt band 9)."
+      }
+    ],
+    "latency_s": 24.123,
+    "quote_fidelity": 1.0
+  },
+  {
+    "essay_id": "T2-003",
+    "task_type": "TASK_2",
+    "gold": {
+      "overall": 7.5,
+      "criteria": {
+        "TASK_RESPONSE": 7.5,
+        "COHERENCE_COHESION": 7.5,
+        "LEXICAL_RESOURCE": 8.0,
+        "GRAMMATICAL_RANGE_ACCURACY": 7.5
+      },
+      "source": "expert-estimate-from-official-descriptors",
+      "confidence": "medium"
+    },
+    "overall_band": 8.0,
+    "raw_overall": 7.75,
+    "criteria": [
+      {
+        "criterion": "TASK_RESPONSE",
+        "band": 8.0,
+        "raw_band": 8.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay fully addresses both parts of the prompt—causes and measures—with a clear position throughout. Main ideas are well extended with specific examples (Ho Chi Minh City data, London/Singapore congestion charging) and logical reasoning. The development is thorough and relevant, matching band 8 descriptors for sufficient addressing of all parts and well-developed, supported ideas. It does not reach band 9 because while ideas are fully extended, they lack the exceptional depth or nuance expected at the highest band (e.g., no evaluation of trade-offs or acknowledgment of limitations in proposed measures).",
+        "descriptor_reference": "TASK_RESPONSE band 8",
+        "evidence_quotes": [
+          "Ho Chi Minh City, for example, absorbed roughly two hundred thousand new residents annually over the past decade while its road surface area grew by a fraction of that rate.",
+          "This should be reinforced by demand-side measures such as congestion charging, which has demonstrably reduced central-city traffic in London and Singapore by making peak-hour driving financially unattractive."
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "You clearly identify multiple causes (migration, car ownership aspirations, poor planning) and propose several measures (mass transit, congestion charging, mixed-use development, remote work), each backed by specific examples or data. Your position is clear from the outset and consistently maintained. To reach band 9, you would need to show even greater insight, such as discussing potential drawbacks of your solutions or why some cities struggle to implement them despite knowing the measures.",
+        "comment_vi": "Bạn đã nêu rõ nhiều nguyên nhân (di cư, mong muốn sở hữu xe cá nhân, kế hoạch hoạch định kém) và đưa ra một số biện pháp (giao thông công cộng, phí vàoเมือง, phát triển hỗn hợp, làm việc từ xa), mỗi biện pháp đều có ví dụ hoặc dữ liệu cụ thể. Quan điểm của bạn rõ ràng từ đầu và duy trì nhất quán. Để đạt band 9, bạn cần thể hiện sự hiểu biết sâu sắc hơn, như thảo luận về nhược điểm tiềm ẩn của các giải pháp hoặc tại sao một số thành phố gặp khó khăn trong việc thực hiện chúng dù đã biết các biện pháp này.",
+        "improvement_en": "Add one sentence after discussing congestion charging that acknowledges a limitation—for example, noting that such schemes can be politically difficult to implement or may disproportionately affect low-income drivers—to demonstrate critical evaluation of your proposed measures.",
+        "improvement_vi": "Sau khi nói về phí vàoเมือง, hãy thêm một câu nhận xét về một hạn chế nào đó—for example, chỉ ra rằng solche schemes có thể gặp khó khăn về mặt chính trị hoặc ảnh hưởng không bình đẳng đến người thu nhập thấp—để cho thấy bạn có thể đánh giá phản biện các biện pháp mình đề xuất."
+      },
+      {
+        "criterion": "COHERENCE_COHESION",
+        "band": 7.0,
+        "raw_band": 7.0,
+        "length_penalty": 0.0,
+        "explanation": "Information is logically organised with clear progression: causes → measures → conclusion. Paragraphing is appropriate and each paragraph has a clear central topic. Cohesive devices ('therefore', 'finally', 'for example', 'such as', 'while') are used effectively and appropriately, not mechanically. There is no over-reliance on listing words; instead, logical sequencing and referencing create coherence. This matches band 7, as cohesion arises from logical progression rather than formulaic connectors, and there is clear progression throughout. It does not reach band 8 because while cohesion is well managed, it does not attain the seamless, 'invisible' quality of band 9 where cohesion attracts no attention.",
+        "descriptor_reference": "COHERENCE_COHESION band 7",
+        "evidence_quotes": [
+          "The root cause is arguably demographic rather than technical."
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 1,
+        "comment_en": "Your essay moves smoothly from causes to solutions to conclusion, with each paragraph focusing on one clear idea. You use linking words like 'therefore' and 'for example' naturally to connect ideas, rather than relying on mechanical listing. This creates a clear, logical progression throughout. To reach band 8, you would need even more sophisticated referencing (e.g., using 'this' or 'such measures' to refer back) so that the cohesion feels completely seamless and unnoticeable.",
+        "comment_vi": "Bài viết của bạn chuyển động suôn từ nguyên nhân đến giải pháp rồi đến kết luận, mỗi đoạn tập trung vào một ý chính rõ rệt. Bạn dùng các từ nối như 'therefore' và 'for example' một cách tự nhiên để kết nối ý tưởng, thay vì phụ thuộc vào việc liệt kê máy móc. Điều này tạo ra một sự tiến triển logic rõ rệt xuyên suốt. Để đạt band 8, bạn cần sử dụng các cách tham chiếu tinh vi hơn (ví dụ: dùng 'this' hoặc 'such measures' để quay lại) để sự liên kết trở nên hoàn toàn liền mạch và không thể nhận ra được.",
+        "improvement_en": "After introducing congestion charging, refer back to it later in the paragraph using a pronoun or phrase like 'Such pricing policies' instead of repeating the full term, which would demonstrate more advanced referencing and reduce slight repetition.",
+        "improvement_vi": "Sau khi giới thiệu phí vàoเมือง, hãy tham chiếu lại nó sau trong cùng một đoạn bằng một đại từ hoặc cụm từ như 'Such pricing policies' thay vì lặp lại toàn bộ thuật ngữ, điều này sẽ cho thấy bạn có khả năng tham chiếu nâng cao và giảm bớt sự lặp lại nhẹ."
+      },
+      {
+        "criterion": "LEXICAL_RESOURCE",
+        "band": 8.0,
+        "raw_band": 8.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay uses a wide range of vocabulary fluently and flexibly to convey precise meanings. Less common lexical items ('demographic', 'aspirational status', 'disproportionate road space', 'mass rapid transit', 'demand-side measures', 'normalisation of remote working') are used with awareness of style and collocation. Occasional minor inaccuracies exist ('absorbed... new residents' is slightly awkward; 'spatial cost' is acceptable but less common than 'space'), but they do not impede communication. This matches band 8, as vocabulary is wide and used with skill, though not with the rare sophistication and near-perfect control of band 9.",
+        "descriptor_reference": "LEXICAL_RESOURCE band 8",
+        "evidence_quotes": [
+          "aspirational status attached to private vehicle ownership",
+          "Ho Chi Minh City, for example, absorbed roughly two hundred thousand new residents annually"
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "You use sophisticated vocabulary accurately throughout, such as 'aspirational status attached to private vehicle ownership' and 'demand-side measures'. Word choice is precise and flexible, with only very minor awkwardness like 'absorbed... new residents' (better: 'welcomed' or 'saw an influx of'). To reach band 9, your vocabulary would need to be even more nuanced and natural, with near-zero lapses in appropriateness or precision.",
+        "comment_vi": "Bạn sử dụng vốn từ phong phú và chính xác suốt bài, ví dụ như 'aspirational status attached to private vehicle ownership' và 'demand-side measures'. Lựa chọn từ là chính xác và linh hoạt, chỉ có một vài chỗ hơi ngượng như 'absorbed... new residents' (tốt hơn: 'welcomed' hoặc 'saw an influx of'). Để đạt band 9, vốn từ của bạn cần phải còn tinh tế và tự nhiên hơn, với gần như không có lỗi nào về mức độ phù hợp hoặc độ chính xác.",
+        "improvement_en": "Replace 'absorbed roughly two hundred thousand new residents' with a more natural collocation like 'welcomed an influx of approximately two hundred thousand new residents' or 'saw its population grow by about two hundred thousand annually' to improve fluency and precision.",
+        "improvement_vi": "Thay thế cụm 'absorbed roughly two hundred thousand new residents' bằng một cách diễn đạt tự nhiên hơn như 'welcomed an influx of approximately two hundred thousand new residents' hoặc 'saw its population grow by about two hundred thousand annually' để nâng cao độ liền mạch và chính xác."
+      },
+      {
+        "criterion": "GRAMMATICAL_RANGE_ACCURACY",
+        "band": 8.0,
+        "raw_band": 8.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay uses a wide range of structures, including complex noun phrases ('the aspirational status attached to private vehicle ownership'), relative clauses ('whereby commercial districts... are separated'), and passive constructions ('can be extended'). The majority of sentences are error-free, with only minor slips such as the slightly awkward but grammatically acceptable 'absorbed... new residents' (which is more a lexical than grammatical issue) and no persistent or systematic errors. Communication is never impaired. This matches band 8, as structures are varied and accurate, with only very occasional inappropriacies. It does not reach band 9 because while accuracy is high, the odd slightly awkward phrasing prevents the 'rare minor errors only as slips' standard.",
+        "descriptor_reference": "GRAMMATICAL_RANGE_ACCURACY band 8",
+        "evidence_quotes": [
+          "as economic opportunity concentrates in a handful of cities, rural populations migrate in numbers that far outstrip the pace at which road networks can be extended.",
+          "Ho Chi Minh City, for example, absorbed roughly two hundred thousand new residents annually"
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "You demonstrate excellent control of complex grammar, using structures like relative clauses and noun phrases accurately and variably. Sentences are mostly error-free, and any issues (like the slightly awkward 'absorbed... new residents') are minor and do not affect meaning. To reach band 9, you would need near-perfect accuracy with only the very occasional slip, such as a single missing article or preposition, and nothing that even slightly hinders fluency.",
+        "comment_vi": "Bạn kiểm soát ngữ pháp phức tạp rất tốt, sử dụng các cấu trúc như mệnh đề quan hệ và cụm danh từ một cách chính xác và đa dạng. Các câu chủ yếu không có lỗi, và bất kỳ vấn đề nào (như cách diễn đạt hơi ngượng 'absorbed... new residents') đều là nhỏ và không ảnh hưởng đến ý nghĩa. Để đạt band 9, bạn cần đạt độ chính xác gần như hoàn hảo với chỉ những lỗi trượt rất hiếm, như một từ冠 từ hoặc giới từ bị thiếu, và không có gì thậm chí làm giảm độ liền mạch.",
+        "improvement_en": "Proofread specifically for collocation and preposition use in complex noun phrases; changing 'absorbed... new residents' to 'welcomed an influx of...' would remove the only noticeable hesitation in an otherwise flawless grammatical performance.",
+        "improvement_vi": "Kiểm tra lại cụm từ danh từ phức tạp và giới từ; việc thay đổi 'absorbed... new residents' thành 'welcomed an influx of...' sẽ loại bỏ sự ngượng nhẹ duy nhất trong một hiệu suất ngữ pháp còn lại gần như hoàn hảo."
+      }
+    ],
+    "latency_s": 45.516,
+    "quote_fidelity": 0.875
+  },
+  {
+    "essay_id": "T2-004",
+    "task_type": "TASK_2",
+    "gold": {
+      "overall": 8.0,
+      "criteria": {
+        "TASK_RESPONSE": 8.0,
+        "COHERENCE_COHESION": 8.0,
+        "LEXICAL_RESOURCE": 8.5,
+        "GRAMMATICAL_RANGE_ACCURACY": 8.0
+      },
+      "source": "expert-estimate-from-official-descriptors",
+      "confidence": "medium"
+    },
+    "overall_band": 8.0,
+    "raw_overall": 7.75,
+    "criteria": [
+      {
+        "criterion": "TASK_RESPONSE",
+        "band": 8.0,
+        "raw_band": 8.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay fully addresses both parts of the prompt: it explains why museums charge (conservation costs, visitor flow regulation, equity concerns) and then presents a clear, nuanced position that free entry is defensible only where public funding is secure. Ideas are extended with specific examples (Uffizi, Britain's national museums) and logical reasoning, satisfying band 8 descriptors for sufficient development and support. It does not reach band 9 because while the position is well-developed, it lacks the absolute precision and sophistication of idea extension seen in top-band responses (e.g., the equity argument, though mentioned, is not fully explored with data or deeper analysis).",
+        "descriptor_reference": "TASK_RESPONSE band 8",
+        "evidence_quotes": [
+          "Conservation is extraordinarily expensive: climate-controlled storage, specialist restoration and the insurance premiums attached to irreplaceable objects consume budgets that ticket revenue alone rarely covers",
+          "Britain's decision to abolish charges at its national museums in 2001 is instructive: attendance roughly doubled, and the composition of that audience broadened measurably."
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "You answer both questions thoroughly: first explaining the reasons for charges with clear points and examples, then giving a balanced opinion with conditions. Your ideas are well-developed and supported, which fits band 8. To reach band 9, you would need to push each idea even further—perhaps with more specific data or deeper analysis—so that nothing feels left unexplored.",
+        "comment_vi": "Bạn trả lời hai phần của đề bài một cách đầy đủ: trước tiên giải thích lý do lấy phí với các điểm rõ ràng và ví dụ, sau đó đưa ra quan điểm cân bằng có điều kiện. Các ý của bạn được phát triển và hỗ trợ tốt, phù hợp với band 8. Để lên band 9, bạn cần đẩy mỗi ý đi xa hơn—có thể bằng dữ liệu cụ thể hoặc phân tích sâu hơn—để không còn gì chưa được khám phá.",
+        "improvement_en": "Choose one of your supporting points, such as the equity argument about affluent visitors, and add one more sentence with a specific example or statistic (e.g., 'In cities like Paris, surveys show over 60% of Louvre visitors are tourists') to transform a solid point into a fully extended one.",
+        "improvement_vi": "Hãy chọn một trong các điểm hỗ trợ của bạn, như lập luận về công평 đối với khách du lịch giàu có, và thêm một câu nữa với ví dụ hoặc số liệu cụ thể (ví dụ: 'Ở các thành phố như Paris, khảo sát cho thấy hơn 60% khách tham quan Louvre là du khách') để biến một điểm tốt thành một điểm được phát triển đầy đủ."
+      },
+      {
+        "criterion": "COHERENCE_COHESION",
+        "band": 7.0,
+        "raw_band": 7.0,
+        "length_penalty": 0.0,
+        "explanation": "Information is logically organised: introduction, reasons for charging, argument for free entry with condition, and conclusion. There is clear progression throughout, and cohesive devices ('nevertheless', 'additionally', 'for instance', 'therefore', 'while') are used appropriately and selectively, not mechanically. Each paragraph has a clear central topic. This matches band 7 descriptors for logical organisation and clear progression. It does not reach band 8 because while cohesion is very good, it does not exhibit the completely seamless, unnoticeable management seen at band 8; the use of devices, while appropriate, is still slightly noticeable as discourse markers.",
+        "descriptor_reference": "COHERENCE_COHESION band 7",
+        "evidence_quotes": [
+          "The rationale for charging is largely a matter of institutional survival.",
+          "Nevertheless, I would contend that the case for free access is ultimately the stronger one, provided the funding model is robust."
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "Your essay follows a clear logical order: introduction, reasons for charging, argument for free entry, and conclusion. Linking words like 'nevertheless' and 'for instance' are used correctly and help the ideas flow naturally from one paragraph to the next. This is what band 7 looks like.",
+        "comment_vi": "Bài viết của bạn tuân theo một trật tự logic rõ ràng: giới thiệu, lý do lấy phí, lập luận cho việc vào cửa miễn phí, và kết luận. Các từ nối như 'nevertheless' và 'for instance' được dùng đúng và giúp ý tưởng chảy tự nhiên từ đoạn này sang đoạn khác. Đây chính là đặc điểm của band 7.",
+        "improvement_en": "Vary your sentence openings more: instead of starting two consecutive sentences with 'The rationale for charging is...' and 'Charging also performs...', try beginning the second with a participle phrase like 'Performing this subtler function, charging also...' to create even smoother, less noticeable cohesion.",
+        "improvement_vi": "Thay đổi cách mở câu nhiều hơn: thay vì bắt đầu hai câu liên tiếp bằng 'The rationale for charging is...' và 'Charging also performs...', hãy thử bắt đầu câu thứ hai bằng một cụm từ hiện tại phân từ như 'Performing this subtler function, charging also...' để tạo ra sự liên kết mượt mà hơn và ít được nhận ra hơn."
+      },
+      {
+        "criterion": "LEXICAL_RESOURCE",
+        "band": 8.0,
+        "raw_band": 8.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay uses a wide range of vocabulary fluently and flexibly: 'conservation', 'irreplaceable objects', 'electoral cycle', 'regulating visitor flow', 'disproportionately affluent', 'transmits its history', 'social return on an open door'. Word choice is precise and natural, with only rare minor slips ('the very works people come to see' is slightly awkward but not erroneous). This matches band 8 descriptors for wide range, fluency, and precision. It does not reach band 9 because while the vocabulary is very strong, it lacks the absolute sophistication and near-perfect control seen at band 9; there is no evidence of truly rare, high-level lexical items used with effortless sophistication.",
+        "descriptor_reference": "LEXICAL_RESOURCE band 8",
+        "evidence_quotes": [
+          "climate-controlled storage, specialist restoration and the insurance premiums attached to irreplaceable objects",
+          "the social return on an open door exceeds anything a turnstile can collect"
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "You use a wide range of vocabulary very well: phrases like 'irreplaceable objects', 'disproportionately affluent', and 'social return on an open door' show flexibility and precision. Your word choice is natural and accurate, which fits band 8. To reach band 9, you would need to sprinkle in a few more truly sophisticated or uncommon words used with effortless ease, which this essay does not quite do.",
+        "comment_vi": "Bạn sử dụng vốn từ phong phú một cách rất tốt: các cụm như 'irreplaceable objects', 'disproportionately affluent', và 'social return on an open door' cho thấy sự linh hoạt và chính xác. Lựa chọn từ của bạn tự nhiên và chính xác, phù hợp với band 8. Để lên band 9, bạn cần thêm một vài từ thật cao cấp hoặc ít dùng nữa, dùng một cách dễ dàng tự nhiên, điều mà bài này chưa hoàn toàn đạt được.",
+        "improvement_en": "In your conclusion, replace the phrase 'legitimate pressures' with a more precise collocation like 'legitimate constraints' or 'valid necessities' to demonstrate even greater lexical precision—a small tweak that pushes band 8 toward band 9.",
+        "improvement_vi": "Trong phần kết luận, thay thế cụm từ 'legitimate pressures' bằng một collocation chính xác hơn như 'legitimate constraints' hoặc 'valid necessities' để thể hiện sự chính xác từ vựng còn hơn—một điều chỉnh nhỏ này sẽ đẩy band 8 về phía band 9."
+      },
+      {
+        "criterion": "GRAMMATICAL_RANGE_ACCURACY",
+        "band": 8.0,
+        "raw_band": 8.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay uses a wide range of structures, including complex noun phrases ('the insurance premiums attached to irreplaceable objects'), conditional clauses ('provided the funding model is genuinely secure'), and passive constructions ('is frequently overlooked'). The majority of sentences are error-free, with only very occasional minor slips (e.g., 'the very works people come to see' is slightly awkward but not ungrammatical). This matches band 8 descriptors for wide range and majority error-free sentences. It does not reach band 9 because while control is excellent, it does not exhibit the absolute, rare-minor-error-only perfection of band 9; the occasional awkward phrasing prevents the 'no-attraction' cohesion of the highest band.",
+        "descriptor_reference": "GRAMMATICAL_RANGE_ACCURACY band 8",
+        "evidence_quotes": [
+          "Conservation is extraordinarily expensive: climate-controlled storage, specialist restoration and the insurance premiums attached to irreplaceable objects",
+          "My conclusion, therefore, is a qualified one. Museums charge because conservation is costly and demand requires management, and these are legitimate pressures rather than institutional greed."
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "You use a variety of complex structures accurately: long noun phrases, conditionals, and passives all appear correctly. Most sentences are completely error-free, which is the hallmark of band 8. The few slightly awkward phrases ('the very works people come to see') are not errors, but they keep the writing from feeling completely effortless, which is what band 9 requires.",
+        "comment_vi": "Bạn sử dụng nhiều cấu trúc phức tạp một cách chính xác: cụm danh từ dài, mệnh đề điều kiện, và câu bị động đều xuất hiện đúng. Hầu hết các câu đều hoàn toàn không lỗi, đây là dấu hiệu của band 8. Những câu hơi ngây ngất như 'the very works people come to see' không phải là lỗi, nhưng chúng khiến văn bản không cảm thấy hoàn toàn dễ dàng, điều mà band 9 yêu cầu.",
+        "improvement_en": "When proofreading, read each sentence aloud and ask if a native speaker would phrase it exactly that way; for 'the very works people come to see', a more natural alternative would be 'the very works that people come to see' or simply 'the works people come to see', which would remove the last hint of awkwardness.",
+        "improvement_vi": "Khi kiểm tra lại, hãy đọc từng câu to và hỏi bản thân: 'Một người bản ngữ sẽ nói câu này như thế nào không?' Với cụm 'the very works people come to see', một cách nói tự nhiên hơn sẽ là 'the very works that people come to see' hoặc đơn giản là 'the works people come to see', điều này sẽ loại bỏ hoàn toàn sự ngây ngất cuối cùng."
+      }
+    ],
+    "latency_s": 41.985,
+    "quote_fidelity": 1.0
+  },
+  {
+    "essay_id": "T2-005",
+    "task_type": "TASK_2",
+    "gold": {
+      "overall": 4.5,
+      "criteria": {
+        "TASK_RESPONSE": 4.5,
+        "COHERENCE_COHESION": 5.0,
+        "LEXICAL_RESOURCE": 4.5,
+        "GRAMMATICAL_RANGE_ACCURACY": 4.0
+      },
+      "source": "expert-estimate-from-official-descriptors",
+      "confidence": "medium"
+    },
+    "overall_band": 5.0,
+    "raw_overall": 4.875,
+    "criteria": [
+      {
+        "criterion": "TASK_RESPONSE",
+        "band": 4.5,
+        "raw_band": 5.0,
+        "length_penalty": 0.5,
+        "explanation": "The essay addresses both advantages and disadvantages of social media, fulfilling the basic requirement of the task, and states a clear position that advantages outweigh disadvantages. However, the development of ideas is minimal: advantages are mentioned in two short sentences (connection and information) with one underdeveloped example, and disadvantages are listed in a similarly brief way. This matches band 5, where main ideas are present but limited and not sufficiently developed, rather than band 6 where ideas would be relevant and at least adequately developed.",
+        "descriptor_reference": "TASK_RESPONSE band 5",
+        "evidence_quotes": [
+          "Firstly, social media help people connect together. If you have friend in other country, you can talking with them everyday and it is free.",
+          "For example student can join group to study together and share document."
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "You do mention both sides and give a clear opinion, which satisfies the task, but each idea is only stated in one or two sentences without real explanation or detail. For example, you say social media helps people connect and learn, but you do not say how or why this matters, which is why the development stays at band 5 level.",
+        "comment_vi": "Bạn đã nêu cả hai mặt và đưa ra quan điểm rõ ràng, điều này đã đáp ứng yêu cầu của đề, nhưng mỗi ý chỉ được nêu trong một hoặc hai câu mà không có giải thích hoặc chi tiết thực sự. Ví dụ, bạn nói mạng xã hội giúp kết nối và học tập, nhưng không nói cách hoặc lý do tại sao điều này quan trọng, đó là lý do sự phát triển ý còn ở mức band 5.",
+        "improvement_en": "Choose one advantage, like 'helps people connect', and add two specific sentences explaining how it helps in a real situation (e.g., staying in touch with family abroad during emergencies) instead of just stating it.",
+        "improvement_vi": "Hãy chọn một lợi thế, như 'giúp kết nối', và thêm hai câu cụ thể giải thích cách nó giúp trong một tình huống thực tế (ví dụ: giữ liên lạc với gia đình ở nước ngoài trong khẩn cấp) thay vì chỉ nêu chung chung."
+      },
+      {
+        "criterion": "COHERENCE_COHESION",
+        "band": 6.0,
+        "raw_band": 6.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay uses a clear four-paragraph structure and basic cohesive devices like 'Firstly', 'Secondly', 'In conclusion', and 'For example' to organise ideas. This matches band 6, where information is arranged coherently with clear overall progression and cohesive devices are used effectively, even if the linking within sentences can be mechanical or faulty. It does not reach band 7 because there is no clear progression within paragraphs and referencing is weak or absent.",
+        "descriptor_reference": "COHERENCE_COHESION band 6",
+        "evidence_quotes": [
+          "Firstly, social media help people connect together. If you have friend in other country, you can talking with them everyday and it is free.",
+          "In conclusion, social media have good point and bad point. But i think the advantage is more than disadvantage because it help people connect and learn."
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "Your essay follows a logical order with clear paragraphs and linking words like 'Firstly' and 'For example', which makes the overall progression easy to follow. However, the connections between sentences inside each paragraph are often missing or mechanical, which is why it stays at band 6 rather than rising to band 7.",
+        "comment_vi": "Bài viết của bạn có thứ tự logic với các đoạn rõ ràng và từ nối như 'Firstly' và 'For example', làm cho sự phát triển tổng thể dễ theo dõi. Tuy nhiên, sự liên kết giữa các câu bên trong mỗi đoạn thường thiếu hoặc máy móc, đó là lý do tại sao nó còn ở band 6 thay vì lên band 7.",
+        "improvement_en": "Instead of starting every new point with 'Also' or another listing word, try to link back to the idea in the previous sentence, for example change 'Also social media help people find information quickly' to 'This also means people can find information quickly, which helps with learning'.",
+        "improvement_vi": "Thay vì bắt đầu mỗi ý mới bằng 'Also' hoặc từ liệt kê khác, hãy cố gắng nối lại với ý trong câu trước, ví dụ thay đổi 'Also social media help people find information quickly' thành 'This also means people can find information quickly, which helps with learning'."
+      },
+      {
+        "criterion": "LEXICAL_RESOURCE",
+        "band": 5.0,
+        "raw_band": 5.0,
+        "length_penalty": 0.0,
+        "explanation": "The vocabulary is mostly basic and repetitive, with frequent use of simple words like 'help', 'people', 'good', 'bad', and 'thing'. There are occasional attempts at less common vocabulary ('advantage', 'disadvantage', 'information', 'document'), but these are often used inaccurately or without awareness of collocation (e.g., 'good point', 'bad point', 'share document'). This matches band 5, where the range is limited and noticeable errors in word choice or formation may cause some difficulty for the reader.",
+        "descriptor_reference": "LEXICAL_RESOURCE band 5",
+        "evidence_quotes": [
+          "In my opinion it have advantage and disadvantage but i think advantage is more.",
+          "In conclusion, social media have good point and bad point."
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "You rely heavily on very simple words like 'good', 'bad', 'help', and 'thing', and even when you try slightly less common words like 'advantage' or 'document', they are often used in awkward or incorrect phrases such as 'good point' or 'share document'. This limited range and inaccuracy is characteristic of band 5.",
+        "comment_vi": "Bạn phụ thuộc quá nhiều vào các từ rất đơn giản như 'good', 'bad', 'help', và 'thing', và ngay cả khi bạn cố gắng dùng từ hơi ít phổ biến hơn như 'advantage' hoặc 'document', chúng thường xuất hiện trong các cụm từ ngangkệ hoặc sai như 'good point' hoặc 'share document'. Phạm vi từ hạn chế và sự không chính xác này là đặc điểm của band 5.",
+        "improvement_en": "Replace the phrase 'good point' and 'bad point' with the natural collocations 'advantage' and 'disadvantage' that you already used elsewhere in the essay, as this would immediately improve precision without needing to learn new words.",
+        "improvement_vi": "Thay thế cụm từ 'good point' và 'bad point' bằng các collocation tự nhiên là 'advantage' và 'disadvantage' mà bạn đã dùng ở những chỗ khác trong bài, vì điều này sẽ ngay lập tức nâng cao độ chính xác mà không cần học từ mới."
+      },
+      {
+        "criterion": "GRAMMATICAL_RANGE_ACCURACY",
+        "band": 4.0,
+        "raw_band": 4.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay relies almost entirely on simple sentence structures, with frequent errors in subject-verb agreement ('it have', 'social media help', 'people is'), verb forms ('can talking', 'it make'), and basic syntax. While there is one attempt at a complex structure ('If you have friend in other country, you can talking...'), it is inaccurate. This matches band 4, where only a very limited range of structures is used and errors predominate, rather than band 5 where there is at least an attempt at complex sentences, even if inaccurate.",
+        "descriptor_reference": "GRAMMATICAL_RANGE_ACCURACY band 4",
+        "evidence_quotes": [
+          "Nowadays social media is very popular in the world. Many people use facebook, tiktok everyday.",
+          "In my opinion it have advantage and disadvantage but i think advantage is more."
+        ],
+        "quotes_returned": 2,
+        "quotes_dropped": 0,
+        "comment_en": "Almost every sentence contains a grammatical error, especially with subject-verb agreement ('it have', 'people is') and verb forms ('can talking', 'it make'). You do not show control of a range of structures; the writing is dominated by simple sentences that are frequently incorrect, which is why this is band 4.",
+        "comment_vi": "Hầu như mỗi câu đều có lỗi ngữ pháp, đặc biệt là hoà hợp chủ ngữ và động từ ('it have', 'people is') và dạng động từ ('can talking', 'it make'). Bạn không thể kiểm soát được một loạt các cấu trúc; bài viết được thống trị bởi các câu đơn thường xuyên sai, đó là lý do tại sao đây là band 4.",
+        "improvement_en": "Focus on subject-verb agreement for one week: every time you write a sentence, check if the subject is singular or plural and make sure the verb matches (e.g., 'social media helps', not 'help'; 'people are', not 'is').",
+        "improvement_vi": "Tập trung vào hoà hợp chủ ngữ và động từ trong một tuần: mỗi khi bạn viết một câu, hãy kiểm tra chủ ngữ là số ít hay số nhiều và đảm bảo động từ phù hợp (ví dụ: 'social media helps', không phải 'help'; 'people are', không phải 'is')."
+      }
+    ],
+    "latency_s": 19.798,
+    "quote_fidelity": 1.0
+  }
+]

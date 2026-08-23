@@ -22,8 +22,14 @@ because a model asked politely for quotes will still fabricate them:
 
 from __future__ import annotations
 
-from src.llm.prompts.loader import PromptSet, get_prompt_set
-from src.schemas.assessment import CRITERION_NAMES, TASK_CRITERIA, TextFeatures
+from src.llm.prompts.loader import CombinedPromptSet, PromptSet, get_combined_prompt_set, get_prompt_set
+from src.schemas.assessment import (
+    CRITERIA_BY_TASK,
+    CRITERION_NAMES,
+    TASK_CRITERIA,
+    TextFeatures,
+    combined_field_for,
+)
 
 TASK_LABEL = {
     "TASK_1": "IELTS Academic Writing Task 1 (data/process report)",
@@ -87,4 +93,55 @@ def build_criterion_messages(
                 length_rule=length_rule,
             ),
         },
+    ]
+
+
+def build_rubric_block(prompt_set: CombinedPromptSet, task_type: str) -> str:
+    """All 4 rubrics for this task, each labelled with its criterion name and code."""
+    return "\n\n".join(
+        f"### {CRITERION_NAMES[code]} ({code})\n{prompt_set.rubric_for(code)}"
+        for code in CRITERIA_BY_TASK[task_type]
+    )
+
+
+def build_combined_messages(
+    *,
+    task_type: str,
+    essay_text: str,
+    features: TextFeatures,
+    prompt_text: str | None = None,
+    prompt_version: str = "v2",
+    prompt_set: CombinedPromptSet | None = None,
+) -> list[dict[str, str]]:
+    """Build the chat messages for pipeline-v2.0's single combined call.
+
+    Unlike `build_criterion_messages`, this returns 4 messages, not 2: system, then a
+    fake user/assistant turn pair carrying the few-shot worked example for this task
+    type, then the real request. Putting the example in actual conversation turns
+    (rather than describing it in prose inside the user message) is the standard
+    few-shot pattern for chat-completion APIs, and it is what `prompt_set` supplies —
+    see prompts/v2/few_shot/.
+    """
+    assets = prompt_set or get_combined_prompt_set(prompt_version)
+    first_code = CRITERIA_BY_TASK[task_type][0]
+
+    prompt_block = ""
+    if prompt_text and prompt_text.strip():
+        prompt_block = f"\n## EXAM PROMPT\n{prompt_text.strip()}\n"
+
+    real_user = assets.user.format(
+        rubric_block=build_rubric_block(assets, task_type),
+        prompt_block=prompt_block,
+        essay=essay_text.strip(),
+        features=format_features(features),
+        first_criterion_field=combined_field_for(first_code),
+        first_criterion_code=first_code,
+        first_criterion_name=CRITERION_NAMES[first_code],
+    )
+
+    return [
+        {"role": "system", "content": assets.system.format(task_label=TASK_LABEL[task_type])},
+        {"role": "user", "content": assets.few_shot_input[task_type]},
+        {"role": "assistant", "content": assets.few_shot_output[task_type]},
+        {"role": "user", "content": real_user},
     ]

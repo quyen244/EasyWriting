@@ -1,0 +1,74 @@
+{
+  "task_achievement": {
+    "justification": "The response covers all four data trends (Vietnam, Japan, Brazil) with accurate figures for every key year, and the overview sentence identifies the two most important features: Japan's early lead and Vietnam's rapid catch-up. This matches the band 6 descriptor of presenting an overview with information appropriately selected, but it does not yet reach band 7 because the comparison stays largely additive, listing each country in its own paragraph, rather than actively cross-referencing all three at every stage.",
+    "descriptor_reference": "TASK_ACHIEVEMENT band 6",
+    "band": 6.0,
+    "confidence": 0.75,
+    "comment": {
+      "en": "You covered every trend in the chart with correct figures and picked out the two most important features in your overview, which is exactly what Task Achievement rewards. The comparison mostly lists each country separately rather than weaving all three together throughout, which is why this sits at band 6 rather than higher.",
+      "vi": "Bạn đã nêu đủ cả bốn xu hướng trong biểu đồ với số liệu chính xác, và câu overview chọn đúng hai đặc điểm quan trọng nhất — đây chính là điều Task Achievement đánh giá cao. Tuy nhiên phần so sánh vẫn chủ yếu liệt kê từng nước riêng lẻ thay vì đối chiếu cả ba nước xuyên suốt bài, nên band dừng ở 6 chứ chưa cao hơn."
+    },
+    "improvement": {
+      "en": "In your body paragraphs, explicitly compare two countries within the same sentence (e.g. 'while Japan had already reached 55%, Vietnam started at just 2%') instead of describing each country in its own paragraph — that is what pushes an overview from band 6 into band 7.",
+      "vi": "Ở các đoạn thân bài, hãy so sánh trực tiếp hai nước trong cùng một câu (ví dụ: 'trong khi Japan đã đạt 55% thì Vietnam chỉ mới 2%') thay vì mô tả từng nước ở một đoạn riêng — đây chính là điều đưa overview từ band 6 lên band 7."
+    },
+    "evidence": [
+      { "quote": "Overall, all three countries experienced a rising trend", "comment": "This is the overview sentence, correctly placed early and selecting the shared trend across all three countries." },
+      { "quote": "reaching 20% by 2010 and then rising sharply to 70% in 2020, which overtook Brazil", "comment": "Specific, accurate figures reported for Vietnam, with the overtaking of Brazil correctly identified as a key feature." }
+    ]
+  },
+  "coherence_cohesion": {
+    "justification": "Paragraphing is logical, one paragraph per data trend plus a clear overview and conclusion, and cohesive devices like 'Overall', 'Over the next two decades', and 'In conclusion' signal the structure clearly. This matches band 6: cohesive devices are used effectively but cohesion between sentences may be mechanical. It stays at 6 rather than 7 because most sentences are linked with simple time markers rather than a wider range of linking devices, and the Brazil and Japan paragraphs read as two separate lists rather than one connected comparison.",
+    "descriptor_reference": "COHERENCE_COHESION band 6",
+    "band": 6.0,
+    "confidence": 0.7,
+    "comment": {
+      "en": "Your paragraphing is clear and each one covers a distinct part of the chart, with signals like 'Overall' and 'In conclusion' marking the structure well. The linking mostly relies on time markers ('In 2000', 'Over the next two decades'), so it reads a little mechanical rather than tightly connected.",
+      "vi": "Cách chia đoạn của bạn rõ ràng, mỗi đoạn nói về một phần riêng của biểu đồ, và các tín hiệu như 'Overall' hay 'In conclusion' đánh dấu cấu trúc bài khá tốt. Tuy nhiên phần liên kết chủ yếu dựa vào mốc thời gian ('In 2000', 'Over the next two decades') nên đọc hơi máy móc thay vì gắn kết chặt chẽ."
+    },
+    "improvement": {
+      "en": "Try linking the Brazil and Japan paragraphs with a direct contrast word ('By contrast, Japan...') instead of starting a new paragraph with just the country name — that turns two separate descriptions into one connected comparison.",
+      "vi": "Hãy thử nối đoạn nói về Brazil và Japan bằng một từ đối lập trực tiếp ('By contrast, Japan...') thay vì bắt đầu đoạn mới chỉ bằng tên nước — điều đó biến hai đoạn mô tả riêng lẻ thành một phần so sánh liền mạch."
+    },
+    "evidence": [
+      { "quote": "Brazil's growth was more gradual, climbing from 30% to around 65% by 2020.", "comment": "This paragraph starts with the country name rather than a linking word, which is why the comparison feels like two separate lists." },
+      { "quote": "In conclusion, while Japan remained the leader throughout, Vietnam's rapid increase meant it nearly caught up with Brazil by the end of the period.", "comment": "Clear concluding signal that correctly restates the overview." }
+    ]
+  },
+  "lexical_resource": {
+    "justification": "There is some range beyond basic vocabulary, 'levelling off', 'overtook', 'gradual', 'climbing', which shows an attempt at less common items, matching band 6's mix of less common vocabulary with some inaccuracy. However 'rise'/'rising'/'increase' recur across almost every paragraph where a synonym was available, which keeps this at 6 rather than 7.",
+    "descriptor_reference": "LEXICAL_RESOURCE band 6",
+    "band": 6.0,
+    "confidence": 0.7,
+    "comment": {
+      "en": "You reached for some good less-common vocabulary, 'levelling off', 'overtook', 'gradual', which is exactly what pushes lexical resource above band 5. But words like 'rise' and 'increase' repeat in almost every paragraph where a synonym was available, which is what is holding this at 6.",
+      "vi": "Bạn đã dùng được một số từ vựng ít thông dụng khá tốt như 'levelling off', 'overtook', 'gradual' — đây chính là điều đưa lexical resource lên trên band 5. Nhưng các từ như 'rise' và 'increase' lặp lại ở gần như mọi đoạn dù có thể thay bằng từ đồng nghĩa, đó là lý do giữ bài ở band 6."
+    },
+    "improvement": {
+      "en": "Build a short list of synonyms for 'increase' before you write (climb, surge, soar, edge up, pick up) and force yourself to use a different one in each paragraph — that alone is usually enough to move lexical resource from 6 to 7.",
+      "vi": "Trước khi viết, hãy chuẩn bị sẵn một danh sách từ đồng nghĩa của 'increase' (climb, surge, soar, edge up, pick up) và cố dùng một từ khác nhau ở mỗi đoạn — chỉ riêng việc này thường đủ để đưa lexical resource từ 6 lên 7."
+    },
+    "evidence": [
+      { "quote": "before levelling off at roughly 92% in 2020", "comment": "A precise, less common collocation used correctly to describe a trend flattening out." },
+      { "quote": "which overtook Brazil", "comment": "A concise, accurate word choice for one figure overtaking another." }
+    ]
+  },
+  "grammatical_range_accuracy": {
+    "justification": "The response uses a mix of simple and complex sentences, including a relative clause ('which overtook Brazil') and a comparative structure ('a much higher base... the fastest rate of growth'), matching band 6's mix of simple and complex sentence forms. Accuracy is the weaker half of this criterion: subject-verb agreement fails twice on exactly the same pattern, 'the figure... increase' instead of 'increased', 'Japan... continue' instead of 'continued', a repeated error type rather than an isolated slip, which is why this sits at 5.5 rather than 6.5.",
+    "descriptor_reference": "GRAMMATICAL_RANGE_ACCURACY band 5",
+    "band": 5.5,
+    "confidence": 0.75,
+    "comment": {
+      "en": "You handled some complex structures well, like the relative clause 'which overtook Brazil'. The main issue is a repeated subject-verb agreement slip in past-tense narration, 'the figure... increase' and 'Japan... continue' should both be past tense, and because it happens twice with the same pattern, it reads as a gap in control rather than a one-off typo.",
+      "vi": "Bạn xử lý khá tốt một số cấu trúc phức tạp, như mệnh đề quan hệ 'which overtook Brazil'. Vấn đề chính là lỗi hoà hợp chủ-vị lặp lại ở thì quá khứ — 'the figure... increase' và 'Japan... continue' đáng lẽ đều phải chia quá khứ — và vì lặp lại cùng một kiểu lỗi nên đây là lỗ hổng về kiểm soát ngữ pháp chứ không phải gõ nhầm một lần."
+    },
+    "improvement": {
+      "en": "Since your whole report is describing a chart in the past, read through your final draft once specifically checking every main verb is in past tense — that single pass would catch both 'increase' and 'continue' before submitting.",
+      "vi": "Vì cả bài report đang mô tả biểu đồ ở thì quá khứ, hãy đọc lại bản nháp cuối một lượt chỉ để kiểm tra mọi động từ chính đã chia quá khứ chưa — chỉ một lượt đọc như vậy là đủ để bắt lỗi cả 'increase' lẫn 'continue' trước khi nộp bài."
+    },
+    "evidence": [
+      { "quote": "the figure for Vietnam increase steadily", "comment": "Subject-verb agreement / tense error: should be 'increased' in this past-tense narration." },
+      { "quote": "Japan, meanwhile, continue to rise", "comment": "The same error pattern recurring: should be 'continued'." }
+    ]
+  }
+}

@@ -2,6 +2,12 @@
 
 **Branch**: `00-grading-feature` (not yet created) | **Date**: 2026-08-23 | **Spec**: [spec.md](./spec.md)
 
+**Status update (2026-08-23)**: Phase A is built and benchmarked against real model
+calls. Results, including two findings that contradict this plan's original assumptions
+(SC-001 latency, SC-004 cost), are in
+[phase-a-findings.md](./phase-a-findings.md) — read that before deciding whether Phase B
+starts as designed, starts with prompt changes first, or waits on a spec revision.
+
 **Input**: Feature specification from `specs/00-grading-feature/spec.md`, grounded in
 `CLARIFICATION.md` Task 2 (data model) and Task 3 (system architecture), which are already
 implemented (`supabase/migrations/2026082300000{4,5}_*.sql`) and already documented as
