@@ -20,6 +20,9 @@ hand-copied rubric would drift from the benchmarked one silently), and the Edge 
 validates Vietnamese output server-side, because Phase A measured the model leaking
 Chinese and Thai into `vi` fields and a prompt rule alone did not stop it.
 
+**[diff.md](./diff.md) is the authoritative list** of where the delivered system differs
+from this plan and from spec.md, and of what is still blocked.
+
 Also fixed while getting this to run: `service_role` had no SELECT/UPDATE grant on
 `writing_attempts` at all. `auto_expose_new_tables` is off for this project and
 migrations `0004`/`0005` granted only `authenticated`, so the very first thing to run as

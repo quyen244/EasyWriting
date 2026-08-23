@@ -20,8 +20,11 @@ the gate, the deterministic pre/post-processing, quote verification, the failure
 and the persistence contract carried over unchanged; only FR-001's "one call" did not.
 
 Phase B is built: `supabase/functions/grade-attempt/` plus migration
-`20260823000010_dispatch_grading.sql`, verified end-to-end on a local stack. See
-`TODO.md` for what remains (one real essay scored through, blocked on a provider quota).
+`20260823000010_dispatch_grading.sql`, verified end-to-end on a local stack.
+
+**Read [diff.md](./diff.md) alongside this document.** It lists every requirement here
+that shipped differently, and everything still blocked — including the fact that
+`pipeline-v3.0` has not itself been benchmarked yet.
 
 **Input**: *"điều tôi muốn hiện tại cho pipeline mới là, một prompt, 1 llm call thay vì pipeline
 tới 4 llm calls. Prompt như cũ nhưng nhét tất cả vào 1 prompt và có thêm few-shot json. Lí do là

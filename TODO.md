@@ -27,6 +27,11 @@ hơn ~40% và chậm gấp đôi (p95 72.5s so với mục tiêu 60s), vì gộp
 còn gì để chạy song song nữa. Chi tiết:
 [phase-a-findings.md](./specs/00-grading-feature/phase-a-findings.md).
 
+**Khác gì so với spec ban đầu + đang vướng gì:**
+[specs/00-grading-feature/diff.md](./specs/00-grading-feature/diff.md) — liệt kê từng
+FR/SC một, và cả những thứ chưa làm (chưa benchmark v3, chưa có pgTAP cho migration
+`0010`, chưa có rate limit).
+
 Việc cần làm khi hạn ngạch reset: chạy `python -m src.evaluation.harness
 --pipeline-config pipelines/v3.yaml` trong `eval/` để có benchmark thật cho v3, rồi
 `RUN_LOCAL_SUPABASE=1 npx vitest run tests/integration` ở `frontend/` để xem một bài

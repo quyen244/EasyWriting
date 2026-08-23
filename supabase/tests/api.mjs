@@ -272,6 +272,19 @@ section("Isolation between learners");
 
 section("Grader submissions");
 
+// This suite marks its own test row by hand, as a stand-in for the pipeline. Since
+// migration 0010 the REAL pipeline also reacts to that insert — the AFTER INSERT
+// trigger dispatches grade-attempt, which claims the row and (for this deliberately
+// junk essay text) rejects it. Two writers on one row means the stand-in's
+// `status='scoring'` lands on a row that already carries an `error_code`, which
+// `error_code_only_on_failure` correctly refuses.
+//
+// So the dispatcher is switched off for the duration. Turning it off is the honest
+// thing here rather than a workaround: this section exists to test what the DATABASE
+// permits, and letting a live Edge Function race the assertions would be measuring
+// something else entirely. The dispatch path has its own end-to-end coverage.
+sql(`alter table public.writing_attempts disable trigger writing_attempts_dispatch_grading`);
+
 const attemptId = crypto.randomUUID();
 {
   const r = await api("/rest/v1/writing_attempts", {
@@ -671,6 +684,8 @@ const myObject = `${UID}/api-test-${Date.now()}.png`;
 // ---------------------------------------------------------------- cleanup
 
 section("Cleanup");
+
+sql(`alter table public.writing_attempts enable trigger writing_attempts_dispatch_grading`);
 
 for (const id of created.practice) {
   const r = await api(`/rest/v1/practice_attempts?id=eq.${id}`, { ...t, method: "DELETE" });
