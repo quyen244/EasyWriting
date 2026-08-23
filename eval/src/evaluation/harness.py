@@ -36,11 +36,30 @@ from src.evaluation.metrics import percentile, score_block
 from src.llm.base import LLMClient
 from src.pipeline.config import PipelineConfig, load_pipeline_config
 from src.pipeline.errors import ScoringFailedError
-from src.pipeline.pipeline import PipelineOutcome, run_assessment, run_assessment_v2
+from src.pipeline.pipeline import (
+    PipelineOutcome,
+    run_assessment,
+    run_assessment_v2,
+    run_assessment_v3,
+)
 from src.schemas.assessment import CRITERION_NAMES
 
 BACKEND_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_REPORTS_DIR = BACKEND_ROOT / "data" / "reports"
+
+# One entry per PipelineConfig.call_mode. Adding a call mode without adding it here is
+# a KeyError at run start rather than a benchmark silently produced by the wrong
+# orchestrator — which is the failure that would quietly corrupt a Principle IV
+# before/after comparison.
+_ORCHESTRATORS = {
+    "per_criterion": run_assessment,
+    "per_criterion_bilingual": run_assessment_v3,
+    "single_call": run_assessment_v2,
+}
+
+# Which modes actually fill CriterionOutcome.comment_*/improvement_*. Rendering the
+# qualitative sample for plain v1 would print four empty bullet lines per criterion.
+_BILINGUAL_CALL_MODES = {"per_criterion_bilingual", "single_call"}
 
 
 async def run_benchmark(
@@ -59,7 +78,7 @@ async def run_benchmark(
     # Constitution IV's before/after comparison needs both orchestrators available
     # from the same harness — call_mode picks which one runs, everything else
     # (metrics, report rendering, raw-results shape) is shared and unaware of which.
-    orchestrator = run_assessment_v2 if config.call_mode == "single_call" else run_assessment
+    orchestrator = _ORCHESTRATORS[config.call_mode]
     calls_per_essay = 1 if config.call_mode == "single_call" else 4
 
     for index, essay in enumerate(essays, 1):
@@ -139,7 +158,7 @@ async def run_benchmark(
         )
         write_json(base / "metrics.json", metrics)
         report_text = render_report(metrics)
-        if config.call_mode == "single_call" and results:
+        if config.call_mode in _BILINGUAL_CALL_MODES and results:
             # Numbers alone (MAE, within_0.5) don't let a human judge PROMPT quality —
             # whether the bilingual comment/improvement text is actually usable. This
             # is what a reviewer reads before deciding Phase B starts (spec.md US5).
@@ -323,7 +342,7 @@ def render_bilingual_sample(
     results: list[tuple[GoldenEssay, PipelineOutcome]], limit: int = 2
 ) -> str:
     """A human-readable excerpt of the actual bilingual output, for reading — not
-    measuring. `metrics.json`'s numbers say whether v2 predicts the right band; this
+    measuring. `metrics.json`'s numbers say whether the pipeline predicts the right band; this
     is what lets a reviewer judge whether the comment/improvement text is any good,
     which no automated metric here checks (the golden set has no gold comment text
     to compare against, only gold bands)."""

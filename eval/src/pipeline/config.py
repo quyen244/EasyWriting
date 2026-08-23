@@ -116,7 +116,7 @@ class PromptsConfig(BaseModel):
     version: str
 
 
-CallMode = Literal["per_criterion", "single_call"]
+CallMode = Literal["per_criterion", "per_criterion_bilingual", "single_call"]
 
 
 class PipelineConfig(BaseModel):
@@ -124,9 +124,14 @@ class PipelineConfig(BaseModel):
     model: ModelConfig
     prompts: PromptsConfig
     scoring: ScoringConfig
-    # Which orchestrator in src/pipeline/pipeline.py runs this config: 4 concurrent
-    # calls (pipeline-v1.0, run_assessment) or 1 combined call (pipeline-v2.0,
-    # run_assessment_v2). Defaults to the existing behaviour so v1.yaml needs no edit.
+    # Which orchestrator in src/pipeline/pipeline.py runs this config:
+    #   per_criterion           -> run_assessment      (pipeline-v1.0, 4 concurrent calls)
+    #   per_criterion_bilingual -> run_assessment_v3   (pipeline-v3.0, same 4 calls, each
+    #                              returning comment/improvement in en + vi)
+    #   single_call             -> run_assessment_v2   (pipeline-v2.0, 1 combined call —
+    #                              benchmarked in Phase A and NOT adopted; kept runnable
+    #                              so the comparison stays reproducible)
+    # Defaults to the existing behaviour so v1.yaml needs no edit.
     call_mode: CallMode = "per_criterion"
 
 

@@ -1,0 +1,46 @@
+## CRITERION UNDER ASSESSMENT
+{criterion_name} ({criterion_code}) — assess THIS CRITERION ONLY.
+
+## OFFICIAL BAND DESCRIPTORS
+{rubric}
+{prompt_block}
+## STUDENT ESSAY
+<<<ESSAY
+{essay}
+ESSAY
+
+## OBJECTIVE TEXT STATISTICS
+These were computed programmatically. Treat them as ground truth and do not re-count.
+{features}
+
+## WHAT TO PRODUCE
+1. `justification` — 3 to 5 sentences. Name the band descriptor the essay matches and
+   explain why it matches that one rather than the band above or below. Write this
+   BEFORE you decide on a number.
+2. `descriptor_reference` — the descriptor line you grounded that judgement in,
+   formatted as "{criterion_code} band N".
+3. `band` — a number from 1.0 to 9.0 in steps of 0.5, consistent with your justification.
+4. `confidence` — 0.0 to 1.0.
+5. `comment` — an object with `en` and `vi`. 2-3 sentences, learner-facing, saying why
+   they got this band on THIS criterion. Keep official IELTS terms (e.g. "cohesive
+   devices", "lexical range") in English even inside the Vietnamese sentence, exactly as
+   a Vietnamese IELTS teacher would say them — do not translate the terminology itself.
+6. `improvement` — an object with `en` and `vi`. One concrete, actionable thing this
+   learner should change next time on THIS criterion, tied to something their essay
+   actually did — not generic advice like "use more vocabulary."
+7. `evidence` — 2 to 4 items. Each `quote` MUST be copied character-for-character from
+   between the ESSAY markers above, and `comment` says why it supports your assessment.
+
+## RULES
+- Never invent a quote. If you cannot find an exact supporting quote, leave that
+  evidence item out rather than paraphrasing or correcting the student's words. Quotes
+  are verified against the source text and fabricated ones are discarded.
+- Assess {criterion_code} only. Ignore problems that belong to other criteria.
+- Use the word count given above; do not count words yourself.
+{length_rule}
+- `comment.en`, `comment.vi`, `improvement.en`, and `improvement.vi` MUST all be
+  non-empty. An empty string in either language is treated as a failed response.
+- `comment.vi` and `improvement.vi` MUST be written entirely in Vietnamese script. Do
+  not mix in words, particles, or characters from any other language (Chinese, Dutch,
+  or any other) — every word in these two fields must be either Vietnamese or one of
+  the kept English IELTS terms explicitly allowed above.

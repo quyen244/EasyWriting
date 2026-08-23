@@ -35,6 +35,7 @@ from src.pipeline.verify import drop_unverified_quotes
 from src.schemas.assessment import (
     CRITERIA_BY_TASK,
     TASK_CRITERIA,
+    CombinedCriterionBlock,
     CriterionEvaluation,
     TextFeatures,
     combined_field_for,
@@ -60,9 +61,10 @@ class CriterionOutcome:
     band_was_coerced: bool = False
     degraded: bool = False
     error: str | None = None
-    # pipeline-v2.0 only — v1's `_evaluate_criterion` leaves these at "" and nothing
-    # downstream (compute_metrics, aggregate_overall) reads them, so this is additive,
-    # not a shape change v1 has to account for.
+    # Populated by the bilingual pipelines (v2.0 single-call, v3.0 per-criterion).
+    # Plain v1 leaves these at "" and nothing downstream (compute_metrics,
+    # aggregate_overall) reads them, so this is additive, not a shape change v1 has
+    # to account for.
     comment_en: str = ""
     comment_vi: str = ""
     improvement_en: str = ""
@@ -109,8 +111,16 @@ async def _evaluate_criterion(
     penalty: float,
     config: PipelineConfig,
     prompt_set: PromptSet,
+    bilingual: bool = False,
 ) -> tuple[CriterionOutcome, int, int]:
-    """Score one criterion. Returns (outcome, prompt_tokens, completion_tokens)."""
+    """Score one criterion. Returns (outcome, prompt_tokens, completion_tokens).
+
+    `bilingual` swaps the response schema only. `CombinedCriterionBlock` is a strict
+    superset of `CriterionEvaluation` — same justification/descriptor_reference/band/
+    confidence/evidence, plus `comment` and `improvement` — so everything this function
+    does with the parsed object is identical either way, and the prompt template that
+    asks for those two extra fields is selected by `prompts.version` (v3), not here.
+    """
     node = f"criterion:{criterion}"
     messages = build_criterion_messages(
         task_type=task_type,
@@ -123,7 +133,7 @@ async def _evaluate_criterion(
 
     response = await client.chat(
         messages,
-        CriterionEvaluation,
+        CombinedCriterionBlock if bilingual else CriterionEvaluation,
         node=node,
         max_tokens=config.model.max_tokens,
     )
@@ -138,7 +148,7 @@ async def _evaluate_criterion(
             response.completion_tokens,
         )
 
-    parsed: CriterionEvaluation = response.parsed  # type: ignore[assignment]
+    parsed: CriterionEvaluation | CombinedCriterionBlock = response.parsed  # type: ignore[assignment]
     raw_band, coerced = snap_band(parsed.band)
 
     # Under-length is absorbed by the task criterion only, never spread across all four.
@@ -167,6 +177,10 @@ async def _evaluate_criterion(
             quotes_returned=len(returned_quotes),
             quotes_dropped=dropped,
             band_was_coerced=coerced,
+            comment_en=parsed.comment.en if bilingual else "",
+            comment_vi=parsed.comment.vi if bilingual else "",
+            improvement_en=parsed.improvement.en if bilingual else "",
+            improvement_vi=parsed.improvement.vi if bilingual else "",
         ),
         response.prompt_tokens,
         response.completion_tokens,
@@ -181,8 +195,16 @@ async def run_assessment(
     config: PipelineConfig,
     prompt_text: str | None = None,
     features: TextFeatures | None = None,
+    bilingual: bool = False,
 ) -> PipelineOutcome:
-    """Score one essay end to end. Raises ScoringFailedError if no complete result."""
+    """Score one essay end to end. Raises ScoringFailedError if no complete result.
+
+    `bilingual=True` is pipeline-v3.0: the same four concurrent calls, each returning
+    the learner-facing `comment`/`improvement` pair in English and Vietnamese that
+    `public.writing_attempts`' `criteria_match_task()` constraint requires before a
+    score can be persisted. Prefer calling `run_assessment_v3` rather than passing this
+    flag directly — it is the named entry point the harness and the config dispatch on.
+    """
     started = time.perf_counter()
     features = features or extract_features(essay_text, task_type)
 
@@ -214,6 +236,7 @@ async def run_assessment(
                 penalty=penalty,
                 config=config,
                 prompt_set=prompt_set,
+                bilingual=bilingual,
             )
             for criterion in criteria
         )
@@ -386,3 +409,36 @@ async def run_assessment_v2(
         config.model.id,
     )
     return outcome
+
+
+async def run_assessment_v3(
+    client: LLMClient,
+    *,
+    task_type: str,
+    essay_text: str,
+    config: PipelineConfig,
+    prompt_text: str | None = None,
+    features: TextFeatures | None = None,
+) -> PipelineOutcome:
+    """pipeline-v3.0 — v1's four concurrent calls, each returning bilingual feedback.
+
+    This is the production shape. It is v1 (`run_assessment`) verbatim, not a
+    reimplementation of it: same concurrency, same length-penalty placement, same
+    quote verification, same "any partial result is a full failure" policy. The single
+    difference is the per-call response schema, which is why it is a two-line wrapper
+    and not a copy — a copy would drift from v1 the first time either is fixed.
+
+    Why not v2's single call: v2 was benchmarked in Phase A against this same golden
+    set and rejected on cost and latency (~40% more tokens, p95 72.5s vs 23.9s), the
+    latency regression being structural — one long generation has nothing left to run
+    in parallel. See specs/00-grading-feature/phase-a-findings.md.
+    """
+    return await run_assessment(
+        client,
+        task_type=task_type,
+        essay_text=essay_text,
+        config=config,
+        prompt_text=prompt_text,
+        features=features,
+        bilingual=True,
+    )

@@ -1,0 +1,57 @@
+# Versioned scoring-pipeline configuration (Constitution Principle IV).
+#
+# pipeline-v3.0 — v1's PROVEN 4-concurrent-call architecture, plus the bilingual
+# learner-facing fields the live database already requires.
+#
+# Why this exists instead of just editing v1.yaml: v1 has a real, measured accuracy
+# benchmark behind it (data/reports/20260823-175455-518e). Mutating it in place would
+# silently invalidate that record. Principle IV's rule is "new methodology = new
+# version", so this is a new version.
+#
+# Why this exists instead of v2 (single call): v2 was built, benchmarked, and NOT
+# adopted. It graded slightly more accurately but used ~40% MORE tokens and ~2x the
+# wall-clock time (p95 72.5s vs a 60s target), because consolidating to one call
+# removes the concurrency that was hiding per-call latency. See
+# specs/00-grading-feature/phase-a-findings.md for the numbers.
+#
+# The ONLY intended difference from v1.yaml: prompts v1 -> v3 (which adds `comment`
+# and `improvement`, each with en/vi), the matching per-call response schema
+# (CombinedCriterionBlock instead of CriterionEvaluation), and the max_tokens headroom
+# that extra output needs. Model, temperature, seed, reasoning and length-penalty
+# thresholds are byte-identical to v1, so any accuracy delta against the v1 run is
+# attributable to the prompt change alone.
+
+version: pipeline-v3.0
+
+model:
+  id: nvidia/nemotron-3-super-120b-a12b:free
+  temperature: 0.3
+  # v1 measured ~580 completion tokens per criterion. This response carries four extra
+  # prose fields (comment.en/vi, improvement.en/vi) on top of that, so the budget is
+  # raised to keep the same "never truncate mid-JSON" margin v1's 2048 gave it. This is
+  # a cap, not a spend — an unused ceiling costs nothing and does not affect the
+  # before/after comparison.
+  max_tokens: 3072
+  seed: 42
+  timeout_s: 180
+  max_retries: 2
+  reasoning:
+    # Must stay false. See v1.yaml — reasoning tokens are billed output tokens charged
+    # against max_tokens, and `exclude: true` does not free the budget.
+    enabled: false
+
+prompts:
+  # ../prompts/v3/ — v1's templates verbatim, with `comment` and `improvement` added to
+  # WHAT TO PRODUCE and the Vietnamese-script purity rule proven necessary in Phase A.
+  version: v3
+
+scoring:
+  # Identical to v1 on purpose: the length penalty is not the variable under test here.
+  length_penalty:
+    moderate_deficit_ratio: 0.15
+    moderate_penalty: 0.5
+    severe_deficit_ratio: 0.40
+    severe_penalty: 1.0
+
+# 4 concurrent calls like v1, but each call returns the bilingual block.
+call_mode: per_criterion_bilingual

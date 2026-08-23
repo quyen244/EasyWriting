@@ -88,6 +88,33 @@ class FakeLLMClient:
         words = body.split()
         return " ".join(words[:8]) if len(words) >= 8 else body[:60]
 
+    def _bilingual_block(self, criterion: str, quotes: list[str], band: float) -> CombinedCriterionBlock:
+        """One `CombinedCriterionBlock`, shared by both bilingual pipelines.
+
+        pipeline-v2.0 asks for four of these inside one wrapper object; pipeline-v3.0
+        asks for one per call. Same block either way, so the fake builds it once —
+        otherwise a test could pass against v3 and fail against v2 purely because the
+        fake drifted between the two branches.
+        """
+        return CombinedCriterionBlock(
+            justification=(
+                f"The essay matches the band {band} descriptor for {criterion} "
+                "rather than the band above or below."
+            ),
+            descriptor_reference=f"{criterion} band {band}",
+            band=band,
+            confidence=0.8,
+            comment=Bilingual(
+                en=f"Fake comment for {criterion}.",
+                vi=f"Nhận xét giả cho {criterion}.",
+            ),
+            improvement=Bilingual(
+                en=f"Fake improvement for {criterion}.",
+                vi=f"Gợi ý cải thiện giả cho {criterion}.",
+            ),
+            evidence=[{"quote": q, "comment": "Illustrates the band."} for q in quotes],
+        )
+
     async def chat(
         self,
         messages: list[dict[str, str]],
@@ -118,25 +145,31 @@ class FakeLLMClient:
             for criterion in CRITERIA_BY_TASK[task_type]:
                 band = self.bands_by_criterion.get(criterion, self.band)
                 quotes = self.quotes_by_criterion.get(criterion, [quote_source])
-                blocks[combined_field_for(criterion)] = CombinedCriterionBlock(
-                    justification=(
-                        f"The essay matches the band {band} descriptor for {criterion} "
-                        "rather than the band above or below."
-                    ),
-                    descriptor_reference=f"{criterion} band {band}",
-                    band=band,
-                    confidence=0.8,
-                    comment=Bilingual(
-                        en=f"Fake comment for {criterion}.",
-                        vi=f"Nhận xét giả cho {criterion}.",
-                    ),
-                    improvement=Bilingual(
-                        en=f"Fake improvement for {criterion}.",
-                        vi=f"Gợi ý cải thiện giả cho {criterion}.",
-                    ),
-                    evidence=[{"quote": q, "comment": "Illustrates the band."} for q in quotes],
+                blocks[combined_field_for(criterion)] = self._bilingual_block(
+                    criterion, quotes, band
                 )
             payload = response_model(**blocks)
+            return LLMResponse(
+                node=node,
+                model=self.model_name,
+                ok=True,
+                content=payload.model_dump_json(),
+                parsed=payload,
+                prompt_tokens=100,
+                completion_tokens=50,
+                latency_s=0.01,
+            )
+
+        if response_model is CombinedCriterionBlock:
+            # pipeline-v3.0: one bilingual block per call, criterion taken from the
+            # node name exactly as the CriterionEvaluation branch below does.
+            criterion = node.split(":", 1)[-1]
+            band = self.bands_by_criterion.get(criterion, self.band)
+            quotes = self.quotes_by_criterion.get(
+                criterion,
+                [self._extract_real_quote(messages) if self.echo_real_quote else self.quote],
+            )
+            payload = self._bilingual_block(criterion, quotes, band)
             return LLMResponse(
                 node=node,
                 model=self.model_name,
