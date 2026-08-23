@@ -717,6 +717,7 @@ model của đợt này. Xem D-14 dưới đây.
 | D-14 | Chuẩn hoá tên tiêu chí: `GRAMMATICAL_RANGE` (frontend) hay `GRAMMATICAL_RANGE_ACCURACY` (eval + spec 001)? | Tên này đi thẳng vào `criteria` jsonb. Đổi sau = backfill dữ liệu | Theo **eval + spec 001**, vì đó là tên chuẩn IELTS và là tên bộ đề chuẩn đang dùng. Đổi ở frontend rẻ hơn đổi ở prompt | 🟡 Med | ✅ |
 | S-8 | Logic chấm chạy ở đâu — Deno Edge Function hay worker Python? | Câu hỏi kiến trúc lớn nhất còn lại | ❄️ **Hoãn** — bàn riêng cùng feature chấm điểm | 🔴 High | ❄️ |
 | S-9 | Giữ 4 lần gọi mỗi bài hay gộp còn 1? | Chi phí và độ trễ | ❄️ **Hoãn** | 🔴 High | ❄️ |
+| D-15 | `get_progress_summary()` xếp "tiêu chí yếu nhất" trên cả 5 mã, nhưng `TASK_ACHIEVEMENT` chỉ có ở Task 1 và `TASK_RESPONSE` chỉ có ở Task 2 — mẫu lệch nhau (đo được: TASK_ACHIEVEMENT 6.00 với n=1 từng thắng GRAMMATICAL_RANGE_ACCURACY 6.50 với n=3) | Học viên bị chỉ sai chỗ yếu nhất — ít bằng chứng nhất, không phải kém nhất — rồi practice bị đẩy theo | **✅ Đã chốt 2026-08-23: gộp hai mã làm một khi xếp hạng.** `writing_attempts.criteria` không đổi, chỉ gộp ở bước tổng hợp (migration `0009`) | 🟡 Med | ✅ |
 
 ---
 

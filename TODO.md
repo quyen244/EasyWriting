@@ -16,7 +16,6 @@ Tài liệu nền: [CLARIFICATION.md](./CLARIFICATION.md) ·
 
 | Việc | Từ | Ghi chú |
 |---|---|---|
-| Quyết định về "tiêu chí yếu nhất" | 2026-08-23 | Xếp hạng đang so TASK_ACHIEVEMENT (n=1) với TASK_RESPONSE (n=2) — hai tiêu chí loại trừ nhau |
 | Nối `lib/api/*` vào Supabase | 2026-08-23 | Dữ liệu đã sẵn trên cloud và đường đọc đã được test. Frontend vẫn đang `import` thẳng `mockData` |
 
 ---
@@ -89,6 +88,7 @@ Tài liệu nền: [CLARIFICATION.md](./CLARIFICATION.md) ·
 - [x] ✅ **Seed đã lên cloud** — 2 đề · 4 task · 12 module · 36 exercise, tiếng Việt round-trip nguyên vẹn qua REST
 - [x] ✅ **Bộ test API chạy thẳng vào cloud — 75/75** (`supabase/tests/api.mjs`): anon bị chặn ở cả 9 bảng và 2 view · học viên không tự đặt band, không ghi đè bài đã nộp, không nộp hộ người khác · trigger `submitted_at` → `submitted` · `combined_band` 6.5 · Storage chặn thư mục người khác, chặn file >5 MB và sai MIME · logout thu hồi refresh token
 - [x] ✅ **Siết grant trên `v_activity` / `v_practice_progress`** (migration `0008`) — Supabase cấp mặc định ALL cho `anon`; nay chỉ còn `select` cho `authenticated`
+- [x] ✅ **Quyết xong "tiêu chí yếu nhất"** (migration `0009`) — `TASK_ACHIEVEMENT`/`TASK_RESPONSE` gộp làm một khi xếp hạng, vì cả hai đo cùng một thứ (đáp ứng yêu cầu đề) chỉ khác tên theo task. Còn 4 mã, mẫu cộng dồn qua cả hai loại bài. Đã tái hiện đúng ca gây lỗi trên cloud (1 bài Task 1 + 3 bài Task 2): trước gộp → TASK_ACHIEVEMENT (n=1) thắng; sau gộp → TASK_ACHIEVEMENT (n=4, gộp cả 4 bài) thành mạnh nhất đúng thực tế, yếu nhất chuyển sang tiêu chí có bằng chứng thật. `writing_attempts.criteria` không đổi — mỗi bài vẫn giữ đúng mã theo task để khớp đề thi thật
 - [ ] ❄️ Edge Function `grade-attempt` — hoãn, bàn riêng
 - [ ] ❄️ Trigger `pg_net` dispatch + **cron dọn row kẹt ở `queued`** — hoãn, đi cùng Edge Function
 - [ ] ❄️ Rate limit số lần chấm mỗi user · constitution Principle V
@@ -114,7 +114,6 @@ Ghi ra để nó không biến mất khỏi tầm nhìn.
 |---|---|---|
 | **6 spec Playwright e2e đã chết** | 🔴 | Chúng chặn request HTTP bằng `stubBackend` — kiến trúc đó không còn, không còn request nào để chặn. `discover-and-signup.spec.ts` còn assert header marketing trên trang signup, thứ đã bỏ theo thiết kế. Chưa cập nhật, chưa chạy |
 | **7 unit test Hero fail** | 🟡 | Có từ trước đợt redesign. Commit `8c00bdb` đổi landing page sang tiếng Việt nhưng không sửa test, test vẫn assert tiếng Anh. Đã xác minh bằng cách stash toàn bộ thay đổi và chạy lại |
-| **Xếp hạng tiêu chí yếu nhất so lệch mẫu** | 🟡 | `get_progress_summary()` xếp cả 5 tiêu chí chung một bảng. Nhưng `TASK_ACHIEVEMENT` chỉ đến từ Task 1 và `TASK_RESPONSE` chỉ đến từ Task 2 — hai thứ loại trừ nhau, lấy từ hai đề khác nhau. Đo được: TASK_ACHIEVEMENT 6.00 (**n=1**) thắng GRAMMATICAL_RANGE_ACCURACY 6.50 (n=3), nên học viên bị bảo điểm yếu nhất là chỗ họ có ít bằng chứng nhất — rồi handoff practice đẩy họ tới đó. Cần quyết: đặt ngưỡng mẫu tối thiểu, hay chỉ xếp hạng 3 tiêu chí dùng chung. Hành vi hiện tại đã bị test khoá lại để nó là cố ý chứ không phải tình cờ |
 | **`middleware.ts` bị Next 16 đánh dấu deprecated** | 🟡 | Vẫn chạy đúng, nhưng Next khuyến nghị đổi sang `proxy.ts`. Có codemod sẵn: `npx @next/codemod@canary middleware-to-proxy .` |
 | **Task 1 chấm không nhìn ảnh** | 🟡 | Ảnh chỉ lưu để xem lại; điểm dựa trên mô tả học viên gõ. Học viên mô tả sai số liệu thì không phát hiện được — mà đó chính là nội dung của Task Achievement · [D-4](./CLARIFICATION.md) |
 | **`eval/` gọi 4 lần model mỗi bài, `specs/001` nói 1 lần** | 🟡 | Chưa chốt. Chi phí gấp 4 và độ trễ khác hẳn nhau |
