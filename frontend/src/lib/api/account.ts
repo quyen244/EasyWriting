@@ -8,9 +8,11 @@
  */
 
 import { translate, type Locale } from "@/lib/i18n";
+import { getSupabaseBrowserClient, isSupabaseConfigured } from "@/lib/supabase/client";
 import { findModule } from "@/mockData/practice";
-import { text } from "@/mockData/localized";
+import { text, type LocalizedText } from "@/mockData/localized";
 
+import { toApiError } from "./supabase";
 import {
   LATENCY,
   allMockAttempts,
@@ -163,6 +165,45 @@ export async function getProgress(): Promise<ProgressSummary> {
   };
 }
 
+/**
+ * Practice's slice of the feed, read from `v_practice_progress` rather than a
+ * per-attempt log: that view already dedupes to one row per module (most recent
+ * attempt), which is coarser than the mock's one-row-per-`checkAnswer` but also less
+ * repetitive — a learner who checks three exercises in one sitting produces one entry,
+ * not three near-identical ones.
+ */
+async function practiceActivity(locale: Locale): Promise<ActivityEntry[]> {
+  const client = getSupabaseBrowserClient();
+  const { data: progress, error: progressError } = await client
+    .from("v_practice_progress")
+    .select("module_id, completed_count, exercise_count, last_attempt_at")
+    .order("last_attempt_at", { ascending: false });
+  if (progressError) throw toApiError(progressError);
+  if (!progress || progress.length === 0) return [];
+
+  const { data: modules, error: moduleError } = await client
+    .from("practice_modules")
+    .select("id, title")
+    .in(
+      "id",
+      progress.map((row) => row.module_id),
+    );
+  if (moduleError) throw toApiError(moduleError);
+  const titles = new Map(
+    (modules ?? []).map((row) => [row.id, text(row.title as LocalizedText, locale)]),
+  );
+
+  return progress.map((row) => ({
+    id: `act_practice_${row.module_id}`,
+    kind: "practice" as const,
+    at: row.last_attempt_at,
+    href: `/practice/writing/${row.module_id}`,
+    module_id: row.module_id,
+    module_title: titles.get(row.module_id) ?? row.module_id,
+    progress: { done: row.completed_count, total: row.exercise_count },
+  }));
+}
+
 export async function getActivity(locale: Locale, limit = 12): Promise<ActivityEntry[]> {
   await delay(LATENCY.read);
 
@@ -177,23 +218,25 @@ export async function getActivity(locale: Locale, limit = 12): Promise<ActivityE
       band: overallBandOf(stored),
     }));
 
-  const practice: ActivityEntry[] = allPracticeSessions().map((session) => {
-    const practiceModule = findModule(session.module_id);
-    return {
-      id: `act_${session.id}`,
-      kind: "practice",
-      at: session.at,
-      href: `/practice/writing/${session.module_id}`,
-      module_id: session.module_id,
-      module_title: practiceModule ? text(practiceModule.title, locale) : session.module_id,
-      progress: practiceModule
-        ? {
-            done: Math.min(session.completed, practiceModule.exercises.length),
-            total: practiceModule.exercises.length,
-          }
-        : undefined,
-    };
-  });
+  const practice: ActivityEntry[] = isSupabaseConfigured
+    ? await practiceActivity(locale)
+    : allPracticeSessions().map((session) => {
+        const practiceModule = findModule(session.module_id);
+        return {
+          id: `act_${session.id}`,
+          kind: "practice",
+          at: session.at,
+          href: `/practice/writing/${session.module_id}`,
+          module_id: session.module_id,
+          module_title: practiceModule ? text(practiceModule.title, locale) : session.module_id,
+          progress: practiceModule
+            ? {
+                done: Math.min(session.completed, practiceModule.exercises.length),
+                total: practiceModule.exercises.length,
+              }
+            : undefined,
+        };
+      });
 
   const mocks: ActivityEntry[] = allMockAttempts().map((attempt) => ({
     id: `act_${attempt.id}`,

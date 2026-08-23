@@ -14,9 +14,8 @@ Tài liệu nền: [CLARIFICATION.md](./CLARIFICATION.md) ·
 
 ## 🔨 Đang làm
 
-| Việc | Từ | Ghi chú |
-|---|---|---|
-| Nối `lib/api/*` vào Supabase | 2026-08-23 | Dữ liệu đã sẵn trên cloud và đường đọc đã được test. Frontend vẫn đang `import` thẳng `mockData` |
+Không có việc đang dang dở — chờ quyết định tiếp theo (pipeline chấm điểm, hoặc rename
+`GRAMMATICAL_RANGE` → `GRAMMATICAL_RANGE_ACCURACY`).
 
 ---
 
@@ -48,11 +47,21 @@ Tài liệu nền: [CLARIFICATION.md](./CLARIFICATION.md) ·
 - [x] ✅ Log out **thu hồi phiên thật**: refresh token cũ → `refresh_token_not_found`
 - [x] ✅ Gỡ guard client cũ đang đua với middleware (`ProtectedRoute` giờ chỉ còn phục vụ mock mode)
 - [x] ✅ Sign out về landing page, khớp CLARIFICATION §1.2 (trước đó đi `/signin`)
-
-### Cần làm
-
+- [x] ✅ **Nối `lib/api/*` vào Supabase — phần nội dung tĩnh + luyện tập, giữ nguyên chữ ký hàm.**
+      `listMockTests`/`getMockTest` đọc `mock_tests`+`mock_test_tasks` thật; `listModules`/`getModule`
+      đọc `practice_modules`+`practice_exercises`, `completed_count` đọc từ `v_practice_progress`
+      (view inner-join nên module chưa luyện mặc định 0); `checkAnswer` chèn row `practice_attempts`
+      thật (đây là chỗ ghi, không phải `recordProgress` — hàm đó giờ no-op khi dùng Supabase vì
+      tiến độ được suy ra từ chính bảng attempts); `getActivity` gộp hoạt động luyện tập thật với
+      hoạt động chấm điểm (vẫn mock). Kiểm qua trình duyệt thật trên cloud: đề thi/module hiện đúng
+      nội dung seed, module tiêu chí ngữ pháp (`GRAMMATICAL_RANGE_ACCURACY` → `GRAMMATICAL_RANGE` qua
+      `normaliseCriterionCode`) render đúng nhãn, check 1 bài → insert thật (xác nhận bằng psql),
+      "3 of 3 done" đúng theo dedupe distinct exercise_id dù bấm check 4 lần. `npm run typecheck` +
+      `lint` sạch, vitest 242/249 (7 fail Hero có từ trước, không liên quan), 75/75 `api.mjs` vẫn qua.
+      **Chấm điểm (`gradeEssay`/`gradeMockSubmission`/`getResult`/history/progress) vẫn giữ nguyên
+      mock** — RLS cố ý cấm `authenticated` ghi `overall_band`/`status='scored'`, và pipeline chấm
+      chưa tồn tại (hoãn, bàn riêng); nối phần đó phải đợi pipeline trước.
 - [ ] 📋 Đổi mã tiêu chí `GRAMMATICAL_RANGE` → `GRAMMATICAL_RANGE_ACCURACY` cho khớp DB — chạm `types.ts`, i18n, `mockData`, test · [data-model.md](./docs/data-model.md)
-- [ ] 📋 Nối `lib/api/*` vào Supabase, bỏ store in-memory (giữ nguyên chữ ký hàm)
 - [ ] 📋 Upload ảnh Task 1 lên Storage + hiển thị lại bằng signed URL
 - [ ] 📋 Subscribe Realtime cho kết quả chấm, kèm fallback polling
 - [ ] 📋 Đồng bộ `locale` với `profiles` để đổi máy vẫn giữ ngôn ngữ

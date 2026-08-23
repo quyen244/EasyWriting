@@ -7,10 +7,12 @@
  */
 
 import type { Locale } from "@/lib/i18n";
+import { getSupabaseBrowserClient, isSupabaseConfigured } from "@/lib/supabase/client";
 import { DEFAULT_MOCK_TEST, MOCK_TESTS } from "@/mockData/mockTests";
 
 import { gradeMockSubmission } from "./grading";
 import { combinedWritingBand } from "./insights";
+import { toApiError } from "./supabase";
 import { LATENCY, delay, recordMockAttempt } from "./store";
 import {
   ApiError,
@@ -18,19 +20,69 @@ import {
   type MockTest,
   type MockTestResult,
   type MockTestSubmission,
+  type MockTestTask,
 } from "./types";
 
+const MOCK_TEST_SELECT =
+  "id, title, duration_minutes, mock_test_tasks(task_type, prompt, stimulus, " +
+  "stimulus_caption, min_words, suggested_minutes, position)";
+
+interface MockTestRow {
+  id: string;
+  title: { en: string; vi: string };
+  duration_minutes: number;
+  mock_test_tasks: (MockTestTask & { position: number })[];
+}
+
+/**
+ * Only the English title makes it onto the wire — `MockTest.title` is a plain string,
+ * not `{en, vi}`, and neither call site here passes a locale to pick with. The DB does
+ * carry a real Vietnamese title (see `scripts/gen-seed.ts`'s `TEST_TITLE_VI`), so this
+ * is a stated gap, not settled precedent: localizing test titles is separate work.
+ */
+function toMockTest(row: MockTestRow): MockTest {
+  return {
+    id: row.id,
+    title: row.title.en,
+    duration_minutes: row.duration_minutes,
+    tasks: [...row.mock_test_tasks]
+      .sort((a, b) => a.position - b.position)
+      .map(({ position: _position, ...task }) => task),
+  };
+}
+
 export async function listMockTests(): Promise<MockTest[]> {
-  await delay(LATENCY.read);
-  return MOCK_TESTS;
+  if (!isSupabaseConfigured) {
+    await delay(LATENCY.read);
+    return MOCK_TESTS;
+  }
+  const client = getSupabaseBrowserClient();
+  const { data, error } = await client
+    .from("mock_tests")
+    .select(MOCK_TEST_SELECT)
+    .order("position")
+    .returns<MockTestRow[]>();
+  if (error) throw toApiError(error);
+  return (data ?? []).map(toMockTest);
 }
 
 export async function getMockTest(id?: string): Promise<MockTest> {
-  await delay(LATENCY.read);
-  if (!id) return DEFAULT_MOCK_TEST;
-  const test = MOCK_TESTS.find((candidate) => candidate.id === id);
-  if (!test) throw new ApiError("NOT_FOUND", "That test does not exist.");
-  return test;
+  if (!isSupabaseConfigured) {
+    await delay(LATENCY.read);
+    if (!id) return DEFAULT_MOCK_TEST;
+    const test = MOCK_TESTS.find((candidate) => candidate.id === id);
+    if (!test) throw new ApiError("NOT_FOUND", "That test does not exist.");
+    return test;
+  }
+
+  const client = getSupabaseBrowserClient();
+  const query = client.from("mock_tests").select(MOCK_TEST_SELECT);
+  const { data, error } = id
+    ? await query.eq("id", id).returns<MockTestRow[]>().maybeSingle()
+    : await query.order("position").limit(1).returns<MockTestRow[]>().maybeSingle();
+  if (error) throw toApiError(error);
+  if (!data) throw new ApiError("NOT_FOUND", "That test does not exist.");
+  return toMockTest(data);
 }
 
 /**

@@ -264,7 +264,8 @@ export type ApiErrorCode =
   | "UNSCOREABLE"
   | "SCORING_FAILED"
   | "NOT_FOUND"
-  | "SESSION_EXPIRED";
+  | "SESSION_EXPIRED"
+  | "UNAVAILABLE";
 
 /**
  * A documented failure.
