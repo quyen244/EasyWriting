@@ -14,13 +14,23 @@ Tài liệu nền: [CLARIFICATION.md](./CLARIFICATION.md) ·
 
 ## 🔨 Đang làm
 
-**Phase A của pipeline chấm điểm 1-call (`specs/00-grading-feature/`) đã xong, chờ bạn
-review trước khi sang Phase B (Edge Function).** Xem
-[phase-a-findings.md](./specs/00-grading-feature/phase-a-findings.md) — có 2 phát hiện
-cần bạn quyết trước khi làm tiếp: (1) chi phí token thật ra **tăng** ~40%/bài chứ không
-giảm như giả định ban đầu (giảm đúng **số lần gọi**, không giảm token), (2) độ trễ p95
-thật đo được 72.5s, vượt mục tiêu 60s trong spec — vì 1 call không còn tận dụng được
-concurrency như 4 call cũ.
+**Phase B đã dựng xong và chạy thật trên Supabase local — còn đúng một việc: chấm
+thành công một bài thật.** Hạn ngạch free-tier của OpenRouter đã hết trong ngày
+(2 lần benchmark buổi sáng), nên đường "chấm xong" chưa chạy được đến cùng. Mọi mắt
+xích khác đã kiểm chứng end-to-end: frontend chèn row → trigger → `pg_net` → Edge
+Function → gate → 4 call **song song** → ghi `llm_calls` → row chuyển trạng thái.
+
+**Quyết định lớn: bỏ `pipeline-v2.0` (1 call), production dùng `pipeline-v3.0`** — đúng
+kiến trúc 4 call song song của v1, chỉ thêm `comment`/`improvement` song ngữ mà DB đã bắt
+buộc. Lý do nằm ở số đo, không phải cảm tính: v2 chấm nhỉnh hơn một chút nhưng tốn token
+hơn ~40% và chậm gấp đôi (p95 72.5s so với mục tiêu 60s), vì gộp thành 1 call thì không
+còn gì để chạy song song nữa. Chi tiết:
+[phase-a-findings.md](./specs/00-grading-feature/phase-a-findings.md).
+
+Việc cần làm khi hạn ngạch reset: chạy `python -m src.evaluation.harness
+--pipeline-config pipelines/v3.yaml` trong `eval/` để có benchmark thật cho v3, rồi
+`RUN_LOCAL_SUPABASE=1 npx vitest run tests/integration` ở `frontend/` để xem một bài
+được chấm trọn vẹn.
 
 ---
 
@@ -66,6 +76,18 @@ concurrency như 4 call cũ.
       **Chấm điểm (`gradeEssay`/`gradeMockSubmission`/`getResult`/history/progress) vẫn giữ nguyên
       mock** — RLS cố ý cấm `authenticated` ghi `overall_band`/`status='scored'`, và pipeline chấm
       chưa tồn tại (hoãn, bàn riêng); nối phần đó phải đợi pipeline trước.
+- [x] ✅ **Nối `gradeEssay`/`getResult` vào pipeline thật** (pipeline đã có, xem mục Backend).
+      Client **không gọi endpoint chấm nào cả** — nó chèn row `writing_attempts` với
+      `status='queued'` rồi theo dõi chính row đó (constitution Principle VIII), trigger trong DB
+      mới là thứ gọi Edge Function. Hệ quả thực tế: đóng tab không huỷ việc chấm.
+      Theo dõi bằng **poll 2s chứ không phải realtime** — có cân nhắc: realtime tiết kiệm được
+      1-2s trên một lần chờ 15-30s, đổi lại là một WebSocket mà mọi kiểu hỏng của nó đều phải
+      quay về poll để cứu; đã vậy thì poll là cơ chế chính luôn cho gọn. Test thật chạy được
+      với stack local: `frontend/tests/integration/grading.local.test.ts` (tự skip nếu không
+      có `RUN_LOCAL_SUPABASE=1`, nên `vitest run` bình thường không bị ảnh hưởng).
+      **`gradeMockSubmission` vẫn mock** — một lượt thi mock cần chấm cả hai bài mới có nghĩa,
+      và sổ sách `mock_test_attempts` + trigger `combined_band` là việc thứ hai phải làm cho
+      đúng; làm chung một lượt thì cả hai đều khó kiểm chứng.
 - [ ] 📋 Đổi mã tiêu chí `GRAMMATICAL_RANGE` → `GRAMMATICAL_RANGE_ACCURACY` cho khớp DB — chạm `types.ts`, i18n, `mockData`, test · [data-model.md](./docs/data-model.md)
 - [ ] 📋 Upload ảnh Task 1 lên Storage + hiển thị lại bằng signed URL
 - [ ] 📋 Subscribe Realtime cho kết quả chấm, kèm fallback polling
@@ -116,8 +138,37 @@ concurrency như 4 call cũ.
       tăng ~40%, p95 latency 72.5s (vượt mục tiêu 60s), và rò rỉ tiếng Trung/Ả Rập vào
       `comment.vi` còn sót 6/80 field sau 1 lần sửa prompt. Chi tiết:
       [phase-a-findings.md](./specs/00-grading-feature/phase-a-findings.md)
-- [ ] 🚧 Phase B — Edge Function `grade-attempt` — **chờ bạn review Phase A ở trên**
-- [ ] ❄️ Trigger `pg_net` dispatch + **cron dọn row kẹt ở `queued`** — đi cùng Phase B
+- [x] ✅ **`pipeline-v3.0` — v1 (4 call song song) + song ngữ, trong `eval/`**
+      · `eval/prompts/v3/` (nguyên văn v1, thêm `comment`/`improvement` en+vi và luật
+      cấm lẫn chữ nước ngoài vào field `vi` mà Phase A chứng minh là cần) ·
+      `eval/pipelines/v3.yaml` (model/temperature/seed/length-penalty **y hệt v1**, chỉ
+      khác prompt + `max_tokens` — để chênh lệch độ chính xác so với benchmark v1 quy
+      được về đúng một biến) · `run_assessment_v3()` là **wrapper mỏng** gọi lại
+      `run_assessment()` chứ không phải bản sao — bản sao sẽ lệch khỏi v1 ngay lần sửa
+      đầu tiên · 19 test mới, 150/150 xanh
+- [x] ✅ **Phase B — Edge Function `grade-attempt`** (`supabase/functions/grade-attempt/`)
+      · `gate.ts`/`extract.ts`/`aggregate.ts`/`verify.ts`/`prompt.ts`/`openrouter.ts` port
+      từ Python trong `eval/` · **4 call phát cùng lúc bằng `Promise.all`** · claim row
+      bằng `update ... where status='queued'` nên trigger và cron không thể chấm trùng
+      một bài · thêm **kiểm tra chữ Việt phía server** (bắt được rò rỉ 冠词/ไทย/العربية mà
+      Phase A đo được) — prompt xin, schema ràng, **code mới là thứ chặn** · prompt/rubric/
+      lexicon/JSON-schema **sinh tự động** từ `eval/` qua `eval/scripts/export_edge_assets.py`,
+      có test Python fail nếu hai bên lệch nhau · 39 test `deno test` xanh
+- [x] ✅ **Trigger `pg_net` dispatch + cron dọn row kẹt** (migration `0010`) — trigger
+      `AFTER INSERT` bắn ngay, cron mỗi phút quét row kẹt ở `queued`/`scoring` quá 5 phút
+      (bắt buộc phải có: `pg_net` là fire-and-forget, request rơi thì không để lại dấu
+      vết nào) · tối đa 3 lần rồi `failed` · secret nằm trong Vault, không nằm trong git
+- [x] ✅ **Vá lỗ hổng grant `service_role`** (migration `0010`) — project tắt
+      `auto_expose_new_tables`, mà `0004`/`0005` chỉ cấp quyền cho `authenticated`, nên
+      `service_role` **không có SELECT/UPDATE** trên `writing_attempts`. RLS chưa bao giờ
+      là thứ cản đường (service_role bypass RLS) — thiếu là thiếu quyền bảng. Chỉ lộ ra
+      khi thật sự có thứ chạy dưới `service_role`: Edge Function ăn "permission denied"
+      ngay lần claim đầu tiên
+- [x] ✅ **Chạy thật trên Supabase local** — insert → trigger → function → gate →
+      `rejected/NOT_ENGLISH` (0 call model, đúng thiết kế) · bài thật → 4 call song song →
+      4 row `llm_calls` (`rate_limited`, hết quota) → `failed/RATE_LIMITED`. Script dựng
+      lại môi trường: `supabase/scripts/setup-local-grading.sh`
+- [ ] 🚧 **Chấm trọn vẹn một bài thật** — chờ hạn ngạch OpenRouter reset
 - [ ] ❄️ Rate limit số lần chấm mỗi user · constitution Principle V
 
 ---

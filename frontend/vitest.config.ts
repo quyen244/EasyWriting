@@ -16,7 +16,9 @@ export default defineConfig({
     // E2E specs belong to Playwright, not Vitest — they share the tests/ tree but not
     // the runner, and collecting them here yields confusing "test.describe is not a
     // function" errors rather than an obvious misconfiguration.
-    include: ["tests/unit/**/*.test.{ts,tsx}"],
+    // tests/integration/** talks to a real local Supabase stack and skips itself unless
+    // RUN_LOCAL_SUPABASE=1, so collecting it here costs a plain `vitest run` nothing.
+    include: ["tests/unit/**/*.test.{ts,tsx}", "tests/integration/**/*.test.ts"],
     // The mock transport sleeps to make loading states real in the browser. In tests
     // that latency buys nothing and costs seconds per grading, so it is switched off
     // here rather than stubbed per file.

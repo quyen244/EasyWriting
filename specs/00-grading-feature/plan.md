@@ -2,11 +2,29 @@
 
 **Branch**: `00-grading-feature` (not yet created) | **Date**: 2026-08-23 | **Spec**: [spec.md](./spec.md)
 
-**Status update (2026-08-23)**: Phase A is built and benchmarked against real model
-calls. Results, including two findings that contradict this plan's original assumptions
-(SC-001 latency, SC-004 cost), are in
-[phase-a-findings.md](./phase-a-findings.md) — read that before deciding whether Phase B
-starts as designed, starts with prompt changes first, or waits on a spec revision.
+**Status update (2026-08-23)**: both phases are done, and Phase A's benchmark changed
+what Phase B was built on.
+
+*Phase A* built `pipeline-v2.0` and measured it against `pipeline-v1.0` on the same ten
+golden essays. Two of this plan's assumptions turned out to be wrong (SC-004's cost
+saving, SC-001's latency budget), and the single-call design was **dropped** on that
+evidence — [phase-a-findings.md](./phase-a-findings.md) has the numbers. This is the
+"benchmark before adopting" gate (Constitution IV) doing exactly its job: it cost one
+Phase A rather than an Edge Function built around a wrong assumption.
+
+*Phase B* was therefore built on `pipeline-v3.0` — v1's four concurrent calls with the
+bilingual fields added — rather than on v2. The file layout below is what was built,
+with two additions the plan did not anticipate: the prompts, rubrics, lexicon and JSON
+schema are **generated** from `eval/` by `eval/scripts/export_edge_assets.py` (a
+hand-copied rubric would drift from the benchmarked one silently), and the Edge Function
+validates Vietnamese output server-side, because Phase A measured the model leaking
+Chinese and Thai into `vi` fields and a prompt rule alone did not stop it.
+
+Also fixed while getting this to run: `service_role` had no SELECT/UPDATE grant on
+`writing_attempts` at all. `auto_expose_new_tables` is off for this project and
+migrations `0004`/`0005` granted only `authenticated`, so the very first thing to run as
+service_role failed with "permission denied". RLS was never what stood in the way —
+service_role bypasses RLS but is still subject to table privileges.
 
 **Input**: Feature specification from `specs/00-grading-feature/spec.md`, grounded in
 `CLARIFICATION.md` Task 2 (data model) and Task 3 (system architecture), which are already

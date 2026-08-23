@@ -395,6 +395,13 @@ deno_version = 2
 # [edge_runtime.secrets]
 # secret_key = "env(SECRET_VALUE)"
 
+# The marker. Only the dispatch trigger calls it — never a browser.
+[functions.grade-attempt]
+# Left on (the default) deliberately, and stated rather than assumed. It is only half
+# the gate: a learner's own JWT satisfies it too, so the function additionally requires
+# the `x-grade-secret` header that lives in Vault and is known only to the dispatcher.
+verify_jwt = true
+
 [analytics]
 enabled = true
 port = 54327

@@ -4,9 +4,24 @@
 
 **Created**: 2026-08-23
 
-**Status**: Phase A built and benchmarked (2026-08-23) — see
-[phase-a-findings.md](./phase-a-findings.md). Phase B (Edge Function) not started, awaiting
-your review of Phase A's results.
+**Status**: Superseded in its central decision, and kept as the record of how that was
+reached. The single-call design this document specifies (`pipeline-v2.0`) was built,
+benchmarked against `pipeline-v1.0` on the same golden set, and **not adopted** — see
+[phase-a-findings.md](./phase-a-findings.md). It graded slightly more accurately but used
+~40% more tokens and ran roughly twice as slow (p95 72.5s against this spec's own 60s
+target in SC-001), because consolidating four calls into one removes the concurrency that
+was hiding per-call latency. That is a structural property of the design, not a bug in
+the implementation of it.
+
+**What production runs instead**: `pipeline-v3.0` — v1's four concurrent calls, plus the
+bilingual `comment`/`improvement` fields this spec correctly identified as required
+(`criteria_match_task()` rejects a row without them). Everything in this document about
+the gate, the deterministic pre/post-processing, quote verification, the failure policy,
+and the persistence contract carried over unchanged; only FR-001's "one call" did not.
+
+Phase B is built: `supabase/functions/grade-attempt/` plus migration
+`20260823000010_dispatch_grading.sql`, verified end-to-end on a local stack. See
+`TODO.md` for what remains (one real essay scored through, blocked on a provider quota).
 
 **Input**: *"điều tôi muốn hiện tại cho pipeline mới là, một prompt, 1 llm call thay vì pipeline
 tới 4 llm calls. Prompt như cũ nhưng nhét tất cả vào 1 prompt và có thêm few-shot json. Lí do là
