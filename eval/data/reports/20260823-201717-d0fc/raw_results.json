@@ -1,0 +1,99 @@
+[
+  {
+    "essay_id": "T2-001",
+    "task_type": "TASK_2",
+    "gold": {
+      "overall": 5.5,
+      "criteria": {
+        "TASK_RESPONSE": 5.5,
+        "COHERENCE_COHESION": 6.0,
+        "LEXICAL_RESOURCE": 5.5,
+        "GRAMMATICAL_RANGE_ACCURACY": 5.0
+      },
+      "source": "expert-estimate-from-official-descriptors",
+      "confidence": "medium"
+    },
+    "overall_band": 6.0,
+    "raw_overall": 6.0,
+    "criteria": [
+      {
+        "criterion": "TASK_RESPONSE",
+        "band": 6.0,
+        "raw_band": 6.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay addresses the prompt by presenting a position (partly agree) and developing two main ideas: space exploration drives innovation and solving Earth's problems like poverty and pollution is urgent. However, the position is not consistently clear throughout because the introduction hedges with 'partly agree' and the conclusion shifts to a stronger stance without fully resolving this, and the main ideas are often stated rather than extended with detailed reasoning or specific examples. The essay tends to over-generalise, such as claiming space investment leads to breakthroughs without explaining how, and the supporting points on Earth's problems lack focus and development. This matches Band 6 where a relevant position is presented but main ideas are inadequately developed and the argument lacks consistent clarity and extension.",
+        "descriptor_reference": "TASK_RESPONSE band 6",
+        "evidence_quotes": [
+          "From my perspective, I partly agree with this viewpoint due to several reasons that will be explained in the following essay.",
+          "this investment can serve as the primary motivation, which often promotes the development, potentially helping solve problems in the future.",
+          "In conclusion, although space exploration bring some benefit for science, I think the government should spend more money to solve the problem on earth first because it is more important for the people life."
+        ],
+        "quotes_returned": 3,
+        "quotes_dropped": 0,
+        "comment_en": "The essay presents a relevant position but the development of main ideas is weak and often relies on generalisation rather than specific reasoning or examples. The position shifts from 'partly agree' in the introduction to a stronger stance in the conclusion without clear resolution, which affects consistency. Cohesive devices are used but the argument lacks focus and extension, keeping it at Band 6.",
+        "comment_vi": "Bài viết đưa ra quan điểm phù hợp nhưng sự phát triển ý chính yếu và dựa nhiều vào sự khái quát hóa thay vì lý giải cụ thể. Quan điểm chuyển từ 'partly agree' ở phần mở đầu sang kết luận mạnh hơn mà không có sự giải quyết rõ ràng, ảnh hưởng đến tính nhất quán. Các liên kết được sử dụng nhưng lập luận thiếu tập trung và phát triển, giữ bài ở mức Band 6.",
+        "improvement_en": "Instead of stating general claims like 'this investment can serve as the primary motivation,' explain the specific mechanism of how space exploration funding leads to solving Earth's problems with a concrete example, and ensure the position stated in the introduction is consistently maintained in the conclusion without shifting to a stronger or different stance.",
+        "improvement_vi": "Thay vì đưa ra các khẳng định chung như 'this investment can serve as the primary motivation,' hãy giải thích cơ chế cụ thể về cách tài trợ cho khám phá không gian dẫn đến giải quyết vấn đề trên Trái Đất bằng một ví dụ cụ thể, và đảm bảo quan điểm được nêu trong phần mở bài được duy trì nhất quán ở phần kết luận mà không chuyển sang lập trường mạnh hơn hoặc khác."
+      },
+      {
+        "criterion": "COHERENCE_COHESION",
+        "band": 6.0,
+        "raw_band": 6.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay meets Band 6 descriptors because it arranges information coherently with a clear overall progression from introduction to two opposing arguments and a conclusion, using paragraphing that is sufficient and appropriate. However, the cohesion within and between sentences is often mechanical, relying on formulaic connectors like 'On the one hand', 'However', 'In addition', and 'As a result' as scaffolding rather than letting logical sequencing drive the flow naturally. Referencing is also weak, with repeated use of 'the government' and 'money' instead of pronouns or synonyms, and the progression between ideas is sometimes abrupt, which prevents the essay from reaching Band 7's requirement of skilful paragraphing and clear central topics per paragraph. The essay does not show the underuse or overuse of cohesive devices typical of Band 5, but the mechanical linking keeps it firmly at Band 6.",
+        "descriptor_reference": "COHERENCE_COHESION band 6",
+        "evidence_quotes": [
+          "On the one hand, the major reason that explain why many countries spend a great deal of money and effort on space exploration is innovation and development.",
+          "However, there are several compelling reasons why some people advocate for focusing on tackling problems on earth is poverty and pollution.",
+          "As a result, if government spend money for solve this problem, the life of poor people will be better and they can have a good life."
+        ],
+        "quotes_returned": 3,
+        "quotes_dropped": 0,
+        "comment_en": "The essay uses cohesive devices effectively but they are often mechanical, with formulaic connectors like 'On the one hand' and 'However' acting as scaffolding rather than natural transitions. Referencing is weak due to repetitive noun use, and paragraphing is adequate but lacks the clear central topic sentences needed for Band 7.",
+        "comment_vi": "Bài sử dụng các cohesive devices một cách hiệu quả nhưng mang tính cơ học, với các liên kết công thức như 'On the one hand' và 'However' đóng vai trò như khung đỡ thay vì chuyển tiếp tự nhiên. Việc tham chiếu yếu do lặp lại danh từ, và cách chia đoạn văn đầy đủ nhưng thiếu câu chủ đề rõ ràng cần thiết cho Band 7.",
+        "improvement_en": "Replace formulaic connectors like 'On the one hand' and 'However' with more natural transitions that arise from the logical relationship between ideas, and use pronouns or synonyms to reduce repetitive referencing of 'the government' and 'money' so that cohesion feels seamless rather than mechanical.",
+        "improvement_vi": "Thay thế các liên kết công thức như 'On the one hand' và 'However' bằng các chuyển tiếp tự nhiên hơn phát sinh từ mối quan hệ logic giữa các ý tưởng, và sử dụng đại từ hoặc từ đồng nghĩa để giảm tham chiếu lặp lại 'the government' và 'money' để sự liên kết trở nên liền mạch thay vì cơ học."
+      },
+      {
+        "criterion": "LEXICAL_RESOURCE",
+        "band": 6.0,
+        "raw_band": 6.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay demonstrates a sufficient range of vocabulary to convey meaning, with attempts at less common items such as 'innovation', 'breakthroughs', 'essentials', and 'industrial manufacturing', which aligns with Band 6. However, there are frequent inaccuracies in word choice and collocation, such as 'spend money for solve this problem' (should be 'spend money solving this problem' or 'use money to solve'), 'build the system for clean the air' (should be 'clean up the air' or 'a system to clean the air'), and 'send rocket to the space' (should be 'send rockets to space'), which prevent it from reaching Band 7. The repetition of content words like 'space', 'spend', 'money', and 'problem' also limits the lexical resource score. The errors are noticeable but do not completely impede communication, fitting the Band 6 descriptor.",
+        "descriptor_reference": "LEXICAL_RESOURCE band 6",
+        "evidence_quotes": [
+          "spend money for solve this problem",
+          "build the system for clean the air",
+          "send rocket to the space"
+        ],
+        "quotes_returned": 3,
+        "quotes_dropped": 0,
+        "comment_en": "The writer uses an adequate range of vocabulary and attempts less common items like 'innovation' and 'breakthroughs', but frequent errors in word choice and collocation, such as 'spend money for solve' and 'build the system for clean the air', prevent a higher score. Repetition of key terms like 'space' and 'problem' also limits the range.",
+        "comment_vi": "Người viết sử dụng từ vựng đủ mức và cố gắng dùng các từ ít phổ biến hơn như 'innovation' và 'breakthroughs', nhưng các lỗi sai về chọn từ và kết hợp từ như 'spend money for solve' và 'build the system for clean the air' khiến điểm số không thể cao hơn. Việc lặp lại các từ khóa như 'space' và 'problem' cũng làm giới hạn phạm vi từ vựng.",
+        "improvement_en": "Focus on using correct prepositions and verb collocations, such as 'spend money solving problems' instead of 'spend money for solve this problem', and review how nouns like 'system' combine with verbs like 'clean' to form natural phrases like 'a system to clean the air'.",
+        "improvement_vi": "Hãy tập trung vào việc sử dụng giới từ và cụm động từ chính xác, ví dụ 'spend money solving problems' thay vì 'spend money for solve this problem', và xem xét danh từ 'system' kết hợp với động từ 'clean' như thế nào để tạo thành cụm tự nhiên như 'a system to clean the air'."
+      },
+      {
+        "criterion": "GRAMMATICAL_RANGE_ACCURACY",
+        "band": 6.0,
+        "raw_band": 6.0,
+        "length_penalty": 0.0,
+        "explanation": "The essay consistently uses a mix of simple and complex sentence forms, including relative clauses (\"that explain why many countries spend...\"), passive constructions (\"it is argued that...\"), and subordinate structures (\"which often promotes the development...\"), meeting the Band 7 descriptor for a variety of complex structures. However, the presence of frequent grammatical errors—such as subject-verb agreement issues (\"countries spend\" vs. \"government spend\"), article misuse (\"the problem on earth\"), and run-on sentences—prevents it from reaching Band 8, which requires the majority of sentences to be error-free. The essay's grammatical control is sufficient to convey meaning but contains enough systematic errors to place it firmly at Band 6, where errors are frequent but do not entirely impede communication. The use of cohesive devices like \"however\" and \"in addition\" shows some range, but the overall accuracy is limited by recurring structural mistakes.",
+        "descriptor_reference": "GRAMMATICAL_RANGE_ACCURACY band 6",
+        "evidence_quotes": [
+          "it is argued that in the large number of countries, governments allocated large amounts of financial resources to space exploration.",
+          "As a result, if government spend money for solve this problem, the life of poor people will be better and they can have a good life.",
+          "The government should use the money to build the system for clean the air instead of send rocket to the space which is very expensive and not help people directly."
+        ],
+        "quotes_returned": 3,
+        "quotes_dropped": 0,
+        "comment_en": "The essay demonstrates a mix of simple and complex sentence forms, but grammatical errors such as subject-verb agreement issues and article misuse are frequent enough to reduce clarity. While the range of structures is present, accuracy is inconsistent, placing it at Band 6 where errors rarely impede communication but are noticeable.",
+        "comment_vi": "Bài viết thể hiện sự pha trộn giữa câu đơn giản và câu phức tạp, nhưng các lỗi ngữ pháp như sự hòa hợp chủ ngữ - động từ và cách dùng mạo từ xảy ra đủ thường xuyên để làm giảm sự rõ ràng. Mặc dù có sự đa dạng về cấu trúc, độ chính xác không nhất quán, đưa bài viết vào Band 6 nơi các lỗi hiếm khi cản Trở giao tiếp nhưng vẫn dễ nhận thấy.",
+        "improvement_en": "Focus on proofreading for subject-verb agreement and article usage, especially in complex sentences, to ensure that the majority of sentences are error-free and meet the Band 7 standard for grammatical accuracy.",
+        "improvement_vi": "Hãy tập trung vào việc kiểm tra lại sự hòa hợp chủ ngữ - động từ và cách dùng mạo từ, đặc biệt trong các câu phức tạp, để đảm bảo đa số câu đều đúng ngữ pháp và đạt tiêu chuẩn Band 7 về độ chính xác."
+      }
+    ],
+    "latency_s": 16.229,
+    "quote_fidelity": 1.0
+  }
+]

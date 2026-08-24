@@ -42,7 +42,7 @@ import {
 } from "./extract.ts";
 import { ABSOLUTE_MIN_WORDS, findUnscoreableReason } from "./gate.ts";
 import { PIPELINE } from "./generated/assets.ts";
-import { findScriptLeak, validateBlock } from "./openrouter.ts";
+import { callCriterion, findScriptLeak, validateBlock } from "./openrouter.ts";
 import { buildCriterionMessages, formatFeatures } from "./prompt.ts";
 import { dropUnverifiedQuotes, normalize, quoteInEssay } from "./verify.ts";
 
@@ -416,11 +416,146 @@ Deno.test("validateBlock: a script leak becomes a repair instruction, not a hard
   assertStringIncludes(error ?? "", "not Vietnamese");
 });
 
+// ── Retry policy ──────────────────────────────────────────────────────────────
+//
+// Written because of a real incident: four calls died with `tls handshake eof` 43
+// seconds in, all four reported retry_count 0, and the learner was told scoring had
+// failed — when a second attempt would very likely have worked.
+
+const OK_BODY = {
+  choices: [{ message: { content: JSON.stringify(VALID_BLOCK) }, finish_reason: "stop" }],
+  usage: { prompt_tokens: 100, completion_tokens: 50 },
+};
+
+function okResponse(): Response {
+  return new Response(JSON.stringify(OK_BODY), { status: 200 });
+}
+
+Deno.test("callCriterion: retries a dropped connection and succeeds on the next try", async () => {
+  let calls = 0;
+  const result = await callCriterion({
+    apiKey: "test-key",
+    node: "criterion:TASK_RESPONSE",
+    messages: [{ role: "user", content: "x" }],
+    fetchImpl: () => {
+      calls++;
+      if (calls === 1) {
+        return Promise.reject(new TypeError("client error (Connect): tls handshake eof"));
+      }
+      return Promise.resolve(okResponse());
+    },
+  });
+
+  assertEquals(calls, 2);
+  assert(result.ok, `expected success, got ${result.error}`);
+  assertEquals(result.parsed?.band, 6);
+  // Surfaced rather than hidden: a rising retry_count in llm_calls is how a degrading
+  // network shows up before it starts failing assessments outright.
+  assert(result.attempts > 1);
+});
+
+Deno.test("callCriterion: gives up after three connection attempts", async () => {
+  let calls = 0;
+  const result = await callCriterion({
+    apiKey: "test-key",
+    node: "criterion:TASK_RESPONSE",
+    messages: [{ role: "user", content: "x" }],
+    fetchImpl: () => {
+      calls++;
+      return Promise.reject(new TypeError("tls handshake eof"));
+    },
+  });
+
+  assertEquals(calls, 3);
+  assertEquals(result.ok, false);
+  assertEquals(result.status, "http_error");
+});
+
+Deno.test("callCriterion: does NOT retry a 429 — retrying spends quota to be refused again", async () => {
+  let calls = 0;
+  const result = await callCriterion({
+    apiKey: "test-key",
+    node: "criterion:TASK_RESPONSE",
+    messages: [{ role: "user", content: "x" }],
+    fetchImpl: () => {
+      calls++;
+      return Promise.resolve(new Response("rate limit exceeded", { status: 429 }));
+    },
+  });
+
+  assertEquals(calls, 1);
+  assertEquals(result.status, "rate_limited");
+});
+
+Deno.test("callCriterion: does NOT retry a timeout — a slow model is not a broken connection", async () => {
+  let calls = 0;
+  const result = await callCriterion({
+    apiKey: "test-key",
+    node: "criterion:TASK_RESPONSE",
+    messages: [{ role: "user", content: "x" }],
+    fetchImpl: () => {
+      calls++;
+      return Promise.reject(new DOMException("timed out", "TimeoutError"));
+    },
+  });
+
+  // Retrying would turn one 180s wait into three and still likely time out.
+  assertEquals(calls, 1);
+  assertEquals(result.status, "timeout");
+});
+
+Deno.test("callCriterion: repairs a schema-invalid answer instead of failing outright", async () => {
+  let calls = 0;
+  const result = await callCriterion({
+    apiKey: "test-key",
+    node: "criterion:TASK_RESPONSE",
+    messages: [{ role: "user", content: "x" }],
+    fetchImpl: () => {
+      calls++;
+      if (calls === 1) {
+        // A leak in comment.vi: schema-shaped, but not something a learner may see.
+        const leaky = { ...VALID_BLOCK, comment: { en: "Fine.", vi: "Bạn nhầm 冠词." } };
+        return Promise.resolve(
+          new Response(
+            JSON.stringify({
+              choices: [{ message: { content: JSON.stringify(leaky) }, finish_reason: "stop" }],
+              usage: {},
+            }),
+            { status: 200 },
+          ),
+        );
+      }
+      return Promise.resolve(okResponse());
+    },
+  });
+
+  assertEquals(calls, 2);
+  assert(result.ok);
+  assertEquals(result.parsed?.comment.vi, VALID_BLOCK.comment.vi);
+});
+
+Deno.test("callCriterion: a missing API key fails without calling anything", async () => {
+  let calls = 0;
+  const result = await callCriterion({
+    apiKey: "",
+    node: "criterion:TASK_RESPONSE",
+    messages: [{ role: "user", content: "x" }],
+    fetchImpl: () => {
+      calls++;
+      return Promise.resolve(okResponse());
+    },
+  });
+
+  assertEquals(calls, 0);
+  assertEquals(result.ok, false);
+  assertStringIncludes(result.error ?? "", "OPENROUTER_API_KEY");
+});
+
 // ── Config provenance ─────────────────────────────────────────────────────────
 
 Deno.test("the generated assets carry the benchmarked pipeline, with reasoning off", () => {
-  assertEquals(PIPELINE.version, "pipeline-v3.0");
-  assertEquals(PIPELINE.promptVersion, "v3");
+  assertEquals(PIPELINE.version, "pipeline-v3.2");
+  assertEquals(PIPELINE.promptVersion, "v4");
   // Reasoning tokens are billed output tokens charged against maxTokens; with them on,
   // every criterion was truncated mid-JSON when this was last measured.
   assertEquals(PIPELINE.model.reasoning.enabled, false);

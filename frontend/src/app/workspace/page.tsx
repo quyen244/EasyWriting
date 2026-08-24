@@ -244,7 +244,12 @@ function Grader() {
                       })
                     : error.code === "UNSCOREABLE"
                       ? t("grader.errorUnscoreable")
-                      : t("grader.errorFailed")
+                      : error.code === "RATE_LIMITED"
+                        // The server's own message names the limit and the window, and
+                        // is written to be read by a learner. Replacing it with a
+                        // generic string would drop the one detail they need.
+                        ? error.message
+                        : t("grader.errorFailed")
                 }
                 action={
                   <>

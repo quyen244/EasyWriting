@@ -41,8 +41,8 @@ class TestExportedContentIsUsable:
 
     def test_carries_the_pipeline_under_test(self) -> None:
         rendered = render()
-        assert 'version: "pipeline-v3.0"' in rendered
-        assert 'promptVersion: "v3"' in rendered
+        assert 'version: "pipeline-v3.2"' in rendered
+        assert 'promptVersion: "v4"' in rendered
         # Reasoning must be off. On this model it is not a preference: with it on, every
         # criterion was truncated mid-JSON and the whole assessment failed.
         assert "reasoning: { enabled: false }" in rendered

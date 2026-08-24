@@ -1,0 +1,116 @@
+{
+  "run_id": "20260823-201717-d0fc",
+  "timestamp": "2026-08-23T13:17:34+00:00",
+  "pipeline_version": "pipeline-v3.0",
+  "prompt_version": "v3",
+  "model": "inclusionai/ling-3.0-flash",
+  "temperature": 0.3,
+  "n_essays": 1,
+  "n_completed": 1,
+  "failures": [],
+  "wall_clock_s": 16.2,
+  "quality": {
+    "overall": {
+      "n": 1,
+      "mae": 0.5,
+      "rmse": 0.5,
+      "bias": 0.5,
+      "within_0.5": 1.0,
+      "within_1.0": 1.0,
+      "spearman_rho": null,
+      "pred_std": 0.0,
+      "gold_std": 0.0,
+      "std_ratio": null
+    },
+    "task_1": {
+      "n": 0
+    },
+    "task_2": {
+      "n": 1,
+      "mae": 0.5,
+      "rmse": 0.5,
+      "bias": 0.5,
+      "within_0.5": 1.0,
+      "within_1.0": 1.0,
+      "spearman_rho": null,
+      "pred_std": 0.0,
+      "gold_std": 0.0,
+      "std_ratio": null
+    },
+    "per_criterion": {
+      "TASK_RESPONSE": {
+        "n": 1,
+        "mae": 0.5,
+        "rmse": 0.5,
+        "bias": 0.5,
+        "within_0.5": 1.0,
+        "within_1.0": 1.0,
+        "spearman_rho": null,
+        "pred_std": 0.0,
+        "gold_std": 0.0,
+        "std_ratio": null
+      },
+      "COHERENCE_COHESION": {
+        "n": 1,
+        "mae": 0.0,
+        "rmse": 0.0,
+        "bias": 0.0,
+        "within_0.5": 1.0,
+        "within_1.0": 1.0,
+        "spearman_rho": null,
+        "pred_std": 0.0,
+        "gold_std": 0.0,
+        "std_ratio": null
+      },
+      "LEXICAL_RESOURCE": {
+        "n": 1,
+        "mae": 0.5,
+        "rmse": 0.5,
+        "bias": 0.5,
+        "within_0.5": 1.0,
+        "within_1.0": 1.0,
+        "spearman_rho": null,
+        "pred_std": 0.0,
+        "gold_std": 0.0,
+        "std_ratio": null
+      },
+      "GRAMMATICAL_RANGE_ACCURACY": {
+        "n": 1,
+        "mae": 1.0,
+        "rmse": 1.0,
+        "bias": 1.0,
+        "within_0.5": 0.0,
+        "within_1.0": 1.0,
+        "spearman_rho": null,
+        "pred_std": 0.0,
+        "gold_std": 0.0,
+        "std_ratio": null
+      }
+    }
+  },
+  "system": {
+    "quote_fidelity": 1.0,
+    "quotes_returned": 12,
+    "empty_evidence_rate": 0.0,
+    "failure_rate": 0.0,
+    "llm_calls": 4,
+    "call_mode": "per_criterion_bilingual",
+    "p50_latency_s": 16.2,
+    "p95_latency_s": 16.2,
+    "prompt_tokens_total": 6514,
+    "completion_tokens_total": 3064,
+    "tokens_per_essay": 9578
+  },
+  "per_item": [
+    {
+      "essay_id": "T2-001",
+      "task_type": "TASK_2",
+      "gold": 5.5,
+      "pred": 6.0,
+      "error": 0.5,
+      "raw_overall": 6.0,
+      "latency_s": 16.229,
+      "quote_fidelity": 1.0
+    }
+  ]
+}

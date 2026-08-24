@@ -14,17 +14,23 @@
 # removes the concurrency that was hiding per-call latency. See
 # specs/00-grading-feature/phase-a-findings.md for the numbers.
 #
-# The ONLY intended difference from v1.yaml: prompts v1 -> v3 (which adds `comment`
+# Differences from v1.yaml: the model (see below), and prompts v1 -> v3 (which adds `comment`
 # and `improvement`, each with en/vi), the matching per-call response schema
 # (CombinedCriterionBlock instead of CriterionEvaluation), and the max_tokens headroom
 # that extra output needs. Model, temperature, seed, reasoning and length-penalty
 # thresholds are byte-identical to v1, so any accuracy delta against the v1 run is
 # attributable to the prompt change alone.
 
-version: pipeline-v3.0
+version: pipeline-v3.2
 
 model:
-  id: nvidia/nemotron-3-super-120b-a12b:free
+  # Changed from nvidia/nemotron-3-super-120b-a12b:free (which v3.0 used), hence the
+  # version bump: the model IS the methodology as far as Principle IV is concerned, and
+  # two different models answering under one version string would make a stored
+  # `pipeline_version` ambiguous. Measured on one Task 2 essay: 16.2s for four
+  # concurrent calls, 12/12 quotes verified, no foreign-script leakage into the
+  # Vietnamese fields — the leak that dogged the previous model did not reappear.
+  id: inclusionai/ling-3.0-flash
   temperature: 0.3
   # v1 measured ~580 completion tokens per criterion. This response carries four extra
   # prose fields (comment.en/vi, improvement.en/vi) on top of that, so the budget is
@@ -41,9 +47,11 @@ model:
     enabled: false
 
 prompts:
-  # ../prompts/v3/ — v1's templates verbatim, with `comment` and `improvement` added to
-  # WHAT TO PRODUCE and the Vietnamese-script purity rule proven necessary in Phase A.
-  version: v3
+  # ../prompts/v4/ — v3 plus prompt-injection hardening: the essay markers carry a random
+  # per-call suffix, and both prompts state that the text between them is data, not
+  # instructions. Added after measuring an essay with a forged closing marker move one
+  # criterion two full bands.
+  version: v4
 
 scoring:
   # Identical to v1 on purpose: the length penalty is not the variable under test here.

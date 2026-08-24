@@ -17,7 +17,7 @@
 // Runs in the shared jsdom environment like the rest of the suite: jsdom provides the
 // WebSocket the realtime subscription needs, and tests/setup.ts assumes a `window`.
 
-import { beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 const ENABLED = process.env.RUN_LOCAL_SUPABASE === "1";
 
@@ -42,6 +42,8 @@ describe.skipIf(!ENABLED)("grading against local Supabase", () => {
   // Imported dynamically so the env vars above are in place first.
   let api: typeof import("@/lib/api/grading");
   let types: typeof import("@/lib/api/types");
+  let client: import("@supabase/supabase-js").SupabaseClient;
+  const createdAttempts: string[] = [];
 
   beforeAll(async () => {
     const { getSupabaseBrowserClient, isSupabaseConfigured } = await import(
@@ -49,7 +51,7 @@ describe.skipIf(!ENABLED)("grading against local Supabase", () => {
     );
     expect(isSupabaseConfigured, "env vars did not reach the client module").toBe(true);
 
-    const client = getSupabaseBrowserClient();
+    client = getSupabaseBrowserClient();
     const { error } = await client.auth.signInWithPassword({
       email: TEST_EMAIL,
       password: TEST_PASSWORD,
@@ -65,6 +67,19 @@ describe.skipIf(!ENABLED)("grading against local Supabase", () => {
     types = await import("@/lib/api/types");
   }, 60_000);
 
+  // Every row this file creates is removed again. Not tidiness: supabase/tests/api.mjs
+  // asserts on counts ("the learner has one scored essay", "words are counted from the
+  // submission") and assumes it is the only writer. A scored attempt left behind here
+  // fails four of its assertions in a way that reads like a regression and is not one.
+  //
+  // The rate-limit ledger is deliberately NOT cleaned: it is append-only by design and
+  // a learner cannot reach it, which is the property `0011` exists to guarantee.
+  afterAll(async () => {
+    for (const id of createdAttempts) {
+      await client.from("writing_attempts").delete().eq("id", id);
+    }
+  }, 30_000);
+
   it(
     "rejects unscoreable text at the server gate, without spending a model call",
     async () => {
@@ -78,6 +93,14 @@ describe.skipIf(!ENABLED)("grading against local Supabase", () => {
           { locale: "en" },
         ),
       ).rejects.toMatchObject({ code: "UNSCOREABLE" });
+
+      // gradeEssay throws on a rejected attempt, so the row's id never reaches the
+      // caller — it is looked up here purely so afterAll can remove it.
+      const { data } = await client
+        .from("writing_attempts")
+        .select("id")
+        .eq("essay_text", notEnglish);
+      for (const row of data ?? []) createdAttempts.push(row.id as string);
     },
     120_000,
   );
@@ -108,6 +131,12 @@ describe.skipIf(!ENABLED)("grading against local Supabase", () => {
       }
 
       if (!result) {
+        const { data } = await client
+          .from("writing_attempts")
+          .select("id")
+          .eq("essay_text", ESSAY);
+        for (const row of data ?? []) createdAttempts.push(row.id as string);
+
         // Reached when the model provider is unavailable — a free-tier daily quota, for
         // instance. The pipeline still ran: the row was inserted, dispatched, claimed,
         // attempted and marked failed, which is most of what this test exists to prove.
@@ -118,6 +147,8 @@ describe.skipIf(!ENABLED)("grading against local Supabase", () => {
         );
         return;
       }
+
+      createdAttempts.push(result.id);
 
       expect(result.status).toBe("scored");
       expect(result.overall_band).toBeGreaterThanOrEqual(1);
@@ -150,7 +181,7 @@ describe.skipIf(!ENABLED)("grading against local Supabase", () => {
       // Under 250 words, so the shortfall must be reflected rather than hidden.
       expect(result.provisional).toBe(true);
       expect(result.length_penalty).toBeGreaterThan(0);
-      expect(result.pipeline_version).toBe("pipeline-v3.0");
+      expect(result.pipeline_version).toBe("pipeline-v3.2");
 
       // A stored result must be reopenable — this is what the result screen does on a
       // refresh, and it goes through RLS as the learner rather than as the marker.

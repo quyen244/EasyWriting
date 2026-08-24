@@ -19,5 +19,11 @@ import { ApiError } from "./types";
  * `BELOW_MIN_WORDS` — so it gets a generic code rather than an invented specific one.
  */
 export function toApiError(error: PostgrestError): ApiError {
+  // The grading rate limit raises with SQLSTATE PT429, which PostgREST turns into a
+  // real 429. Its message names the limit and the window and is written to be read by
+  // the learner, so it is passed through rather than replaced with something vaguer.
+  if (error.code === "PT429") {
+    return new ApiError("RATE_LIMITED", error.message);
+  }
   return new ApiError("UNAVAILABLE", error.message);
 }

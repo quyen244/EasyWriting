@@ -1,0 +1,10 @@
+Band 9: Fully satisfies all requirements. Presents a clear, fully developed overview and accurate key features.
+Band 8: Covers all requirements sufficiently. Presents a clear overview; key features are well selected and highlighted.
+Band 7: Covers the requirements. Presents a CLEAR OVERVIEW of main trends/differences/stages. Key features are highlighted, but details may be inadequate or occasionally irrelevant.
+Band 6: Addresses the requirements. Presents an overview WITH INFORMATION APPROPRIATELY SELECTED. Some key features are covered but details may be irrelevant, inappropriate or inaccurate.
+Band 5: Generally addresses the task but format may be inappropriate. RECOUNTS DETAIL MECHANICALLY WITH NO CLEAR OVERVIEW. There may be no data to support the description.
+Band 4: Attempts the task but does not cover all key features; format may be inappropriate. May confuse key features with detail; parts may be unclear, irrelevant, repetitive or inaccurate.
+
+DISCRIMINATOR: the single strongest signal separating Band 5 from Band 6+ is the
+presence of a genuine OVERVIEW that summarises main features, rather than a
+mechanical recount of every data point.

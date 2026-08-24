@@ -143,6 +143,25 @@ export interface ChatOptions {
   fetchImpl?: typeof fetch;
 }
 
+// A connection that never got established is worth another go; a model that answered
+// "no" is not. This split exists because of a measured failure: four calls died with
+// `tls handshake eof` 43 seconds in, all four with retry_count 0, and the learner was
+// told scoring had failed — when a second attempt would very likely have worked.
+//
+// Deliberately NOT retried:
+//   * any HTTP status, including 5xx. The request reached the provider and was answered;
+//     429 in particular means retrying spends quota to be refused again.
+//   * timeouts. A slow model is not a broken connection, and retrying a 180s timeout
+//     turns one long wait into three.
+const TRANSPORT_ATTEMPTS = 3;
+const TRANSPORT_BACKOFF_MS = [400, 1200];
+
+function isTimeout(err: unknown): boolean {
+  return err instanceof DOMException && err.name === "TimeoutError";
+}
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 export async function callCriterion(opts: ChatOptions): Promise<LlmResult> {
   const doFetch = opts.fetchImpl ?? fetch;
   const started = Date.now();
@@ -152,6 +171,10 @@ export async function callCriterion(opts: ChatOptions): Promise<LlmResult> {
   let reasoningTokens = 0;
   let costUsd = 0;
   let lastError = "unknown error";
+  // Counted separately from repair attempts so `llm_calls.retry_count` reflects
+  // everything that was actually spent getting one usable answer, not just the
+  // schema-repair half of it.
+  let transportRetries = 0;
 
   const base = (result: Partial<LlmResult>): LlmResult => ({
     node: opts.node,
@@ -174,45 +197,57 @@ export async function callCriterion(opts: ChatOptions): Promise<LlmResult> {
   }
 
   for (let attempt = 1; attempt <= PIPELINE.model.maxRetries + 1; attempt++) {
-    let response: Response;
-    const timeout = AbortSignal.timeout(PIPELINE.model.timeoutMs);
-    const signal = opts.signal
-      ? AbortSignal.any([opts.signal, timeout])
-      : timeout;
+    let response: Response | null = null;
+    let transportError: unknown = null;
 
-    try {
-      response = await doFetch("https://openrouter.ai/api/v1/chat/completions", {
-        method: "POST",
-        signal,
-        headers: {
-          Authorization: `Bearer ${opts.apiKey}`,
-          "Content-Type": "application/json",
-          "HTTP-Referer": "https://rexsantech.com",
-          "X-Title": "WriteWise",
-        },
-        body: JSON.stringify({
-          model: PIPELINE.model.id,
-          messages: convo,
-          temperature: PIPELINE.model.temperature,
-          max_tokens: PIPELINE.model.maxTokens,
-          seed: PIPELINE.model.seed,
-          reasoning: PIPELINE.model.reasoning,
-          response_format: {
-            type: "json_schema",
-            json_schema: {
-              name: "CriterionEvaluation",
-              strict: true,
-              schema: CRITERION_RESPONSE_SCHEMA,
-            },
+    for (let t = 1; t <= TRANSPORT_ATTEMPTS; t++) {
+      const timeout = AbortSignal.timeout(PIPELINE.model.timeoutMs);
+      const signal = opts.signal ? AbortSignal.any([opts.signal, timeout]) : timeout;
+
+      try {
+        response = await doFetch("https://openrouter.ai/api/v1/chat/completions", {
+          method: "POST",
+          signal,
+          headers: {
+            Authorization: `Bearer ${opts.apiKey}`,
+            "Content-Type": "application/json",
+            "HTTP-Referer": "https://rexsantech.com",
+            "X-Title": "WriteWise",
           },
-        }),
-      });
-    } catch (err) {
-      const aborted = err instanceof DOMException && err.name === "TimeoutError";
+          body: JSON.stringify({
+            model: PIPELINE.model.id,
+            messages: convo,
+            temperature: PIPELINE.model.temperature,
+            max_tokens: PIPELINE.model.maxTokens,
+            seed: PIPELINE.model.seed,
+            reasoning: PIPELINE.model.reasoning,
+            response_format: {
+              type: "json_schema",
+              json_schema: {
+                name: "CriterionEvaluation",
+                strict: true,
+                schema: CRITERION_RESPONSE_SCHEMA,
+              },
+            },
+          }),
+        });
+        break;
+      } catch (err) {
+        transportError = err;
+        // A timeout is the model being slow, not the connection being broken. Retrying
+        // it would turn one long wait into three and still likely time out.
+        if (isTimeout(err) || t === TRANSPORT_ATTEMPTS) break;
+        transportRetries++;
+        await sleep(TRANSPORT_BACKOFF_MS[t - 1] ?? 1200);
+      }
+    }
+
+    if (!response) {
+      const err = transportError as Error;
       return base({
-        status: aborted ? "timeout" : "http_error",
-        error: `${(err as Error).name}: ${(err as Error).message}`,
-        attempts: attempt,
+        status: isTimeout(err) ? "timeout" : "http_error",
+        error: `${err.name}: ${err.message}`,
+        attempts: attempt + transportRetries,
       });
     }
 
@@ -221,7 +256,7 @@ export async function callCriterion(opts: ChatOptions): Promise<LlmResult> {
       return base({
         status: response.status === 429 ? "rate_limited" : "http_error",
         error: `HTTP ${response.status}: ${body}`,
-        attempts: attempt,
+        attempts: attempt + transportRetries,
       });
     }
 
@@ -255,7 +290,7 @@ export async function callCriterion(opts: ChatOptions): Promise<LlmResult> {
         ok: true,
         status: "ok",
         parsed: block,
-        attempts: attempt,
+        attempts: attempt + transportRetries,
         latencyMs: Date.now() - started,
       });
     }
@@ -271,6 +306,6 @@ export async function callCriterion(opts: ChatOptions): Promise<LlmResult> {
   return base({
     status: "parse_error",
     error: lastError,
-    attempts: PIPELINE.model.maxRetries + 1,
+    attempts: PIPELINE.model.maxRetries + 1 + transportRetries,
   });
 }

@@ -30,8 +30,8 @@ def config():
 class TestConfig:
     def test_declares_the_bilingual_per_criterion_call_mode(self, config) -> None:
         assert config.call_mode == "per_criterion_bilingual"
-        assert config.prompts.version == "v3"
-        assert config.version == "pipeline-v3.0"
+        assert config.prompts.version == "v4"
+        assert config.version == "pipeline-v3.2"
 
     def test_reasoning_stays_off(self, config) -> None:
         """Non-negotiable on this model: reasoning tokens are billed output tokens
@@ -39,11 +39,10 @@ class TestConfig:
         mid-JSON when it was last measured (see v1.yaml's comment)."""
         assert config.model.reasoning.enabled is False
 
-    def test_only_prompts_and_budget_differ_from_v1(self, config) -> None:
-        """Principle IV: an accuracy delta against the v1 benchmark is only
-        attributable to the prompt change if nothing else moved."""
+    def test_scoring_rules_still_match_v1(self, config) -> None:
+        """v3 changed the prompt and, at v3.1, the model — but the arithmetic around
+        the model is not a variable under test and must not drift with it."""
         v1 = load_pipeline_config("pipelines/v1.yaml")
-        assert config.model.id == v1.model.id
         assert config.model.temperature == v1.model.temperature
         assert config.model.seed == v1.model.seed
         assert config.scoring.length_penalty == v1.scoring.length_penalty
@@ -102,8 +101,8 @@ class TestPipelineOrchestration:
         outcome = await run_assessment_v3(
             fake, task_type="TASK_2", essay_text=TASK_2_ESSAY, config=config
         )
-        assert outcome.pipeline_version == "pipeline-v3.0"
-        assert outcome.prompt_version == "v3"
+        assert outcome.pipeline_version == "pipeline-v3.2"
+        assert outcome.prompt_version == "v4"
 
 
 class TestBilingualFields:

@@ -263,6 +263,7 @@ export type ApiErrorCode =
   | "BELOW_MIN_WORDS"
   | "UNSCOREABLE"
   | "SCORING_FAILED"
+  | "RATE_LIMITED"
   | "NOT_FOUND"
   | "SESSION_EXPIRED"
   | "UNAVAILABLE";
@@ -291,7 +292,9 @@ export class ApiError extends Error {
 
   /** True when resubmitting the identical text may succeed. */
   get isRetryable(): boolean {
-    return this.code === "SCORING_FAILED";
+    // RATE_LIMITED is retryable but not immediately, which is why the server's own
+    // message — the one that names the limit and the window — is what gets shown.
+    return this.code === "SCORING_FAILED" || this.code === "RATE_LIMITED";
   }
 }
 
