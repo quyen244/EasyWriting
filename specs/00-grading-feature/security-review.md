@@ -4,8 +4,8 @@
 `0004`, `0005`, `0010`–`0013`, `frontend/src/lib/api/grading.ts`
 
 A second pass over the whole path once it was working, looking for what breaks it and
-what abuses it. Seven issues found, six fixed, one measured and left open with its blast
-radius stated.
+what abuses it. Seven issues examined: five fixed, one that turned out not to be a hole and is now
+guarded instead, one measured and left open with its blast radius stated.
 
 ---
 
@@ -79,22 +79,42 @@ them is data rather than instructions.
 
 **This closes the break-out. It does not close the underlying problem — see below.**
 
-### 6. pg_net was about to become a public API (found during the cloud pre-flight)
+---
 
-`0010` installs pg_net with a bare `create extension if not exists pg_net`, which lets
-the extension's own script decide where it lands. One of the possible landing spots is
+## Investigated, not a hole
+
+### 6. pg_net: what I thought I found, and what was actually true
+
+Worth recording as a wrong turn rather than deleting, because the reasoning that led
+into it is the reasoning anyone would repeat.
+
+`0010` installs pg_net with a bare `create extension if not exists pg_net`, leaving the
+landing schema to the extension's script. `pg_extension.extnamespace` then reads
 `public` — an exposed Data API schema — and a new function carries EXECUTE for PUBLIC
-unless something takes it away. That combination is a learner calling
-`/rest/v1/rpc/http_post` with any URL they like: outbound requests from inside the
-project, billed to it, aimed wherever they choose.
+until something takes it away. That reads like an authenticated SSRF endpoint:
+`POST /rest/v1/rpc/http_post` with any URL, billed to the project.
 
-Confirmed on the cloud project before pushing anything: neither `net` nor `cron` exists
-yet, so this install has not happened there and the outcome was genuinely undecided.
+**It is not one.** Measured on a fresh `supabase db reset`:
 
-**Fixed** in migration `0013`, which walks pg_net's dependency list and revokes from
-`public`, `anon` and `authenticated` — correct whether the extension lands in `net`,
-`extensions` or `public`, and a no-op where the reach never existed. `dispatch_grading`
-is unaffected: it is SECURITY DEFINER and owned by `postgres`.
+- The script creates its own `net` schema and puts every function there —
+  `net.http_post`, not `public.http_post`. `extnamespace` is where the extension is
+  *registered*, not where its objects live.
+- PostgREST exposes `public` and `graphql_public` only, so the call answers
+  **404 PGRST202**, not 403. `extra_search_path` does not change this: it affects name
+  resolution inside a request, not which schemas are exposed.
+
+**And the patch I wrote first could not have worked anyway.** pg_net's objects are owned
+by `supabase_admin`; migrations run as `postgres`. A `revoke` from a non-owner without
+grant option raises a WARNING and changes nothing — every pg_net function still reported
+`has_function_privilege('authenticated', …) = t` after it ran. The migration applied
+cleanly and did precisely nothing, which is the worst shape a security fix can take.
+
+**What `0013` is now**: a guard, not a patch. It raises at deploy time if any pg_net
+function is ever both in an exposed schema and executable by `anon`/`authenticated`.
+Nothing in this repo pins where a future pg_net version installs itself, so the
+reasoning above is true today and unpinned tomorrow. Reading catalogs needs no
+ownership, which is why the check can live where the fix could not. Verified
+non-vacuous: the same predicate pointed at `net` returns all 12 functions.
 
 ---
 
