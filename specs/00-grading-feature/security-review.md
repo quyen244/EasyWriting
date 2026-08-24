@@ -1,10 +1,10 @@
 # Grading path review — stability, security, data, API
 
 **Date**: 2026-08-23 · Reviewed: `supabase/functions/grade-attempt/`, migrations
-`0004`, `0005`, `0010`–`0012`, `frontend/src/lib/api/grading.ts`
+`0004`, `0005`, `0010`–`0013`, `frontend/src/lib/api/grading.ts`
 
 A second pass over the whole path once it was working, looking for what breaks it and
-what abuses it. Six issues found, five fixed, one measured and left open with its blast
+what abuses it. Seven issues found, six fixed, one measured and left open with its blast
 radius stated.
 
 ---
@@ -79,11 +79,28 @@ them is data rather than instructions.
 
 **This closes the break-out. It does not close the underlying problem — see below.**
 
+### 6. pg_net was about to become a public API (found during the cloud pre-flight)
+
+`0010` installs pg_net with a bare `create extension if not exists pg_net`, which lets
+the extension's own script decide where it lands. One of the possible landing spots is
+`public` — an exposed Data API schema — and a new function carries EXECUTE for PUBLIC
+unless something takes it away. That combination is a learner calling
+`/rest/v1/rpc/http_post` with any URL they like: outbound requests from inside the
+project, billed to it, aimed wherever they choose.
+
+Confirmed on the cloud project before pushing anything: neither `net` nor `cron` exists
+yet, so this install has not happened there and the outcome was genuinely undecided.
+
+**Fixed** in migration `0013`, which walks pg_net's dependency list and revokes from
+`public`, `anon` and `authenticated` — correct whether the extension lands in `net`,
+`extensions` or `public`, and a no-op where the reach never existed. `dispatch_grading`
+is unaffected: it is SECURITY DEFINER and owned by `postgres`.
+
 ---
 
 ## Open
 
-### 6. A learner can still inflate their own band by writing instructions into the essay
+### 7. A learner can still inflate their own band by writing instructions into the essay
 
 Measured, not theorised. The same weak essay, graded twice:
 
@@ -164,6 +181,6 @@ above should inform which one you want rather than me picking.
 - **The shared-secret comparison is not constant-time.** A timing attack against a 48-hex
   secret over the network is not a practical threat, but it is the kind of thing worth
   knowing you decided rather than missed.
-- **No pgTAP tests for `0010`/`0011`/`0012`.** The behaviour is verified by live runs and
+- **No pgTAP tests for `0010`–`0013`.** The behaviour is verified by live runs and
   by `api.mjs`, which is evidence but not a test that runs on its own. Still the
   Constitution III gap recorded in [diff.md](./diff.md).
